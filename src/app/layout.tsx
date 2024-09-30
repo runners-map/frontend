@@ -16,8 +16,8 @@ export default function RootLayout({
     pathname.startsWith("/chat-list/");
 
   return (
-    <html lang="ko">
-      <body>
+    <html lang="ko" className="bg-gray-200">
+      <body className="max-w-md mx-auto min-h-screen bg-white">
         <main>{children}</main>
         {!hideNav && <Navigation />}
       </body>
