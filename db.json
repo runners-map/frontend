@@ -72,7 +72,7 @@
       "updated_at": "2024-09-25T08:30:00"
     }
   ],
-  "Ranking": [
+  "ranking": [
     {
       "rank_id": 1,
       "user_id": 1,
@@ -80,13 +80,84 @@
       "rank": 1
     }
   ],
-  "Record": [
+  "record": [
     {
-      "record_id": 1,
       "user_id": 1,
-      "post_id": 1,
-      "running_distance": 5.0,
-      "running_date": "2024-09-26T09:00:00"
+      "month": 9,
+      "totalDistance": 5,
+      "runninDate": "2024-09-01"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 6,
+      "runninDate": "2024-09-03"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 3.5,
+      "runninDate": "2024-09-09"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 10.2,
+      "runninDate": "2024-09-15"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 5.1,
+      "runninDate": "2024-09-19"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 3.5,
+      "runninDate": "2024-09-20"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 4.2,
+      "runninDate": "2024-09-21"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 8.5,
+      "runninDate": "2024-09-25"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 12.0,
+      "runninDate": "2024-09-27"
+    },
+    {
+      "user_id": 1,
+      "month": 9,
+      "totalDistance": 4.5,
+      "runninDate": "2024-09-30"
+    },
+    {
+      "user_id": 1,
+      "month": 10,
+      "totalDistance": 5.0,
+      "runninDate": "2024-10-01"
+    },
+    {
+      "user_id": 1,
+      "month": 10,
+      "totalDistance": 13.5,
+      "runninDate": "2024-10-02"
+    },
+    {
+      "user_id": 1,
+      "month": 10,
+      "totalDistance": 3.0,
+      "runninDate": "2024-10-03"
     }
   ],
   "Comment": [
