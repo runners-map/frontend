@@ -2,10 +2,7 @@ import { Ranking } from "@/types/Ranking";
 
 export default async function RankingPage() {
   const currentMonth = new Date().getMonth() + 1;
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Ranking`, {
-    cache: "no-store",
-  });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Ranking`);
   const rankingList: Ranking[] = await res.json();
 
   return (
