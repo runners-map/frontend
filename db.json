@@ -74,10 +74,64 @@
   ],
   "ranking": [
     {
-      "rank_id": 1,
-      "user_id": 1,
-      "total_distance": 100.0,
-      "rank": 1
+      "rank": 1,
+      "userId": 1,
+      "nicknName": "러너스하이",
+      "total_distance": 32
+    },
+    {
+      "rank": 2,
+      "userId": 2,
+      "nicknName": "minji_k",
+      "total_distance": 30.5
+    },
+    {
+      "rank": 3,
+      "userId": 3,
+      "nicknName": "김제로",
+      "total_distance": 29.3
+    },
+    {
+      "rank": 4,
+      "userId": 4,
+      "nicknName": "혠이",
+      "total_distance": 28
+    },
+    {
+      "rank": 5,
+      "userId": 5,
+      "nicknName": "Danielle",
+      "total_distance": 26
+    },
+    {
+      "rank": 6,
+      "userId": 6,
+      "nicknName": "피닉스러너",
+      "total_distance": 25
+    },
+    {
+      "rank": 7,
+      "userId": 7,
+      "nicknName": "Hanni_P",
+      "total_distance": 24.3
+    },
+    {
+      "rank": 8,
+      "userId": 8,
+      "nicknName": "러닝버니",
+      "total_distance": 23
+    },
+    {
+      "rank": 9,
+      "userId": 9,
+      "nicknName": "새청바지",
+      "total_distance": 20
+    },
+    {
+      "rank": 10,
+      "userId": 10,
+      "nicknName": "hr_the_cat",
+      "total_distance": 15.5
     }
   ],
   "record": [
