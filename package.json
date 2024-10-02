@@ -3,11 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-<<<<<<< Updated upstream
     "dev": "concurrently \"next dev\" \"json-server --watch db.json --port 3001\"",
-=======
-    "dev": "next dev & json-server --watch db.json --port 3001",
->>>>>>> Stashed changes
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
