@@ -83,21 +83,24 @@
   "record": [
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
-      "totalDistance": 5,
-      "runninDate": "2024-09-01"
+      "day": 1,
+      "totalDistance": 5
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
-      "totalDistance": 6,
-      "runninDate": "2024-09-03"
+      "day": 3,
+      "totalDistance": 6
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
-      "totalDistance": 3.5,
-      "runninDate": "2024-09-09"
+      "day": 9,
+      "totalDistance": 3.5
     },
     {
       "user_id": 1,
@@ -113,48 +116,56 @@
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
       "totalDistance": 3.5,
       "runninDate": "2024-09-20"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
       "totalDistance": 4.2,
       "runninDate": "2024-09-21"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
       "totalDistance": 8.5,
       "runninDate": "2024-09-25"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
       "totalDistance": 12.0,
       "runninDate": "2024-09-27"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 9,
       "totalDistance": 4.5,
       "runninDate": "2024-09-30"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 10,
       "totalDistance": 5.0,
       "runninDate": "2024-10-01"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 10,
       "totalDistance": 13.5,
       "runninDate": "2024-10-02"
     },
     {
       "user_id": 1,
+      "year": 2024,
       "month": 10,
       "totalDistance": 3.0,
       "runninDate": "2024-10-03"
