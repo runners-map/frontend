@@ -3,7 +3,7 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { PostType } from '@/types/Post';
+import { Post } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
@@ -13,7 +13,7 @@ export default function PostCreateForm() {
     handleSubmit,
     control,
     formState: { errors, isSubmitting }
-  } = useForm<PostType>();
+  } = useForm<Post>();
 
   const router = useRouter();
 
@@ -22,8 +22,20 @@ export default function PostCreateForm() {
     router.push('/');
   };
 
-  const onSubmit = (data: PostType) => {
-    console.log(data);
+  const onSubmit = (data: Post) => {
+    const { startDateTime } = data;
+    // 현지 시간대로 변환하여 ISO 형식으로 저장
+    const formattedDateTime = startDateTime
+      ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
+      : null;
+
+    const finalData = {
+      ...data,
+      startDateTime: formattedDateTime
+    };
+
+    console.log(finalData);
+    // 제출 로직 추가
   };
 
   return (
@@ -36,105 +48,49 @@ export default function PostCreateForm() {
           defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
-            <>
-              <select
-                {...field}
-                id="gender"
-                className={`select select-bordered w-full  focus:border-transparent ${
-                  errors.gender ? 'border-red-500 focus:outline-red-500' : ''
-                }`}>
-                <option value="" disabled>
-                  성별을 골라주세요
-                </option>
-                <option value="all">전체</option>
-                <option value="male">남자</option>
-                <option value="female">여자</option>
-              </select>
-            </>
+            <select
+              {...field}
+              id="gender"
+              className={`select select-bordered w-full focus:border-transparent ${
+                errors.gender ? 'border-red-500 focus:outline-red-500' : ''
+              }`}>
+              <option value="" disabled>
+                성별을 골라주세요
+              </option>
+              <option value="all">All</option>
+              <option value="male">M</option>
+              <option value="female">F</option>
+            </select>
           )}
         />
       </div>
-
-      {/* 페이스 */}
-      <div className="flex">
+      <div>
         <Controller
-          name="paceKm"
+          name="limitMemberCount"
           control={control}
           defaultValue={0}
           rules={{ required: true, validate: value => value > 0 }}
           render={({ field }) => (
-            <>
-              <select
-                {...field}
-                id="pace"
-                className={`select select-bordered w-full focus:border-transparent mr-2 ${
-                  errors.paceKm ? 'border-red-500 focus:outline-red-500' : ''
-                }`}>
-                <option value={0} disabled>
-                  페이스(KM)를 설정해주세요
-                </option>
-                <option value={1}>1KM</option>
-                <option value={3}>3KM</option>
-                <option value={5}>5KM</option>
-                <option value={10}>10KM</option>
-              </select>
-            </>
-          )}
-        />
-        <Controller
-          name="paceTime"
-          control={control}
-          defaultValue=""
-          rules={{ required: true }}
-          render={({ field }) => (
-            <>
-              <select
-                {...field}
-                id="pace"
-                className={`select select-bordered w-full focus:border-transparent ${
-                  errors.paceTime ? 'border-red-500 focus:outline-red-500' : ''
-                }`}>
-                <option value="" disabled>
-                  페이스(시간)를 설정해주세요
-                </option>
-                <option value="1분~2분">1분~2분</option>
-                <option value="3분~5분">3분~5분</option>
-                <option value="5분~10분">5분~10분</option>
-              </select>
-            </>
+            <input
+              {...field}
+              type="number"
+              className={`input input-bordered w-full ${
+                errors.limitMemberCount ? 'border-red-500 focus:outline-red-500' : ''
+              }`}
+              min={1}
+              max={10}
+              value={field.value === 0 ? '' : field.value}
+              onChange={e => field.onChange(Number(e.target.value))}
+              placeholder="제한인원 (1~10명)"
+            />
           )}
         />
       </div>
-      {/* 달릴거리 */}
-      <div className="flex justify-between">
-        <Controller
-          name="distance"
-          control={control}
-          defaultValue=""
-          rules={{ required: true }}
-          render={({ field }) => (
-            <>
-              <select
-                {...field}
-                id="distance"
-                className={`select select-bordered w-full focus:border-transparent ${
-                  errors.distance ? 'border-red-500 focus:outline-red-500' : ''
-                }`}>
-                <option value="" disabled>
-                  달릴거리를 설정해주세요
-                </option>
-                <option value="1km~3km">1km~3km</option>
-                <option value="3km~5km">3km~5km</option>
-                <option value="5km~10km">5km~10km</option>
-              </select>
-            </>
-          )}
-        />
-      </div>
+
       {/* 달릴 날짜 */}
-      <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <Controller
-          name="start_date"
+          name="startDateTime"
           control={control}
           defaultValue={null}
           rules={{ required: true }}
@@ -142,13 +98,22 @@ export default function PostCreateForm() {
             <>
               <DatePicker
                 selected={field.value}
-                onChange={date => field.onChange(date)}
+                onChange={date => {
+                  if (date) {
+                    // 날짜가 null이 아닐 때만 업데이트
+                    const hours = field.value ? field.value.getHours() : 0;
+                    const minutes = field.value ? field.value.getMinutes() : 0;
+                    field.onChange(new Date(date.setHours(hours, minutes)));
+                  } else {
+                    field.onChange(null); // 날짜가 null인 경우
+                  }
+                }}
                 placeholderText="출발일자를 선택하세요"
                 dateFormat="yyyy/MM/dd"
                 customInput={
                   <div
                     className={`flex items-center border rounded p-2 ${
-                      errors.start_date ? 'border-red-500 focus:outline-red-500' : ''
+                      errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
                     }`}>
                     <FaRegCalendarAlt className="mr-2" />
                     <input
@@ -162,46 +127,40 @@ export default function PostCreateForm() {
                   </div>
                 }
               />
-            </>
-          )}
-        />
-      </div>
-      {/* 출발 시간 */}
-      <div className="flex items-center justify-center">
-        <Controller
-          name="start_hour"
-          control={control}
-          defaultValue={0}
-          render={({ field }) => (
-            <>
-              <input
-                {...field}
-                type="number"
-                id="time"
-                min="0"
-                max="23"
-                className={`input input-bordered w-full focus:border-transparent mr-1 `}
-                placeholder="출발시간"
-              />
-              <p className="mr-2">시</p>
-            </>
-          )}
-        />
-        <Controller
-          name="start_min"
-          control={control}
-          defaultValue={0}
-          render={({ field }) => (
-            <>
-              <input
-                {...field}
-                type="number"
-                id="time"
-                min="0"
-                max="59"
-                className={`input input-bordered w-full focus:border-transparent mr-1 `}
-              />
-              <p>분</p>
+              <div className="flex w-full mt-4">
+                <input
+                  type="number"
+                  min="0"
+                  max="23"
+                  placeholder="출발시간"
+                  className={`input input-bordered w-full mr-2 ${
+                    errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
+                  }`}
+                  onChange={e => {
+                    const hours = Number(e.target.value);
+                    const minutes = field.value ? field.value.getMinutes() : 0;
+                    const newDate = field.value ? new Date(field.value) : new Date();
+                    newDate.setHours(hours, minutes);
+                    field.onChange(newDate);
+                  }}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  placeholder="출발시간"
+                  className={`input input-bordered w-full ${
+                    errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
+                  }`}
+                  onChange={e => {
+                    const minutes = Number(e.target.value);
+                    const hours = field.value ? field.value.getHours() : 0;
+                    const newDate = field.value ? new Date(field.value) : new Date();
+                    newDate.setHours(hours, minutes);
+                    field.onChange(newDate);
+                  }}
+                />
+              </div>
             </>
           )}
         />
@@ -210,6 +169,29 @@ export default function PostCreateForm() {
       <button type="button" onClick={searchRoute} className="btn btn-primary">
         경로 설정하기
       </button>
+      {/* 페이스 */}
+      <div className="flex">
+        <Controller
+          name="paceTime"
+          control={control}
+          defaultValue=""
+          rules={{ required: true }}
+          render={({ field }) => (
+            <select
+              {...field}
+              className={`select select-bordered w-full focus:border-transparent ${
+                errors.paceTime ? 'border-red-500 focus:outline-red-500' : ''
+              }`}>
+              <option value="" disabled>
+                페이스(시간)를 설정해주세요
+              </option>
+              <option value="1분~2분">1분~2분</option>
+              <option value="3분~5분">3분~5분</option>
+              <option value="5분~10분">5분~10분</option>
+            </select>
+          )}
+        />
+      </div>
       {/* 제목 */}
       <div className="flex justify-center">
         <Controller
@@ -218,16 +200,14 @@ export default function PostCreateForm() {
           defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
-            <>
-              <input
-                {...field}
-                type="text"
-                className={`input input-bordered focus:border-transparent ${
-                  errors.title ? 'border-red-500 focus:outline-red-500' : ''
-                }`}
-                placeholder="모집글 제목"
-              />
-            </>
+            <input
+              {...field}
+              type="text"
+              className={`input input-bordered focus:border-transparent ${
+                errors.title ? 'border-red-500 focus:outline-red-500' : ''
+              }`}
+              placeholder="모집글 제목"
+            />
           )}
         />
       </div>
@@ -239,20 +219,18 @@ export default function PostCreateForm() {
           defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
-            <>
-              <textarea
-                {...field}
-                id="content"
-                placeholder="내용을 입력하세요"
-                className={`w-full h-32 resize-none p-2 border border-gray-300 rounded-md ${
-                  errors.content ? 'border-red-500 focus:outline-red-500' : ''
-                }`}
-              />
-            </>
+            <textarea
+              {...field}
+              id="content"
+              placeholder="내용을 입력하세요"
+              className={`w-full h-32 resize-none p-2 border border-gray-300 rounded-md ${
+                errors.content ? 'border-red-500 focus:outline-red-500' : ''
+              }`}
+            />
           )}
         />
       </div>
-      <button type="submit" className="btn btn-primary " disabled={isSubmitting}>
+      <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
         {isSubmitting ? '제출 중...' : '제출'}
       </button>
     </form>

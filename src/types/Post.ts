@@ -1,11 +1,10 @@
-export type PostType = {
+export interface Post {
   gender: string;
+  limitMemberCount: number;
   paceKm: number;
   paceTime: string;
   distance: string;
-  start_date: Date | null;
-  start_hour: number;
-  start_min: number;
+  startDateTime: Date | null;
   title: string;
   content: string;
-};
+}
