@@ -1,3 +1,5 @@
+"use client";
+
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -19,24 +21,12 @@ ChartJS.register(
 );
 
 interface ChartProps {
+  chartData: any[];
   year: number;
   month: number;
 }
 
-async function fetchChartData(year: number, month: number) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/record?year=${year}&month=${month}`,
-    {
-      cache: "no-store",
-    }
-  );
-  const data = await res.json();
-  return data;
-}
-
-export default async function Chart({ year, month }: ChartProps) {
-  const chartData = await fetchChartData(year, month);
-
+export default function Chart({ chartData, year, month }: ChartProps) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}일`);
   const distances = Array(daysInMonth).fill(0);
@@ -80,8 +70,6 @@ export default async function Chart({ year, month }: ChartProps) {
         ticks: {
           callback: function (value, index, values) {
             const day = index + 1;
-            const daysInMonth = new Date(year, month, 0).getDate();
-
             if (
               day === 1 ||
               (day % 5 === 0 && day <= 25) ||
