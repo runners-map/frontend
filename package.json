@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\" \"json-server --watch db.json --port 3001\"",
+    "dev": "next dev",
     "build": "next build",
-    "start": "npx json-server --watch db.json --port $PORT",
+    "start": "next start",
+    "start-json-server": "npx json-server --watch db.json --port $PORT",
     "lint": "next lint"
   },
   "dependencies": {
