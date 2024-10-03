@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 const getChatList = async () => {
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise(resolve => setTimeout(resolve, 1000));
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/ChatRoom`);
   return response.data;
 };
