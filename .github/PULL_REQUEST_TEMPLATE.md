@@ -6,4 +6,4 @@
 
 ## Discuss
 
-## UI Image
+## UI Images

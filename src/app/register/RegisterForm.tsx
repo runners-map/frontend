@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { HiUser } from "react-icons/hi";
 import { PiGenderIntersexBold } from "react-icons/pi";
+import { RegisterFormData } from "@/types/ResisterForm";
 
 const RegisterForm = () => {
   const {
@@ -16,7 +17,7 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     console.log(data);
   };
 

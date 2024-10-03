@@ -39,7 +39,16 @@
   ],
   "ChatRoom": [
     {
-      "chat_room_id": 1
+      "chat_room_id": 1,
+      "title": "러닝 같이 할 크루원 구해요~!"
+    },
+    {
+      "chat_room_id": 2,
+      "title": "남산 둘레길 같이 달려요~"
+    },
+    {
+      "chat_room_id": 3,
+      "title": "러닝 같이 할 사람~~"
     }
   ],
   "ChatMessage": [
