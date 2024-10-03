@@ -105,7 +105,7 @@ export default function PostCreateForm() {
                     const minutes = field.value ? field.value.getMinutes() : 0;
                     field.onChange(new Date(date.setHours(hours, minutes)));
                   } else {
-                    field.onChange(null); // 날짜가 null인 경우
+                    field.onChange(null);
                   }
                 }}
                 placeholderText="출발일자를 선택하세요"

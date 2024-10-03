@@ -1,3 +1,4 @@
-export default function PostInfoPage() {
-  return <div>채팅방 상세 정보 페이지</div>;
+export default function PostInfoPage({ params: { id } }: { params: { id: string } }) {
+  console.log(id);
+  return <div>{id}</div>;
 }
