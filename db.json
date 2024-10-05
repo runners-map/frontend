@@ -39,15 +39,34 @@
   ],
   "ChatRoom": [
     {
-      "chat_room_id": 1,
-      "title": "러닝 같이 할 크루원 구해요~!"
+      "postId": 6,
+      "chatRoomId": 1,
+      "adminId": 436,
+      "adminNickname": "김제로",
+      "title": "저랑 달리실 분~",
+      "content": "가볍게 달려요",
+      "limitMemberCnt": 5,
+      "gender": "F",
+      "startTime": "2024-09-25T08:00:00",
+      "startPosition": "(33.450936, 126.569477)",
+      "distance": 5,
+      "paceMin": 9,
+      "paceSec": 0,
+      "memberCnt": 3,
+      "createdAt": "2024-09-24T08:00:00",
+      "participants": [
+        { "userId": 1234, "nickname": "나나" },
+        { "userId": 3456, "nickname": "다다" }
+      ],
+      "departureYn": "true",
+      "arriveYn": "false"
     },
     {
-      "chat_room_id": 2,
+      "chatRoomId": 2,
       "title": "남산 둘레길 같이 달려요~"
     },
     {
-      "chat_room_id": 3,
+      "chatRoomId": 3,
       "title": "러닝 같이 할 사람~~"
     }
   ],
