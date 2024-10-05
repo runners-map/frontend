@@ -175,6 +175,50 @@ export default function MapModal() {
             <p>분</p>
           </div>
 
+          {/* 거리 */}
+          <div className="flex gap-2 items-center justify-center">
+            <Controller
+              name="distanceStart"
+              control={control}
+              defaultValue={0}
+              rules={{ required: true, validate: value => value >= 1 }}
+              render={({ field }) => (
+                <input
+                  type="number"
+                  {...field}
+                  className={`input input-bordered w-1/2 focus:border-transparent ${
+                    errors.paceMinStart ? 'border-red-500 focus:outline-red-500' : ''
+                  }`}
+                  min={1}
+                  max={59}
+                  value={field.value === 0 ? '' : field.value}
+                  placeholder="시작"
+                />
+              )}
+            />
+            <p>~ </p>
+            <Controller
+              name="distanceEnd"
+              control={control}
+              defaultValue={0}
+              rules={{ required: true, validate: value => value >= 1 }}
+              render={({ field }) => (
+                <input
+                  type="number"
+                  {...field}
+                  className={`input input-bordered w-1/2 focus:border-transparent ${
+                    errors.paceMinEnd ? 'border-red-500 focus:outline-red-500' : ''
+                  }`}
+                  placeholder="끝"
+                  value={field.value === 0 ? '' : field.value}
+                  min={1}
+                  max={59}
+                />
+              )}
+            />
+            <p>KM</p>
+          </div>
+
           <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
             {isSubmitting ? '조회 중...' : '조회하기'}
           </button>
