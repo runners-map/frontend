@@ -19,22 +19,16 @@ import ChartStat from "./ChartStat";
 const fetchChartData = async (date: Date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
-  try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/record`,
-      {
-        params: {
-          year: year,
-          month: month,
-        },
-      }
-    );
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch chart data", error);
-    throw new Error("Failed to fetch chart data");
-  }
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/record`,
+    {
+      params: {
+        year: year,
+        month: month,
+      },
+    }
+  );
+  return response.data;
 };
 
 export default function ChartContainer() {
