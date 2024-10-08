@@ -57,7 +57,7 @@ export default function ChartContainer() {
       ];
 
       if (!queryClient.getQueryData(cacheKey)) {
-        queryClient.prefetchQuery({
+        queryClient.fetchQuery({
           queryKey: cacheKey,
           queryFn: () => fetchChartData(newDate),
           staleTime: Infinity,
