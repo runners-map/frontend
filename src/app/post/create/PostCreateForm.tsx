@@ -57,16 +57,16 @@ export default function PostCreateForm() {
               <option value="" disabled>
                 성별을 골라주세요
               </option>
-              <option value="all">All</option>
-              <option value="male">M</option>
-              <option value="female">F</option>
+              <option value="All">All</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
             </select>
           )}
         />
       </div>
       <div>
         <Controller
-          name="limitMemberCount"
+          name="limitMemberCnt"
           control={control}
           defaultValue={0}
           rules={{ required: true, validate: value => value > 0 }}
@@ -75,7 +75,7 @@ export default function PostCreateForm() {
               {...field}
               type="number"
               className={`input input-bordered w-full ${
-                errors.limitMemberCount ? 'border-red-500 focus:outline-red-500' : ''
+                errors.limitMemberCnt ? 'border-red-500 focus:outline-red-500' : ''
               }`}
               min={1}
               max={10}
@@ -92,7 +92,7 @@ export default function PostCreateForm() {
         <Controller
           name="startDateTime"
           control={control}
-          defaultValue={null}
+          defaultValue={undefined}
           rules={{ required: true }}
           render={({ field }) => (
             <>
@@ -127,34 +127,14 @@ export default function PostCreateForm() {
                   </div>
                 }
               />
-              <div className="flex w-full mt-4">
+              <div className="flex items-center w-full mt-4">
                 <input
-                  type="number"
-                  min="0"
-                  max="23"
-                  placeholder="출발시간"
+                  type="time"
                   className={`input input-bordered w-full mr-2 ${
                     errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
                   }`}
                   onChange={e => {
-                    const hours = Number(e.target.value);
-                    const minutes = field.value ? field.value.getMinutes() : 0;
-                    const newDate = field.value ? new Date(field.value) : new Date();
-                    newDate.setHours(hours, minutes);
-                    field.onChange(newDate);
-                  }}
-                />
-                <input
-                  type="number"
-                  min="0"
-                  max="59"
-                  placeholder="출발시간"
-                  className={`input input-bordered w-full ${
-                    errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
-                  }`}
-                  onChange={e => {
-                    const minutes = Number(e.target.value);
-                    const hours = field.value ? field.value.getHours() : 0;
+                    const [hours, minutes] = e.target.value.split(':').map(Number);
                     const newDate = field.value ? new Date(field.value) : new Date();
                     newDate.setHours(hours, minutes);
                     field.onChange(newDate);
@@ -170,27 +150,47 @@ export default function PostCreateForm() {
         경로 설정하기
       </button>
       {/* 페이스 */}
-      <div className="flex">
+      <div className="flex gap-2 items-center justify-center">
         <Controller
-          name="paceTime"
+          name="paceMin"
           control={control}
-          defaultValue=""
-          rules={{ required: true }}
+          defaultValue={0}
+          rules={{ required: true, validate: value => value >= 1 }}
           render={({ field }) => (
-            <select
+            <input
+              type="number"
               {...field}
-              className={`select select-bordered w-full focus:border-transparent ${
-                errors.paceTime ? 'border-red-500 focus:outline-red-500' : ''
-              }`}>
-              <option value="" disabled>
-                페이스(시간)를 설정해주세요
-              </option>
-              <option value="1분~2분">1분~2분</option>
-              <option value="3분~5분">3분~5분</option>
-              <option value="5분~10분">5분~10분</option>
-            </select>
+              className={`input input-bordered w-1/2 focus:border-transparent ${
+                errors.paceMin ? 'border-red-500 focus:outline-red-500' : ''
+              }`}
+              min={1}
+              max={59}
+              value={field.value === 0 ? '' : field.value}
+              placeholder="페이스(분)"
+            />
           )}
         />
+        <p>분 </p>
+        <Controller
+          name="paceSec"
+          control={control}
+          defaultValue={0}
+          rules={{ required: true, validate: value => value >= 1 }}
+          render={({ field }) => (
+            <input
+              type="number"
+              {...field}
+              className={`input input-bordered w-1/2 focus:border-transparent ${
+                errors.paceSec ? 'border-red-500 focus:outline-red-500' : ''
+              }`}
+              placeholder="페이스(초)"
+              value={field.value === 0 ? '' : field.value}
+              min={1}
+              max={59}
+            />
+          )}
+        />
+        <p>초</p>
       </div>
       {/* 제목 */}
       <div className="flex justify-center">

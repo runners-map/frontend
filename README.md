@@ -1,8 +1,7 @@
-<<<<<<< HEAD
+[배포주소](https://dulcet-bonbon-b9d12a.netlify.app)
+
 
 # frontend
-
-# 슬랙에 알림이 갈까요????????
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

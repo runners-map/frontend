@@ -7,16 +7,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const noNavPaths = ["/login", "/register", "/mypage/setting", "/404"];
-  const hideNav =
-    noNavPaths.includes(pathname) ||
-    pathname.startsWith("/post/") ||
-    pathname.startsWith("/chat-list/");
+  const noNavPaths = ['/login', '/register', '/mypage/setting', '/404'];
+  const hideNav = noNavPaths.includes(pathname) || pathname.startsWith('/post/') || pathname.startsWith('/chat-list/');
 
   return (
     <html lang="ko" className="bg-gray-200">

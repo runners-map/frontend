@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 const getChatList = async () => {
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise(resolve => setTimeout(resolve, 1000));
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/ChatRoom`);
   return response.data;
 };
@@ -18,9 +18,9 @@ export default async function ChatListPage() {
     <ul className="p-14">
       {chats.map((chat: ChatRoom) => (
         <li
-          key={chat.chat_room_id}
+          key={chat.chatRoomId}
           className="bg-gradient-to-r from-blue-200 to-purple-200 shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 mb-5">
-          <Link href={`/chat-list/${chat.chat_room_id}/post-info`} className="block p-6">
+          <Link href={`/chat-list/${chat.chatRoomId}/post-info`} className="block p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">{chat.title}</h2>
           </Link>
         </li>

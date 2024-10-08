@@ -1,5 +1,25 @@
+export interface Participant {
+  userId: number;
+  nickname: string;
+}
+
 export interface ChatRoom {
-  chat_room_id: number;
+  postId: number;
+  chatRoomId: number;
+  adminId: number;
+  adminNickname: string;
   title: string;
-  id: string;
+  content: string;
+  limitMemberCnt: number;
+  gender: string;
+  startTime: string;
+  startPosition: string;
+  distance: number;
+  paceMin: number;
+  paceSec: number;
+  memberCnt: number;
+  createdAt: string;
+  participants: Participant[];
+  departureYn: string;
+  arriveYn: string;
 }
