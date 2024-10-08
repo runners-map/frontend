@@ -2,6 +2,9 @@
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { usePathname } from "next/navigation";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -18,8 +21,10 @@ export default function RootLayout({
   return (
     <html lang="ko" className="bg-gray-200">
       <body className="max-w-md mx-auto min-h-screen bg-white">
-        <main>{children}</main>
-        {!hideNav && <Navigation />}
+        <QueryClientProvider client={queryClient}>
+          <main className="pb-16">{children}</main>
+          {!hideNav && <Navigation />}
+        </QueryClientProvider>
       </body>
     </html>
   );

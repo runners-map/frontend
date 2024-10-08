@@ -1,71 +1,170 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { useRef, useState } from "react";
+import {
+  HiMiniChevronLeft,
+  HiMiniChevronRight,
+  HiOutlineChartBarSquare,
+  HiOutlineCalendarDays,
+} from "react-icons/hi2";
 import Chart from "@/app/chart/Chart";
 import ChartLoading from "./ChartLoading";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Record } from "@/types/Record";
+import ChartCalendar from "./ChartCalendar";
+import axios from "axios";
+import ChartList from "./ChartList";
+import ChartStat from "./ChartStat";
+
+const fetchChartData = async (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/record`,
+      {
+        params: {
+          year: year,
+          month: month,
+        },
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch chart data", error);
+    throw new Error("Failed to fetch chart data");
+  }
+};
 
 export default function ChartContainer() {
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [date, setDate] = useState(new Date());
+  const [isChart, setIsChart] = useState(true);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const listRef = useRef<{ [key: number]: HTMLLIElement | null }>({});
+  const currentDate = new Date();
+  const queryClient = useQueryClient();
+
+  const { data: chartData, isLoading } = useQuery<Record[]>({
+    queryKey: ["chartData", date.getFullYear(), date.getMonth() + 1],
+    queryFn: () => fetchChartData(date),
+    staleTime: Infinity,
+  });
 
   const handlePreviousMonth = () => {
-    if (month === 1) {
-      setMonth(12);
-      setYear((prevYear) => prevYear - 1);
-    } else {
-      setMonth((prevMonth) => prevMonth - 1);
-    }
+    setDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() - 1);
+
+      const cacheKey = [
+        "chartData",
+        newDate.getFullYear(),
+        newDate.getMonth() + 1,
+      ];
+
+      if (!queryClient.getQueryData(cacheKey)) {
+        queryClient.prefetchQuery({
+          queryKey: cacheKey,
+          queryFn: () => fetchChartData(newDate),
+          staleTime: Infinity,
+        });
+      }
+
+      return newDate;
+    });
+    setSelectedDay(null);
   };
 
   const handleNextMonth = () => {
-    if (month === 12) {
-      setMonth(1);
-      setYear((prevYear) => prevYear + 1);
-    } else {
-      setMonth((prevMonth) => prevMonth + 1);
+    setDate((prev) => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
+    });
+    setSelectedDay(null);
+  };
+
+  const toggleChart = () => {
+    setIsChart((prev) => !prev);
+  };
+
+  const handleDateClick = (day: number) => {
+    setSelectedDay(day);
+    const element = listRef.current[day];
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  useEffect(() => {
-    const fetchChartData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/record?year=${year}&month=${month}`,
-          { cache: "no-store" }
-        );
-        const data = await res.json();
-        setChartData(data);
-      } catch (error) {
-        console.error("Failed to fetch chart data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchChartData();
-  }, [year, month]);
-
   return (
-    <div>
-      <div className="flex">
-        <button onClick={handlePreviousMonth} className="btn">
-          <HiChevronLeft />
-        </button>
-        <span className="text-xl font-bold">
-          {year}년 {month}월
-        </span>
-        <button onClick={handleNextMonth} className="btn">
-          <HiChevronRight />
-        </button>
-      </div>
-      {loading ? (
+    <div className="flex flex-col h-full">
+      {isLoading ? (
         <ChartLoading />
       ) : (
-        <Chart chartData={chartData} year={year} month={month} />
+        <>
+          <ChartStat />
+          <div className="border-2 border-primary rounded-2xl px-1 py-2 mb-3 relative">
+            <div className="flex flex-none items-center justify-center space-x-3">
+              <button
+                onClick={handlePreviousMonth}
+                className="btn btn-outline btn-primary border-0"
+              >
+                <HiMiniChevronLeft size={20} style={{ strokeWidth: 2 }} />
+              </button>
+              <span className="text-xl font-bold">
+                {date.getFullYear()}년 {date.getMonth() + 1}월
+              </span>
+              <button
+                onClick={handleNextMonth}
+                className="btn btn-outline btn-primary border-0"
+                disabled={
+                  date.getFullYear() === currentDate.getFullYear() &&
+                  date.getMonth() === currentDate.getMonth()
+                }
+              >
+                <HiMiniChevronRight size={20} style={{ strokeWidth: 2 }} />
+              </button>
+            </div>
+            <div className="absolute top-4 right-4">
+              <label className="swap text-primary">
+                <input
+                  type="checkbox"
+                  checked={isChart}
+                  onChange={toggleChart}
+                />
+                <HiOutlineCalendarDays size={30} className="swap-on" />
+                <HiOutlineChartBarSquare size={30} className="swap-off" />
+              </label>
+            </div>
+            <div className="flex justify-center">
+              {isChart ? (
+                <Chart
+                  chartData={chartData || []}
+                  year={date.getFullYear()}
+                  month={date.getMonth() + 1}
+                  selectedDay={selectedDay}
+                  onBarClick={handleDateClick}
+                />
+              ) : (
+                <ChartCalendar
+                  chartData={chartData || []}
+                  date={date}
+                  currentDate={currentDate}
+                  selectedDay={selectedDay}
+                  onDateClick={handleDateClick}
+                />
+              )}
+            </div>
+          </div>
+          <div className="overflow-y-auto max-h-60">
+            <ChartList
+              chartData={chartData || []}
+              listRef={listRef}
+              selectedDay={selectedDay}
+              onListClick={handleDateClick}
+            />
+          </div>
+        </>
       )}
     </div>
   );

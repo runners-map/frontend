@@ -145,93 +145,235 @@
   ],
   "record": [
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
-      "month": 9,
-      "day": 1,
-      "totalDistance": 5
-    },
-    {
-      "user_id": 1,
-      "year": 2024,
-      "month": 9,
-      "day": 3,
-      "totalDistance": 6
-    },
-    {
-      "user_id": 1,
-      "year": 2024,
-      "month": 9,
-      "day": 9,
+      "month": 8,
+      "day": 2,
       "totalDistance": 3.5
     },
     {
-      "user_id": 1,
-      "month": 9,
-      "totalDistance": 10.2,
-      "runninDate": "2024-09-15"
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 3,
+      "totalDistance": 13.2
     },
     {
-      "user_id": 1,
-      "month": 9,
-      "totalDistance": 5.1,
-      "runninDate": "2024-09-19"
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 4,
+      "totalDistance": 10.4
     },
     {
-      "user_id": 1,
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 5,
+      "totalDistance": 6.2
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 6,
+      "totalDistance": 7.8
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 12,
+      "totalDistance": 4.1
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 13,
+      "totalDistance": 10.5
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 14,
+      "totalDistance": 12.1
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 16,
+      "totalDistance": 11.7
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 17,
+      "totalDistance": 9.2
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 19,
+      "totalDistance": 1.8
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 20,
+      "totalDistance": 7.8
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 24,
+      "totalDistance": 6.4
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 28,
+      "totalDistance": 3.9
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 8,
+      "day": 31,
+      "totalDistance": 7.8
+    },
+    {
+      "userId": 1,
       "year": 2024,
       "month": 9,
-      "totalDistance": 3.5,
-      "runninDate": "2024-09-20"
+      "day": 1,
+      "totalDistance": 5.6
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 9,
-      "totalDistance": 4.2,
-      "runninDate": "2024-09-21"
+      "day": 2,
+      "totalDistance": 4.4
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 9,
-      "totalDistance": 8.5,
-      "runninDate": "2024-09-25"
+      "day": 3,
+      "totalDistance": 8.2
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 9,
-      "totalDistance": 12.0,
-      "runninDate": "2024-09-27"
+      "day": 4,
+      "totalDistance": 9.6
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 9,
-      "totalDistance": 4.5,
-      "runninDate": "2024-09-30"
+      "day": 5,
+      "totalDistance": 14.1
     },
     {
-      "user_id": 1,
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 6,
+      "totalDistance": 2.3
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 10,
+      "totalDistance": 6.4
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 11,
+      "totalDistance": 12.2
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 16,
+      "totalDistance": 10.4
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 17,
+      "totalDistance": 8.2
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 18,
+      "totalDistance": 9.6
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 19,
+      "totalDistance": 3.6
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 20,
+      "totalDistance": 12.1
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 22,
+      "totalDistance": 5.7
+    },
+    {
+      "userId": 1,
+      "year": 2024,
+      "month": 9,
+      "day": 25,
+      "totalDistance": 9.3
+    },
+    {
+      "userId": 1,
       "year": 2024,
       "month": 10,
-      "totalDistance": 5.0,
-      "runninDate": "2024-10-01"
+      "day": 1,
+      "totalDistance": 1.2
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 10,
-      "totalDistance": 13.5,
-      "runninDate": "2024-10-02"
+      "day": 3,
+      "totalDistance": 14.8
     },
     {
-      "user_id": 1,
+      "userId": 1,
       "year": 2024,
       "month": 10,
-      "totalDistance": 3.0,
-      "runninDate": "2024-10-03"
+      "day": 8,
+      "totalDistance": 11.3
     }
   ],
   "Comment": [

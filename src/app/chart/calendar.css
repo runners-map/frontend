@@ -1,0 +1,55 @@
+.react-calendar {
+  border: none;
+  font-size: 20px;
+  width: 100%;
+}
+
+.react-calendar__month-view__weekdays abbr {
+  text-decoration: none;
+}
+
+.react-calendar__month-view__days button {
+  border-radius: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__month-view__days button:focus {
+  background-color: rgb(74 0 255) !important;
+  color: white;
+}
+
+.react-calendar__month-view__days button:disabled {
+  background-color: white;
+  color: #ababab;
+}
+
+.react-calendar__month-view__days abbr {
+  padding-top: 3px;
+}
+
+.react-calendar__month-view__days__day--weekend:not(
+    .react-calendar__month-view__days__day--neighboringMonth
+  ) {
+  color: black;
+}
+
+.running-day {
+  background-color: rgb(209 219 255);
+  color: black;
+  font-weight: bold;
+}
+
+.today {
+  border: 3px solid rgb(255 0 211) !important;
+  background-color: rgb(209 219 255);
+  color: black;
+}
+
+.selected-day {
+  background-color: rgb(74 0 255) !important;
+  color: white !important;
+  font-weight: bold;
+}

@@ -7,46 +7,55 @@ import {
   LinearScale,
   BarElement,
   Title,
-  Tooltip,
   Legend,
+  ChartEvent,
+  ActiveElement,
 } from "chart.js";
+import { Record } from "@/types/Record";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Legend);
 
 interface ChartProps {
-  chartData: any[];
+  chartData: Record[];
   year: number;
   month: number;
+  selectedDay: number | null;
+  onBarClick: (day: number) => void;
 }
 
-export default function Chart({ chartData, year, month }: ChartProps) {
+export default function Chart({
+  chartData,
+  year,
+  month,
+  selectedDay,
+  onBarClick,
+}: ChartProps) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}일`);
   const distances = Array(daysInMonth).fill(0);
 
   chartData.forEach((data) => {
-    const date = new Date(data.runninDate);
-    const day = date.getDate();
-    if (date.getMonth() + 1 === month && date.getFullYear() === year) {
+    if (data.year === year && data.month === month) {
+      const day = data.day;
       distances[day - 1] = data.totalDistance;
     }
   });
+
+  const backgroundColors = distances.map((_, index) =>
+    selectedDay === index + 1 ? "rgba(74, 0, 255, 1)" : "rgba(209, 219, 255, 1)"
+  );
+
+  const borderColors = distances.map((_, index) =>
+    selectedDay === index + 1 ? "rgba(74, 0, 255, 1)" : "rgba(209, 219, 255, 1)"
+  );
 
   const data = {
     labels,
     datasets: [
       {
-        label: `${year}년 ${month}월 일별 달린 거리`,
         data: distances,
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
         borderWidth: 1,
       },
     ],
@@ -54,6 +63,12 @@ export default function Chart({ chartData, year, month }: ChartProps) {
 
   const options = {
     responsive: true,
+    onClick: (_event: ChartEvent, elements: ActiveElement[]) => {
+      if (elements.length > 0) {
+        const index = elements[0].index;
+        onBarClick(index + 1);
+      }
+    },
     plugins: {
       legend: {
         display: false,
@@ -68,7 +83,7 @@ export default function Chart({ chartData, year, month }: ChartProps) {
           display: false,
         },
         ticks: {
-          callback: function (value, index, values) {
+          callback: function (_tickValue: string | number, index: number) {
             const day = index + 1;
             if (
               day === 1 ||
@@ -93,8 +108,8 @@ export default function Chart({ chartData, year, month }: ChartProps) {
   };
 
   return (
-    <div>
-      <Bar data={data} options={options} />
-    </div>
+    <>
+      <Bar data={data} options={options} height={250} />
+    </>
   );
 }
