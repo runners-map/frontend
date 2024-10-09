@@ -1,28 +1,54 @@
 'use client';
 
-import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import DatePicker from 'react-datepicker';
 import { Post } from '@/types/Post';
-import 'react-datepicker/dist/react-datepicker.css';
-import { FaRegCalendarAlt } from 'react-icons/fa';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { Controller, useForm } from 'react-hook-form';
+import { FaRegCalendarAlt } from 'react-icons/fa';
 
-export default function PostCreateForm() {
+export default function PostEditForm({ id }: { id: string }) {
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting }
   } = useForm<Post>();
-
+  const [postId, setPostId] = useState<number | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/Post`);
+        const postData = response.data.find((data: Post) => data.postId === parseInt(id));
+        console.log(postData.id);
+
+        if (postData) {
+          setPostId(postData.id);
+          reset({
+            gender: postData.gender,
+            limitMemberCnt: postData.limitMemberCnt,
+            startDateTime: postData.startDateTime ? new Date(postData.startDateTime) : undefined,
+            paceMin: postData.paceMin,
+            paceSec: postData.paceSec,
+            title: postData.title,
+            content: postData.content
+          });
+        }
+      } catch (error) {
+        console.log('Failed to fetch the post data', error);
+      }
+    };
+    fetchPost();
+  }, [id, reset]);
+
   const searchRoute = () => {
-    console.log('searchRoute');
-    router.push('/');
+    console.log('Search Route');
   };
 
-  const onSubmit = (data: Post) => {
+  const onSubmit = async (data: Post) => {
     const { startDateTime } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
@@ -33,7 +59,13 @@ export default function PostCreateForm() {
       startDateTime: formattedDateTime
     };
 
-    console.log(finalData);
+    try {
+      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/Post/${postId}`, finalData);
+      console.log('Post updated successfully:', response.data);
+      router.push(`/chat-list/${id}/post-info`);
+    } catch (error) {
+      console.error('Failed to update the post', error);
+    }
   };
 
   return (
@@ -43,7 +75,6 @@ export default function PostCreateForm() {
         <Controller
           name="gender"
           control={control}
-          defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
             <select
@@ -62,11 +93,12 @@ export default function PostCreateForm() {
           )}
         />
       </div>
+
+      {/* 제한 인원 */}
       <div>
         <Controller
           name="limitMemberCnt"
           control={control}
-          defaultValue={0}
           rules={{ required: true, validate: value => value > 0 }}
           render={({ field }) => (
             <input
@@ -77,20 +109,17 @@ export default function PostCreateForm() {
               }`}
               min={1}
               max={10}
-              value={field.value === 0 ? '' : field.value}
-              onChange={e => field.onChange(Number(e.target.value))}
               placeholder="제한인원 (1~10명)"
             />
           )}
         />
       </div>
 
-      {/* 달릴 날짜 */}
+      {/* 출발 날짜 및 시간 */}
       <div className="flex flex-col items-center justify-center">
         <Controller
           name="startDateTime"
           control={control}
-          defaultValue={undefined}
           rules={{ required: true }}
           render={({ field }) => (
             <>
@@ -98,7 +127,6 @@ export default function PostCreateForm() {
                 selected={field.value}
                 onChange={date => {
                   if (date) {
-                    // 날짜가 null이 아닐 때만 업데이트
                     const hours = field.value ? field.value.getHours() : 0;
                     const minutes = field.value ? field.value.getMinutes() : 0;
                     field.onChange(new Date(date.setHours(hours, minutes)));
@@ -143,16 +171,15 @@ export default function PostCreateForm() {
           )}
         />
       </div>
-
       <button type="button" onClick={searchRoute} className="btn btn-primary">
         경로 설정하기
       </button>
+
       {/* 페이스 */}
       <div className="flex gap-2 items-center justify-center">
         <Controller
           name="paceMin"
           control={control}
-          defaultValue={0}
           rules={{ required: true, validate: value => value >= 1 }}
           render={({ field }) => (
             <input
@@ -163,7 +190,6 @@ export default function PostCreateForm() {
               }`}
               min={1}
               max={59}
-              value={field.value === 0 ? '' : field.value}
               placeholder="페이스(분)"
             />
           )}
@@ -172,7 +198,6 @@ export default function PostCreateForm() {
         <Controller
           name="paceSec"
           control={control}
-          defaultValue={0}
           rules={{ required: true, validate: value => value >= 1 }}
           render={({ field }) => (
             <input
@@ -182,7 +207,6 @@ export default function PostCreateForm() {
                 errors.paceSec ? 'border-red-500 focus:outline-red-500' : ''
               }`}
               placeholder="페이스(초)"
-              value={field.value === 0 ? '' : field.value}
               min={1}
               max={59}
             />
@@ -190,12 +214,12 @@ export default function PostCreateForm() {
         />
         <p>초</p>
       </div>
+
       {/* 제목 */}
       <div className="flex justify-center">
         <Controller
           name="title"
           control={control}
-          defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
             <input
@@ -209,12 +233,12 @@ export default function PostCreateForm() {
           )}
         />
       </div>
+
       {/* 내용 */}
       <div>
         <Controller
           name="content"
           control={control}
-          defaultValue=""
           rules={{ required: true }}
           render={({ field }) => (
             <textarea
@@ -228,8 +252,10 @@ export default function PostCreateForm() {
           )}
         />
       </div>
+
+      {/* 제출 버튼 */}
       <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? '제출 중...' : '제출'}
+        {isSubmitting ? '수정 중...' : '수정'}
       </button>
     </form>
   );

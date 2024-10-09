@@ -1,22 +1,18 @@
 export interface Post {
   postId: number;
-  adminId: string;
+  adminId: number;
   title: string;
   content: string;
   limitMemberCnt: number;
   gender: string;
   startDateTime: Date;
-  startPosition: Date;
+  startPosition: string;
+  swLatlng: number;
+  neLatlng: number;
   distance: number;
   paceMin: number;
   paceSec: number;
   path: string;
-  departureYn: boolean;
-  arriveYn: boolean;
-  lat: number;
-  lng: number;
-  createdDateTime: string;
-  updatedDateTime: string;
 }
 
 export interface GetPostsRequest {

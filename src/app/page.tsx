@@ -1,4 +1,4 @@
-import MapModal from './MapModal';
+import MapModal from '@/components/MapModal';
 
 export const metadata = {
   title: '경로 설정하기'
