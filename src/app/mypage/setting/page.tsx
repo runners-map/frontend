@@ -1,3 +1,9 @@
+"use client";
 export default function SettingPage() {
-  return <div>마이페이지 설정 페이지</div>;
+  return (
+    <>
+      <h1>설정 페이지</h1>
+      <></>
+    </>
+  );
 }
