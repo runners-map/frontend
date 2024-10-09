@@ -2,7 +2,7 @@ import { Ranking } from "@/types/Ranking";
 
 export default async function RankingPage() {
   const currentMonth = new Date().getMonth() + 1;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Ranking`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ranking`);
   const rankingList: Ranking[] = await res.json();
 
   return (
@@ -25,7 +25,7 @@ export default async function RankingPage() {
             }`}
           >
             <span
-              className={`rank font-semibold w-10 ${
+              className={`font-semibold basis-1/4 ${
                 ranking.rank <= 3 ? "text-3xl" : "text-lg"
               }`}
             >
@@ -37,10 +37,10 @@ export default async function RankingPage() {
                 ? "🥉"
                 : `${ranking.rank} 위`}
             </span>
-            <span className="nickname text-lg flex-1 text-center">
+            <span className="text-lg basis-2/4 text-center">
               {ranking.nicknName}
             </span>
-            <span className="distance text-gray-600 w-16 text-right">
+            <span className="text-gray-600 basis-1/4 text-right">
               {ranking.total_distance} km
             </span>
           </li>
