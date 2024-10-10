@@ -2,8 +2,9 @@ import Header from '@/components/Header';
 import { ChatRoom, Participant } from '@/types/ChatRoom';
 import { FaUser, FaUsers, FaTransgender, FaClock, FaMapMarkerAlt, FaRoad, FaRunning } from 'react-icons/fa';
 import axios from 'axios';
+import EditButton from './EditButton';
 
-const getChatList = async () => {
+export const getChatList = async () => {
   await new Promise(resolve => setTimeout(resolve, 1000));
   const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/ChatRoom`);
   return response.data;
@@ -30,7 +31,10 @@ export default async function PostInfoPage({ params: { id } }: { params: { id: s
       </header>
       <main className="flex-1 p-6 bg-white shadow-lg rounded-md mx-4 mt-4">
         <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">채팅방 정보</h2>
+          <div className="flex items-center">
+            <h2 className="text-2xl font-semibold mb-4 mr-4">채팅방 정보</h2>
+            <EditButton id={id} />
+          </div>
           <p className="text-lg flex items-center mb-2">
             <FaUser className="mr-2 text-green-500" />
             방장: <span className="font-bold">{chatRoom.adminNickname}</span>
