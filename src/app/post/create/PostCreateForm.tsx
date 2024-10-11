@@ -19,7 +19,7 @@ export default function PostCreateForm() {
 
   const searchRoute = () => {
     console.log('searchRoute');
-    router.push('/');
+    router.push('/post/create/searchRoute');
   };
 
   const onSubmit = (data: Post) => {
@@ -55,9 +55,9 @@ export default function PostCreateForm() {
               <option value="" disabled>
                 성별을 골라주세요
               </option>
-              <option value="All">All</option>
-              <option value="M">M</option>
-              <option value="F">F</option>
+              <option value="null">전체</option>
+              <option value="M">남자</option>
+              <option value="F">여자</option>
             </select>
           )}
         />
