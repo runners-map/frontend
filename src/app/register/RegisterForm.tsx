@@ -36,7 +36,7 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card-body space-y-6">
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2">
+              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="email"
                   control={control}
@@ -62,26 +62,13 @@ const RegisterForm = () => {
                 />
               </label>
               {errors.email && (
-                <div role="alert" className="alert alert-error">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 shrink-0 stroke-current"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                  <span>{errors.email.message}</span>
-                </div>
+                <span className="text-red-500 absolute">
+                  {errors.email.message}
+                </span>
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2">
+              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="password"
                   control={control}
@@ -106,11 +93,13 @@ const RegisterForm = () => {
                 />
               </label>
               {errors.password && (
-                <span className="text-red-500">{errors.password.message}</span>
+                <span className="text-red-500 absolute">
+                  {errors.password.message}
+                </span>
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2">
+              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="confirmPassword"
                   control={control}
@@ -133,13 +122,13 @@ const RegisterForm = () => {
                 />
               </label>
               {errors.confirmPassword && (
-                <span className="text-red-500">
+                <span className="text-red-500 absolute">
                   {errors.confirmPassword.message}
                 </span>
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2">
+              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="nickname"
                   control={control}
@@ -164,13 +153,15 @@ const RegisterForm = () => {
                 />
               </label>
               {errors.nickname && (
-                <span className="text-red-500">{errors.nickname.message}</span>
+                <span className="text-red-500 absolute">
+                  {errors.nickname.message}
+                </span>
               )}
             </div>
             <div>
-              <div className="flex items-center border border-primary rounded-lg px-4 h-12">
+              <div className="flex items-center border border-primary rounded-lg px-4 h-12 mb-1 gap-2">
                 <PiGenderIntersexBold className="opacity-70" size={20} />
-                {/* <span className="opacity-50">성별</span> */}
+                <span className="opacity-50">성별</span>
                 <Controller
                   name="gender"
                   control={control}
@@ -208,14 +199,16 @@ const RegisterForm = () => {
                 />
               </div>
               {errors.gender && (
-                <span className="text-red-500">{errors.gender.message}</span>
+                <span className="text-red-500 absolute">
+                  {errors.gender.message}
+                </span>
               )}
             </div>
 
             <div className="card-actions">
               <button
                 type="submit"
-                className="btn btn-outline btn-primary w-full mt-4"
+                className="btn btn-primary w-full text-base text-white"
               >
                 가입하기
               </button>
