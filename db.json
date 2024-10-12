@@ -2,7 +2,8 @@
   "OAuth": [
     {
       "Key": "abcdef123456",
-      "Type": "Bearer"
+      "Type": "Bearer",
+      "id": "7475"
     }
   ],
   "Notification": [
@@ -10,7 +11,8 @@
       "notification_id": 1,
       "user_id": 1,
       "content": "러닝 1시간 전입니다. 늦지 않게 참여해주세요",
-      "notification_time": "2024-09-26T12:00:00"
+      "notification_time": "2024-09-26T12:00:00",
+      "id": "e903"
     }
   ],
   "users": [
@@ -19,39 +21,72 @@
       "nickname": "Danielle",
       "gender": "F",
       "email": "danielle@ador.com"
+    },
+    {
+      "user_id": 1,
+      "nickname": "러너스하이",
+      "gender": "M",
+      "pace_min": 5,
+      "pace_sec": 30,
+      "created_at": "2024-09-25T10:00:00",
+      "updated_at": "2024-09-25T10:00:00",
+      "custom_time": "2024-09-25T11:00:00",
+      "total_distance": 50.5,
+      "id": "7af2"
+    },
+    {
+      "user_id": 2,
+      "nickname": "피닉스러너",
+      "gender": "F",
+      "pace_min": 6,
+      "pace_sec": 45,
+      "created_at": "2024-09-25T10:30:00",
+      "updated_at": "2024-09-25T10:30:00",
+      "custom_time": "2024-09-25T11:30:00",
+      "total_distance": 80,
+      "id": "451a"
     }
   ],
   "ChatRoom": [
     {
-      "postId": 6,
+      "postId": 1,
       "chatRoomId": 1,
       "adminId": 436,
       "adminNickname": "김제로",
-      "title": "저랑 달리실 분~",
-      "content": "가볍게 달려요",
+      "title": "오늘 달리실 분",
+      "content": "같이 달려요",
       "limitMemberCnt": 5,
       "gender": "F",
-      "startTime": "2024-09-25T08:00:00",
+      "startTime": "2024-10-04T19:00:00",
       "startPosition": "(33.450936, 126.569477)",
-      "distance": 5,
-      "paceMin": 9,
-      "paceSec": 0,
+      "distance": 2,
+      "paceMin": 1,
+      "paceSec": 10,
       "memberCnt": 3,
       "createdAt": "2024-09-24T08:00:00",
       "participants": [
-        { "userId": 1234, "nickname": "나나" },
-        { "userId": 3456, "nickname": "다다" }
+        {
+          "userId": 1234,
+          "nickname": "나나"
+        },
+        {
+          "userId": 3456,
+          "nickname": "다다"
+        }
       ],
       "departureYn": "true",
-      "arriveYn": "false"
+      "arriveYn": "false",
+      "id": "47a0"
     },
     {
       "chatRoomId": 2,
-      "title": "남산 둘레길 같이 달려요~"
+      "title": "남산 둘레길 같이 달려요~",
+      "id": "9d6c"
     },
     {
       "chatRoomId": 3,
-      "title": "러닝 같이 할 사람~~"
+      "title": "러닝 같이 할 사람~~",
+      "id": "e705"
     }
   ],
   "ChatMessage": [
@@ -60,28 +95,27 @@
       "user_id": 1,
       "chat_room_id": 1,
       "message": "안녕하세요!",
-      "sent_at": "2024-09-26T14:00:00"
+      "sent_at": "2024-09-26T14:00:00",
+      "id": "0a1d"
     }
   ],
   "Post": [
     {
-      "post_id": 1,
-      "admin_id": 1,
-      "content": "남산 둘레길 같이 달려요~",
-      "limit_member_cnt": 3,
-      "gender": null,
-      "start_time": "2024-09-26T09:00:00",
-      "start_place": "",
-      "distance": 5,
-      "pace_min": 6,
-      "pace_sec": 20,
-      "route": "Park Loop",
-      "lat": 37.5665,
-      "lng": 126.978,
-      "departure_yn": true,
-      "arrive_yn": false,
-      "created_at": "2024-09-25T08:00:00",
-      "updated_at": "2024-09-25T08:30:00"
+      "postId": 1,
+      "adminId": 1,
+      "title": "오늘 달리실 분",
+      "content": "같이 달려요",
+      "limitMemberCnt": "5",
+      "gender": "F",
+      "startDateTime": "2024-10-04T19:00:00",
+      "startPosition": "(33.450936, 126.569477)",
+      "swLatlng": 33.450936,
+      "neLatlng": 126.569477,
+      "distance": 2,
+      "paceMin": 1,
+      "paceSec": 20,
+      "path": "(33.452344169439975, 126.56878163224233),(33.452739313807456, 126.5709308145358),(33.45178067090639, 126.572688693875)",
+      "id": "bd2a"
     }
   ],
   "ranking": [
@@ -89,61 +123,71 @@
       "rank": 1,
       "userId": 1,
       "nicknName": "러너스하이",
-      "total_distance": 32
+      "total_distance": 32,
+      "id": "b365"
     },
     {
       "rank": 2,
       "userId": 2,
       "nicknName": "minji_k",
-      "total_distance": 30.5
+      "total_distance": 30.5,
+      "id": "55e5"
     },
     {
       "rank": 3,
       "userId": 3,
       "nicknName": "김제로",
-      "total_distance": 29.3
+      "total_distance": 29.3,
+      "id": "e5f7"
     },
     {
       "rank": 4,
       "userId": 4,
       "nicknName": "혠이",
-      "total_distance": 28
+      "total_distance": 28,
+      "id": "5964"
     },
     {
       "rank": 5,
       "userId": 5,
       "nicknName": "Danielle",
-      "total_distance": 26
+      "total_distance": 26,
+      "id": "d073"
     },
     {
       "rank": 6,
       "userId": 6,
       "nicknName": "피닉스러너",
-      "total_distance": 25
+      "total_distance": 25,
+      "id": "bf1e"
     },
     {
       "rank": 7,
       "userId": 7,
       "nicknName": "Hanni_P",
-      "total_distance": 24.3
+      "total_distance": 24.3,
+      "id": "b4b0"
     },
     {
       "rank": 8,
       "userId": 8,
       "nicknName": "러닝버니",
-      "total_distance": 23
+      "total_distance": 23,
+      "id": "bc3e"
     },
     {
       "rank": 9,
       "userId": 9,
       "nicknName": "새청바지",
-      "total_distance": 20
+      "total_distance": 20,
+      "id": "18f1"
     },
     {
       "rank": 10,
       "userId": 10,
       "nicknName": "hr_the_cat",
-      "total_distance": 15.5
+      "total_distance": 15.5,
+      "id": "34b7"
     }
   ],
   "record": [
@@ -384,7 +428,8 @@
       "like_id": 1,
       "review_id": 1,
       "user_id": 1,
-      "content": "Great run!"
+      "content": "Great run!",
+      "id": "6174"
     }
   ],
   "Photo": [
@@ -393,14 +438,16 @@
       "post_id": 1,
       "photo_url": "http://fakeimg.pl/400x300/?text=Photo",
       "created_at": "2024-09-26T10:00:00",
-      "updated_at": "2024-09-26T11:00:00"
+      "updated_at": "2024-09-26T11:00:00",
+      "id": "0a2c"
     }
   ],
   "GroupUser": [
     {
       "user_id": 1,
       "post_id": 1,
-      "valid_yn": true
+      "valid_yn": true,
+      "id": "fc95"
     }
   ]
 }

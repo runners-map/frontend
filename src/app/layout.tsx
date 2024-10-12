@@ -1,8 +1,8 @@
-"use client";
-import "./globals.css";
-import Navigation from "@/components/Navigation";
-import { usePathname } from "next/navigation";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+'use client';
+import './globals.css';
+import Navigation from '@/components/Navigation';
+import { usePathname } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
@@ -17,9 +17,9 @@ export default function RootLayout({
 
   return (
     <html lang="ko" className="bg-gray-200">
-      <body className="max-w-md mx-auto min-h-screen bg-white">
+      <body className="max-w-md mx-auto min-h-screen relative bg-white">
         <QueryClientProvider client={queryClient}>
-          <main className="pb-16">{children}</main>
+          {children}
           {!hideNav && <Navigation />}
         </QueryClientProvider>
       </body>

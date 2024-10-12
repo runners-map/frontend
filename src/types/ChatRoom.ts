@@ -12,7 +12,7 @@ export interface ChatRoom {
   content: string;
   limitMemberCnt: number;
   gender: string;
-  startTime: string;
+  startTime: Date;
   startPosition: string;
   distance: number;
   paceMin: number;

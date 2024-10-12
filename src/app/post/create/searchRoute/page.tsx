@@ -1,17 +1,15 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import MapModal from '@/components/MapModal';
-import Map from '../components/Map';
+import Map from '../../../../components/Map';
 
 export const metadata = {
-  title: "Runner's Map"
+  title: '경로 설정하기'
 };
 
-export default function MapPage() {
+export default function SearchRoute() {
   return (
     <>
       <script src={process.env.TMAP_API_KEY}></script>
       <Map />
-      <MapModal />
     </>
   );
 }
