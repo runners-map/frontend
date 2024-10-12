@@ -15,9 +15,15 @@
       "id": "e903"
     }
   ],
-  "User": [
+  "users": [
     {
-      "user_id": 1,
+      "userId": 1,
+      "nickname": "Danielle",
+      "gender": "F",
+      "email": "danielle@ador.com"
+    },
+    {
+      "user_id": 2,
       "nickname": "러너스하이",
       "gender": "M",
       "pace_min": 5,
@@ -29,7 +35,7 @@
       "id": "7af2"
     },
     {
-      "user_id": 2,
+      "user_id": 3,
       "nickname": "피닉스러너",
       "gender": "F",
       "pace_min": 6,

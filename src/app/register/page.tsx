@@ -6,13 +6,9 @@ export const metadata = {
 
 export default function RegisterPage() {
   return (
-    <>
-      <h1>
-        Runners&apos; Map에 오신걸 환영합니다.
-        <br />
-        아래 정보를 기입해 주세요.
-      </h1>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-8 text-center">회원 가입</h1>
       <RegisterForm />
-    </>
+    </div>
   );
 }
