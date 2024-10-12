@@ -16,19 +16,12 @@ const RegisterForm = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      nickname: "",
-      gender: "",
-    },
-  });
+  } = useForm<RegisterFormData>();
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     console.log(data);
   };
+
   const password = watch("password");
   return (
     <>
