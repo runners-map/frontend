@@ -10,13 +10,21 @@ import {
 import { PiGenderIntersexBold } from "react-icons/pi";
 import { RegisterFormData } from "@/types/ResisterForm";
 
-const RegisterForm = () => {
+export default function RegisterForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<RegisterFormData>();
+  } = useForm<RegisterFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      nickname: "",
+      gender: "",
+    },
+  });
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     console.log(data);
@@ -211,6 +219,4 @@ const RegisterForm = () => {
       </div>
     </>
   );
-};
-
-export default RegisterForm;
+}

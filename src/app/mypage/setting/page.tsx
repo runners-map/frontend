@@ -1,9 +1,12 @@
 "use client";
+
+import SettingForm from "./SettingForm";
+
 export default function SettingPage() {
   return (
-    <>
-      <h1>설정 페이지</h1>
-      <></>
-    </>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-8 text-center">내 정보 변경</h1>
+      <SettingForm />
+    </div>
   );
 }

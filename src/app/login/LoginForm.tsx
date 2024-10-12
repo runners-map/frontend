@@ -10,7 +10,12 @@ export default function LoginForm() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<LoginFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     console.log(data);
