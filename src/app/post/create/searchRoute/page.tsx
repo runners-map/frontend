@@ -8,6 +8,7 @@ export const metadata = {
 export default function SearchRoute() {
   return (
     <>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src={process.env.TMAP_API_KEY}></script>
       <Map />
     </>

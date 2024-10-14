@@ -29,7 +29,7 @@ export default function ChatRoomContainer() {
       {/* 채팅 메시지 영역 */}
       <div className="flex-grow mb-4 space-y-2 overflow-y-auto p-4">
         {messages.map((message, index) => (
-          <div key={index} className="chat chat-start">
+          <div key={index} className="chat chat-end">
             <div className="chat-bubble bg-green-500 text-white rounded-lg p-2 max-w-[80%] break-words">{message}</div>
           </div>
         ))}
