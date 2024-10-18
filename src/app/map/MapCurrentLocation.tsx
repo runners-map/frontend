@@ -28,7 +28,7 @@ export default function MapCurrentLocation({ setQueryParams, map }) {
     <>
       <button
         onClick={getCurrentLocation}
-        className="absolute bottom-24 left-5 z-10 bg-white rounded-full w-10 h-10 flex justify-center items-center"
+        className="bg-white rounded-full w-10 h-10 flex justify-center items-center text-primary"
       >
         <BiCurrentLocation size={30} />
       </button>

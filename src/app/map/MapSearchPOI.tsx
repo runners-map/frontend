@@ -5,11 +5,18 @@ import { HiMagnifyingGlass, HiOutlineXCircle } from "react-icons/hi2";
 import axios from "axios";
 import { useState } from "react";
 
-export default function MapSearchPOI({ setQueryParams, map }) {
+export default function MapSearchPOI({
+  setQueryParams,
+  map,
+  poiMarkerArr,
+  setPoiMarkerArr,
+  poiSearchData,
+  setPoiSearchData,
+  isPoiSearched,
+  setIsPoiSearched,
+  createMarkerIcon,
+}) {
   const { control, handleSubmit } = useForm();
-  const [isSearched, setIsSearched] = useState(false);
-  const [searchData, setSearchData] = useState(null);
-  const [markerArr, setMarkerArr] = useState([]);
 
   const handleSearchPOI = async (searchKeyword) => {
     try {
@@ -31,7 +38,7 @@ export default function MapSearchPOI({ setQueryParams, map }) {
       );
 
       const resultpoisData = response.data.searchPoiInfo.pois.poi;
-      setSearchData(resultpoisData);
+      setPoiSearchData(resultpoisData);
 
       const positionBounds = new Tmapv2.LatLngBounds();
 
@@ -45,13 +52,13 @@ export default function MapSearchPOI({ setQueryParams, map }) {
 
         const marker = new Tmapv2.Marker({
           position: markerPosition,
-          icon: "https://cdn-icons-png.flaticon.com/512/2776/2776067.png",
-          iconSize: new Tmapv2.Size(24, 38),
+          icon: createMarkerIcon(String(parseInt(k) + 1), "poi"),
+          iconSize: new Tmapv2.Size(40, 40),
           title: name,
           map: map,
         });
 
-        setMarkerArr((prevArr) => [...prevArr, marker]);
+        setPoiMarkerArr((prevArr) => [...prevArr, marker]);
         positionBounds.extend(markerPosition);
       }
 
@@ -61,8 +68,8 @@ export default function MapSearchPOI({ setQueryParams, map }) {
       const center = positionBounds.getCenter();
       setQueryParams((prevParams) => ({
         ...prevParams,
-        centerLat: center._lat,
-        centerLng: center._lng,
+        centerLat: parseFloat(center._lat), // 문자열을 float으로 변환
+        centerLng: parseFloat(center._lng), // 문자열을 float으로 변환
       }));
     } catch (error) {
       console.error("Error:", error.response?.status, error.response?.data);
@@ -71,27 +78,21 @@ export default function MapSearchPOI({ setQueryParams, map }) {
 
   const onSubmit = async (data) => {
     await handleSearchPOI(data.searchKeyword);
-    setIsSearched(true);
+    setIsPoiSearched(true);
+    const targetElement = document.getElementById("item1");
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSearchReset = () => {
     console.log("리셋 눌림");
-    setIsSearched(false);
-    markerArr.forEach((marker) => {
+    setIsPoiSearched(false);
+    poiMarkerArr.forEach((marker) => {
       marker.setMap(null);
       console.log("마커 제거");
     });
-    setMarkerArr([]);
-  };
-
-  const handleClickList = (lat, lng) => {
-    setQueryParams((prevParams) => ({
-      ...prevParams,
-      centerLat: lat,
-      centerLng: lng,
-    }));
-    map.setCenter(new Tmapv2.LatLng(lat, lng));
-    map.setZoom(15);
+    setPoiMarkerArr([]);
   };
 
   return (
@@ -115,7 +116,7 @@ export default function MapSearchPOI({ setQueryParams, map }) {
               <button type="submit" className="text-primary">
                 <HiMagnifyingGlass size={20} style={{ strokeWidth: 1.5 }} />
               </button>
-              {isSearched && (
+              {isPoiSearched && (
                 <button
                   type="button"
                   onClick={handleSearchReset}
@@ -128,24 +129,6 @@ export default function MapSearchPOI({ setQueryParams, map }) {
           )}
         />
       </form>
-
-      {isSearched && (
-        <div className="w-full h-20 bg-white absolute bottom-20 overflow-y-scroll">
-          <ul>
-            {searchData?.map((item) => (
-              <li key={item.name}>
-                <div
-                  onClick={() => handleClickList(item.noorLat, item.noorLon)}
-                  className="border-2"
-                >
-                  <div>{item.name}</div>
-                  <div>{item.newAddressList.newAddress[0].fullAddressRoad}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </>
   );
 }

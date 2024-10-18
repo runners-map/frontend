@@ -57,7 +57,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
 
   return (
     <>
-      <button className="text-primary w-10 h-10 rounded-full absolute bottom-28 right-5 bg-white flex justify-center items-center">
+      <button className="text-primary w-10 h-10 rounded-full bg-white flex justify-center items-center">
         <HiOutlineFunnel
           size={30}
           style={{ strokeWidth: 2 }}
