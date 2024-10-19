@@ -3,7 +3,6 @@
 import { Controller, useForm } from "react-hook-form";
 import { HiMagnifyingGlass, HiOutlineXCircle } from "react-icons/hi2";
 import axios from "axios";
-import { useState } from "react";
 
 export default function MapSearchPOI({
   setQueryParams,

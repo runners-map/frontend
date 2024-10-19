@@ -107,7 +107,8 @@
       "gender": "M",
       "title": "남산 공원 러닝",
       "content": "남산 공원에서 아침 러닝 하실 분 구해요.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 2,
@@ -116,7 +117,8 @@
       "gender": "F",
       "title": "서울역 출발 러닝",
       "content": "서울역에서 출발하는 저녁 러닝 모집합니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 3,
@@ -125,7 +127,8 @@
       "gender": "M",
       "title": "덕수궁 러닝",
       "content": "덕수궁 근처에서 가볍게 러닝해요.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 4,
@@ -134,7 +137,8 @@
       "gender": "F",
       "title": "광화문 주변 러닝",
       "content": "광화문 주변에서 아침 러닝 모집합니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 5,
@@ -143,7 +147,8 @@
       "gender": "M",
       "title": "청계천 러닝",
       "content": "청계천을 따라 러닝할 사람 구해요.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 6,
@@ -152,7 +157,8 @@
       "gender": "F",
       "title": "명동 근처 러닝",
       "content": "명동 근처에서 저녁에 함께 달리실 분 구합니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 7,
@@ -161,7 +167,9 @@
       "gender": "M",
       "title": "서울역 근처 러닝",
       "content": "서울역 근처에서 주말 러닝 모집합니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": true,
+      "photo_url": "https://dispatch.cdnser.be/cms-content/uploads/2022/04/02/7c200727-8008-4ca7-bca6-720fac79e799.png"
     },
     {
       "postId": 8,
@@ -170,7 +178,9 @@
       "gender": "F",
       "title": "덕수궁 달리기",
       "content": "덕수궁 근처에서 아침 러닝 하실 분 찾습니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": true,
+      "photo_url": "https://dispatch.cdnser.be/cms-content/uploads/2022/04/02/7ee71752-aea3-4abf-93db-5a63b2f72809.jpg"
     },
     {
       "postId": 9,
@@ -179,7 +189,9 @@
       "gender": "M",
       "title": "종로구 달리기",
       "content": "종로구에서 달리실 분 구합니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": true,
+      "photo_url": "https://mydaily.co.kr/photos/2022/10/17/2022101709453179891_l.jpg"
     },
     {
       "postId": 10,
@@ -188,7 +200,8 @@
       "gender": "F",
       "title": "숭례문 러닝",
       "content": "숭례문 주변에서 저녁 러닝 모임을 갖습니다.",
-      "limitMemberCnt": 5
+      "limitMemberCnt": 5,
+      "arriveYn": false
     },
     {
       "postId": 11,

@@ -3,8 +3,9 @@ export default function MapPostList({
   setQueryParams,
   map,
   createMarkerIcon,
+  setSelectedPost,
 }) {
-  const handleClickList = (lat, lng) => {
+  const handleClickList = (lat, lng, post) => {
     setQueryParams((prevParams) => ({
       ...prevParams,
       centerLat: parseFloat(lat),
@@ -12,18 +13,26 @@ export default function MapPostList({
     }));
     map.setCenter(new Tmapv2.LatLng(lat, lng));
     map.setZoom(15);
+    const targetElement = document.getElementById("item3");
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: "smooth" });
+    }
+    setSelectedPost(post);
   };
   return (
     <>
-      <ul className="w-full divide-y divide-gray-300">
+      <ul className="divide-y divide-gray-300 w-full">
         {postData?.map((item, index) => (
           <li key={item.postId}>
             <div
-              onClick={() => handleClickList(item.lat, item.lng)}
+              onClick={() => handleClickList(item.lat, item.lng, item)}
               className="flex items-center p-2"
             >
               <img
-                src={createMarkerIcon(index + 1, "post")} // 마커 이미지를 리스트 항목에 표시
+                src={createMarkerIcon(
+                  index + 1,
+                  item.arriveYn ? "review" : "post"
+                )} // 마커 이미지를 리스트 항목에 표시
                 alt={`marker-${index + 1}`}
                 className="w-8 h-8 mr-2"
               />

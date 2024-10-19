@@ -1,15 +1,15 @@
 "use client";
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 import MapSearchPOI from "@/app/map/MapSearchPOI";
 import MapFilter from "@/app/map/MapFilter";
 import MapCurrentLocation from "@/app/map/MapCurrentLocation";
 import MapPostList from "@/app/map/MapPostList";
 import MapPOIList from "@/app/map/MapPOIList";
-import MapPostPopup from "@/app/map/MapPostPopup";
-import axios from "axios";
+import MapPostDetails from "./MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
-import ReactDOMServer from "react-dom/server";
+import { LuPencilLine } from "react-icons/lu";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
@@ -35,6 +35,8 @@ export default function MapContainer() {
 
   const [postData, setPostData] = useState(null);
   const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker | null>([]);
+
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     if (window.Tmapv2) {
@@ -122,34 +124,25 @@ export default function MapContainer() {
 
           const marker = new Tmapv2.Marker({
             position: markerPosition,
-            icon: createMarkerIcon(index + 1, "post"), // 마커 아이콘
-            iconSize: new Tmapv2.Size(40, 40), // 아이콘 크기
-            title: markerData.title, // 마커의 제목 (POST의 제목)
-            map: map, // 기존 맵 인스턴스
+            icon: createMarkerIcon(
+              index + 1,
+              markerData.arriveYn ? "review" : "post"
+            ),
+            iconSize: new Tmapv2.Size(40, 40),
+            title: markerData.title,
+            map: map,
           });
 
-          marker.addListener("click", function () {
-            console.log("클릭됨");
-            infoWindow.setVisible(true);
+          marker.addListener("touchstart", function () {
+            setSelectedPost(markerData);
+            setIsListVisible(true);
+            const targetElement = document.getElementById("item3");
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }
           });
 
           setPostMarkerArr((prevArr) => [...prevArr, marker]);
-          console.log(postMarkerArr);
-
-          // map.addListener("click", function () {
-          //   infoWindow.setVisible(false);
-          // });
-
-          const content = ReactDOMServer.renderToString(<MapPostPopup />);
-
-          const infoWindow = new Tmapv2.InfoWindow({
-            position: markerPosition, //Popup 이 표출될 맵 좌표
-            content: content, //Popup 표시될 text
-            border: "0px solid #FF0000", //Popup의 테두리 border 설정.
-            type: 2, //Popup의 type 설정.
-            map: map, //Popup이 표시될 맵 객체
-          });
-          infoWindow.setVisible(false);
         });
       }
     } catch (error) {
@@ -220,28 +213,35 @@ export default function MapContainer() {
           isListVisible ? "translate-y-0" : "translate-y-80"
         }`}
       >
-        <div className="flex w-full justify-between items-center px-3">
-          <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
-          <button
-            className="btn bg-white text-primary h-10"
-            onClick={toggleVisibility}
-          >
-            {isListVisible ? (
-              <>
-                <HiMiniChevronDown size={20} style={{ strokeWidth: 1.5 }} />
-                목록 숨기기
-              </>
-            ) : (
-              <>
-                <HiMiniChevronUp size={20} style={{ strokeWidth: 1.5 }} />
-                목록 보기
-              </>
-            )}
-          </button>
-          <MapFilter
-            queryParams={queryParams}
-            setQueryParams={setQueryParams}
-          />
+        <div className="px-3">
+          <div className="flex justify-end">
+            <button className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full">
+              <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
+            </button>
+          </div>
+          <div className="flex w-full justify-between items-center ">
+            <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
+            <button
+              className="btn bg-white text-primary h-10"
+              onClick={toggleVisibility}
+            >
+              {isListVisible ? (
+                <>
+                  <HiMiniChevronDown size={20} style={{ strokeWidth: 1.5 }} />
+                  목록 숨기기
+                </>
+              ) : (
+                <>
+                  <HiMiniChevronUp size={20} style={{ strokeWidth: 1.5 }} />
+                  목록 보기
+                </>
+              )}
+            </button>
+            <MapFilter
+              queryParams={queryParams}
+              setQueryParams={setQueryParams}
+            />
+          </div>
         </div>
 
         <div className="carousel carousel-center w-full h-72 space-x-1 px-4">
@@ -262,15 +262,24 @@ export default function MapContainer() {
               )}
               <div
                 id="item2"
-                className="carousel-item w-full bg-white border-2 border-primary rounded-xl  overflow-y-auto"
+                className="carousel-item w-full bg-white border-2 border-primary rounded-xl overflow-y-auto"
               >
                 <MapPostList
                   postData={postData}
                   setQueryParams={setQueryParams}
                   map={map}
                   createMarkerIcon={createMarkerIcon}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
+              {selectedPost && (
+                <div
+                  id="item3"
+                  className="carousel-item w-full bg-white border-2 border-primary rounded-xl"
+                >
+                  <MapPostDetails post={selectedPost} />
+                </div>
+              )}
             </>
           )}
         </div>
