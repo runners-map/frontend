@@ -6,8 +6,10 @@ import MapFilter from "@/app/map/MapFilter";
 import MapCurrentLocation from "@/app/map/MapCurrentLocation";
 import MapPostList from "@/app/map/MapPostList";
 import MapPOIList from "@/app/map/MapPOIList";
+import MapPostPopup from "@/app/map/MapPostPopup";
 import axios from "axios";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
+import ReactDOMServer from "react-dom/server";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
@@ -28,11 +30,11 @@ export default function MapContainer() {
   const [isListVisible, setIsListVisible] = useState(true);
 
   const [poiSearchData, setPoiSearchData] = useState(null);
-  const [poiMarkerArr, setPoiMarkerArr] = useState([]);
+  const [poiMarkerArr, setPoiMarkerArr] = useState<Tmapv2.Marker | null>([]);
   const [isPoiSearched, setIsPoiSearched] = useState(false);
 
   const [postData, setPostData] = useState(null);
-  const [postMarkerArr, setPostMarkerArr] = useState([]);
+  const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker | null>([]);
 
   useEffect(() => {
     if (window.Tmapv2) {
@@ -44,9 +46,7 @@ export default function MapContainer() {
         httpsMode: true,
       });
 
-      newMap.addListener("dragstart", function () {
-        // setIsListVisible(false);
-      });
+      newMap.addListener("dragstart", function () {});
 
       newMap.addListener("dragend", function () {
         const center = newMap.getCenter();
@@ -67,6 +67,11 @@ export default function MapContainer() {
   }, []);
 
   const searchPosts = async () => {
+    if (postMarkerArr.length > 0) {
+      postMarkerArr.forEach((marker) => marker.setMap(null)); // 모든 마커 삭제
+      setPostMarkerArr([]); // 배열 초기화
+    }
+
     const params = {
       lat_gte: queryParams.centerLat - 1 / 111, // 중심 위도에서 1km 남쪽
       lat_lte: queryParams.centerLat + 1 / 111, // 중심 위도에서 1km 북쪽
@@ -108,13 +113,45 @@ export default function MapContainer() {
       console.log("필터링된 결과", filteredPosts);
       setPostData(filteredPosts);
 
-      const markers = filteredPosts.map((post) => {
-        return {
-          position: { lat: parseFloat(post.lat), lng: parseFloat(post.lng) },
-          title: post.title,
-        };
-      });
-      setPostMarkerArr(markers);
+      if (filteredPosts.length > 0) {
+        filteredPosts.forEach((markerData, index) => {
+          const markerPosition = new Tmapv2.LatLng(
+            markerData.lat,
+            markerData.lng
+          );
+
+          const marker = new Tmapv2.Marker({
+            position: markerPosition,
+            icon: createMarkerIcon(index + 1, "post"), // 마커 아이콘
+            iconSize: new Tmapv2.Size(40, 40), // 아이콘 크기
+            title: markerData.title, // 마커의 제목 (POST의 제목)
+            map: map, // 기존 맵 인스턴스
+          });
+
+          marker.addListener("click", function () {
+            console.log("클릭됨");
+            infoWindow.setVisible(true);
+          });
+
+          setPostMarkerArr((prevArr) => [...prevArr, marker]);
+          console.log(postMarkerArr);
+
+          // map.addListener("click", function () {
+          //   infoWindow.setVisible(false);
+          // });
+
+          const content = ReactDOMServer.renderToString(<MapPostPopup />);
+
+          const infoWindow = new Tmapv2.InfoWindow({
+            position: markerPosition, //Popup 이 표출될 맵 좌표
+            content: content, //Popup 표시될 text
+            border: "0px solid #FF0000", //Popup의 테두리 border 설정.
+            type: 2, //Popup의 type 설정.
+            map: map, //Popup이 표시될 맵 객체
+          });
+          infoWindow.setVisible(false);
+        });
+      }
     } catch (error) {
       console.error("데이터 가져오기 실패", error);
     }
@@ -152,28 +189,6 @@ export default function MapContainer() {
 
   useEffect(() => {
     searchPosts();
-    if (postMarkerArr.length > 0) {
-      // POST 마커 배열을 순회하며 각 마커를 지도에 그리기
-      postMarkerArr.forEach((markerData, index) => {
-        const markerPosition = new Tmapv2.LatLng(
-          markerData.position.lat,
-          markerData.position.lng
-        );
-
-        const marker = new Tmapv2.Marker({
-          position: markerPosition,
-          icon: createMarkerIcon(index + 1, "post"), // 마커 아이콘
-          iconSize: new Tmapv2.Size(40, 40), // 아이콘 크기
-          title: markerData.title, // 마커의 제목 (POST의 제목)
-          map: map, // 기존 맵 인스턴스
-        });
-
-        // 마커를 배열에 추가 (선택사항)
-        setPostMarkerArr((prevArr) => [...prevArr, marker]);
-
-        // 마커가 포함된 영역을 확장 (지도에 여러 마커가 있을 때)
-      });
-    }
   }, [queryParams]);
 
   useEffect(() => {
