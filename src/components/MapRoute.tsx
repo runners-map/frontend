@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import { ReactElement, useEffect, useState } from 'react';
+"use client";
+import { ReactElement, useEffect, useState } from "react";
 
-export default function Map() {
+export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
 
   useEffect(() => {
-    const map = new Tmapv2.Map('map_div', {
+    const map = new Tmapv2.Map("map_div", {
       center: new Tmapv2.LatLng(37.567439753187976, 126.98903560638469),
-      width: '100%',
-      height: '100vh',
+      width: "100%",
+      height: "100vh",
       zoom: 16,
-      httpsMode: true
+      httpsMode: true,
     });
     let markerStart: Tmapv2.Marker | null = null;
     let markerEnd: Tmapv2.Marker | null = null;
@@ -19,41 +19,43 @@ export default function Map() {
     let markerArr: Tmapv2.Marker[];
     let lineArr: Tmapv2.Polyline[] = [];
     let marker1 = new Tmapv2.Marker({
-      icon: '/red-marker.png',
+      icon: "/red-marker.png",
       iconSize: new Tmapv2.Size(24, 38),
-      map: map
+      map: map,
     });
     const tData = new Tmapv2.extension.TData();
 
-    map.addListener('click', function onClick(evt) {
+    map.addListener("click", function onClick(evt) {
       const mapLatLng = evt.latLng;
       marker1.setMap(null);
       marker1 = new Tmapv2.Marker({
         position: new Tmapv2.LatLng(mapLatLng._lat, mapLatLng._lng),
-        icon: '/red-marker.png',
+        icon: "/red-marker.png",
         offset: new Tmapv2.Point(24, 38),
         iconSize: new Tmapv2.Size(24, 38),
         map: map,
-        zIndex: 1
+        zIndex: 1,
       });
 
       const [lon, lat] = [mapLatLng._lng, mapLatLng._lat];
 
       const optionObj = {
-        coordType: 'WGS84GEO',
-        addressType: 'A10'
+        coordType: "WGS84GEO",
+        addressType: "A10",
       };
 
       const params = {
         onComplete: function (result: any) {
           const arrResult = result._responseData.addressInfo;
-          const fullAddress = arrResult.fullAddress.split(',');
+          const fullAddress = arrResult.fullAddress.split(",");
           const newRoadAddr = fullAddress[2];
 
           const addressResult = (
             <div className="bg-gray-100 p-4">
               <div className="flex flex-col space-y-2">
-                <p className="text-sm text-gray-700">도로명 주소: {newRoadAddr}</p>
+                <p className="text-sm text-gray-700">
+                  도로명 주소: {newRoadAddr}
+                </p>
                 <p className="text-sm text-gray-700">
                   좌표 (WGS84): {lat}, {lon}
                 </p>
@@ -61,17 +63,20 @@ export default function Map() {
               <div className="flex justify-end space-x-2 mt-3">
                 <button
                   className="bg-primary text-white px-4 py-2 rounded"
-                  onClick={() => enterDest('start', newRoadAddr, lon, lat)}>
+                  onClick={() => enterDest("start", newRoadAddr, lon, lat)}
+                >
                   출발
                 </button>
                 <button
                   className="bg-primary text-white px-4 py-2 rounded"
-                  onClick={() => enterDest('end', newRoadAddr, lon, lat)}>
+                  onClick={() => enterDest("end", newRoadAddr, lon, lat)}
+                >
                   도착
                 </button>
                 <button
                   className="bg-primary text-white px-4 py-2 rounded"
-                  onClick={() => enterDest('wp', newRoadAddr, lon, lat)}>
+                  onClick={() => enterDest("wp", newRoadAddr, lon, lat)}
+                >
                   경유
                 </button>
               </div>
@@ -81,13 +86,18 @@ export default function Map() {
         },
         onProgress: function () {},
         onError: function () {
-          alert('onError');
-        }
+          alert("onError");
+        },
       };
 
       tData.getAddressFromGeoJson(lat, lon, optionObj, params);
     });
-    const enterDest = (type: 'start' | 'end' | 'wp', address: string, x: number, y: number) => {
+    const enterDest = (
+      type: "start" | "end" | "wp",
+      address: string,
+      x: number,
+      y: number
+    ) => {
       if (lineArr.length > 0) {
         for (const i in lineArr) {
           lineArr[i].setMap(null);
@@ -96,27 +106,36 @@ export default function Map() {
       }
 
       const createWayPointInput = (index: number) => {
-        const searchDiv = document.getElementById('searchContainer') as HTMLDivElement;
-        const hiddenDiv = document.getElementById('hiddenInput') as HTMLDivElement;
+        const searchDiv = document.getElementById(
+          "searchContainer"
+        ) as HTMLDivElement;
+        const hiddenDiv = document.getElementById(
+          "hiddenInput"
+        ) as HTMLDivElement;
 
-        const wpContainer = document.createElement('div');
-        wpContainer.className = 'flex items-center relative';
+        const wpContainer = document.createElement("div");
+        wpContainer.className = "flex items-center relative";
 
-        const wpInput = document.createElement('input');
-        wpInput.type = 'text';
+        const wpInput = document.createElement("input");
+        wpInput.type = "text";
         wpInput.id = `searchWpAddress${index}`;
         wpInput.className =
-          'py-2 border border-primary rounded-full pr-10 pl-4 w-full h-1/2 text-sm focus: outline-none';
+          "py-2 border border-primary rounded-full pr-10 pl-4 w-full h-1/2 text-sm focus: outline-none";
         wpInput.value = address;
 
-        const wpDelete = document.createElement('button');
-        wpDelete.className = 'absolute top-2 right-1 h-1/2 text-sm text-black rounded-full px-2';
-        wpDelete.innerText = 'X';
+        const wpDelete = document.createElement("button");
+        wpDelete.className =
+          "absolute top-2 right-1 h-1/2 text-sm text-black rounded-full px-2";
+        wpDelete.innerText = "X";
         wpDelete.onclick = () => {
           wpContainer.remove();
 
-          const wpXInput = document.getElementById(`wpX${index}`) as HTMLInputElement;
-          const wpYInput = document.getElementById(`wpY${index}`) as HTMLInputElement;
+          const wpXInput = document.getElementById(
+            `wpX${index}`
+          ) as HTMLInputElement;
+          const wpYInput = document.getElementById(
+            `wpY${index}`
+          ) as HTMLInputElement;
 
           if (wpXInput) {
             wpXInput.remove();
@@ -125,7 +144,9 @@ export default function Map() {
             wpYInput.remove();
           }
 
-          const markerIndex = markerWp.findIndex(marker => marker._marker_data.options.title === address);
+          const markerIndex = markerWp.findIndex(
+            (marker) => marker._marker_data.options.title === address
+          );
           if (markerIndex !== -1) {
             markerWp[markerIndex].setMap(null);
             markerWp.splice(markerIndex, 1);
@@ -133,13 +154,13 @@ export default function Map() {
           updateWayPointIndexes(index);
         };
 
-        const wpXInput = document.createElement('input');
-        wpXInput.type = 'hidden';
+        const wpXInput = document.createElement("input");
+        wpXInput.type = "hidden";
         wpXInput.id = `wpX${index}`;
         wpXInput.value = x.toString();
 
-        const wpYInput = document.createElement('input');
-        wpYInput.type = 'hidden';
+        const wpYInput = document.createElement("input");
+        wpYInput.type = "hidden";
         wpYInput.id = `wpY${index}`;
         wpYInput.value = y.toString();
 
@@ -149,11 +170,15 @@ export default function Map() {
       };
 
       const updateWayPointIndexes = (deletedIndex: number) => {
-        const xInputs = Array.from(document.querySelectorAll('input[id^="wpX"]'));
-        const yInputs = Array.from(document.querySelectorAll('input[id^="wpY"]'));
+        const xInputs = Array.from(
+          document.querySelectorAll('input[id^="wpX"]')
+        );
+        const yInputs = Array.from(
+          document.querySelectorAll('input[id^="wpY"]')
+        );
 
-        xInputs.map(input => {
-          const currentIndex = parseInt(input.id.replace(/\D/g, ''));
+        xInputs.map((input) => {
+          const currentIndex = parseInt(input.id.replace(/\D/g, ""));
           if (currentIndex > deletedIndex) {
             const newIndex = currentIndex - 1;
             input.id = input.id.replace(/\d+/, newIndex.toString());
@@ -161,8 +186,8 @@ export default function Map() {
           return input;
         });
 
-        yInputs.map(input => {
-          const currentIndex = parseInt(input.id.replace(/\D/g, ''));
+        yInputs.map((input) => {
+          const currentIndex = parseInt(input.id.replace(/\D/g, ""));
           if (currentIndex > deletedIndex) {
             const newIndex = currentIndex - 1;
             input.id = input.id.replace(/\d+/, newIndex.toString());
@@ -188,17 +213,23 @@ export default function Map() {
             iconSize: new Tmapv2.Size(24, 38),
             title: marker._marker_data.options.title,
             map: map,
-            zIndex: 2
+            zIndex: 2,
           });
 
           markerWp[index] = newMarker;
         });
       };
 
-      if (type === 'start') {
-        const inputAddress = document.getElementById('searchStartAddress') as HTMLInputElement;
-        const inputStartX = document.getElementById('startx') as HTMLInputElement;
-        const inputStartY = document.getElementById('starty') as HTMLInputElement;
+      if (type === "start") {
+        const inputAddress = document.getElementById(
+          "searchStartAddress"
+        ) as HTMLInputElement;
+        const inputStartX = document.getElementById(
+          "startx"
+        ) as HTMLInputElement;
+        const inputStartY = document.getElementById(
+          "starty"
+        ) as HTMLInputElement;
 
         if (inputAddress && inputStartX && inputStartY) {
           inputAddress.value = address;
@@ -211,17 +242,19 @@ export default function Map() {
         } else {
           markerStart = new Tmapv2.Marker({
             position: new Tmapv2.LatLng(y, x),
-            icon: '/blue-marker.png',
+            icon: "/blue-marker.png",
             offset: new Tmapv2.Point(24, 38),
             iconSize: new Tmapv2.Size(24, 38),
             map: map,
-            zIndex: 2
+            zIndex: 2,
           });
         }
-      } else if (type === 'end') {
-        const inputAddress = document.getElementById('searchEndAddress') as HTMLInputElement;
-        const inputEndX = document.getElementById('endx') as HTMLInputElement;
-        const inputEndY = document.getElementById('endy') as HTMLInputElement;
+      } else if (type === "end") {
+        const inputAddress = document.getElementById(
+          "searchEndAddress"
+        ) as HTMLInputElement;
+        const inputEndX = document.getElementById("endx") as HTMLInputElement;
+        const inputEndY = document.getElementById("endy") as HTMLInputElement;
 
         if (inputAddress && inputEndX && inputEndY) {
           inputAddress.value = address;
@@ -234,18 +267,18 @@ export default function Map() {
         } else {
           markerEnd = new Tmapv2.Marker({
             position: new Tmapv2.LatLng(y, x),
-            icon: '/green-marker.png',
+            icon: "/green-marker.png",
             offset: new Tmapv2.Point(24, 38),
             iconSize: new Tmapv2.Size(24, 38),
             map: map,
-            zIndex: 2
+            zIndex: 2,
           });
         }
-      } else if (type === 'wp') {
+      } else if (type === "wp") {
         if (markerWp.length >= 5) {
           return;
         }
-        const isDuplicate = markerWp.some(marker => {
+        const isDuplicate = markerWp.some((marker) => {
           const title = marker._marker_data.options.title;
           return title === address;
         });
@@ -270,17 +303,17 @@ export default function Map() {
           iconSize: new Tmapv2.Size(24, 38),
           title: address,
           map: map,
-          zIndex: 2
+          zIndex: 2,
         });
 
         markerWp.push(wpMarker);
       }
     };
     const searchRoute = () => {
-      const inputStartX = document.getElementById('startx') as HTMLInputElement;
-      const inputStartY = document.getElementById('starty') as HTMLInputElement;
-      const inputEndX = document.getElementById('endx') as HTMLInputElement;
-      const inputEndY = document.getElementById('endy') as HTMLInputElement;
+      const inputStartX = document.getElementById("startx") as HTMLInputElement;
+      const inputStartY = document.getElementById("starty") as HTMLInputElement;
+      const inputEndX = document.getElementById("endx") as HTMLInputElement;
+      const inputEndY = document.getElementById("endy") as HTMLInputElement;
 
       const startX = parseFloat(inputStartX.value);
       const startY = parseFloat(inputStartY.value);
@@ -297,25 +330,31 @@ export default function Map() {
         if (wpXInput && wpYInput) {
           const viaX = parseFloat(wpXInput.value);
           const viaY = parseFloat(wpYInput.value);
-          viaPoints.push(viaX + ',' + viaY);
+          viaPoints.push(viaX + "," + viaY);
         }
       }
-      const passList = viaPoints.join('_');
+      const passList = viaPoints.join("_");
 
       const optionObj = {
-        reqCoordType: 'WGS84GEO',
-        resCoordType: 'WGS84GEO',
-        passList: passList
+        reqCoordType: "WGS84GEO",
+        resCoordType: "WGS84GEO",
+        passList: passList,
       };
 
       const params = {
         onComplete: function (result: any) {
           const resultData = result._responseData.features;
           console.log(resultData);
-          const totalTime = (resultData[0].properties.totalTime / 60).toFixed(0);
-          const totalDistance = (resultData[0].properties.totalDistance / 1000).toFixed(1);
+          const totalTime = (resultData[0].properties.totalTime / 60).toFixed(
+            0
+          );
+          const totalDistance = (
+            resultData[0].properties.totalDistance / 1000
+          ).toFixed(1);
 
-          const routeResult = <div>{`${totalTime}분 | ${totalDistance}km`}</div>;
+          const routeResult = (
+            <div>{`${totalTime}분 | ${totalDistance}km`}</div>
+          );
           setAddressInfo(routeResult);
 
           if (lineArr.length > 0) {
@@ -348,14 +387,21 @@ export default function Map() {
           });
         },
         onError: function () {
-          alert('보행자 경로 - 결과 값을 가져오는 중 오류가 발생했습니다.');
-        }
+          alert("보행자 경로 - 결과 값을 가져오는 중 오류가 발생했습니다.");
+        },
       };
 
-      tData.getRoutePlanForPeopleJson(startLatLng, endLatLng, '출발지', '도착지', optionObj, params);
+      tData.getRoutePlanForPeopleJson(
+        startLatLng,
+        endLatLng,
+        "출발지",
+        "도착지",
+        optionObj,
+        params
+      );
     };
 
-    document.getElementById('searchRoute')!.onclick = searchRoute;
+    document.getElementById("searchRoute")!.onclick = searchRoute;
   }, []);
 
   return (
@@ -389,7 +435,8 @@ export default function Map() {
           <div className="flex absolute right-12 top-5 justify-center items-center ml-1 z-10 mt-2">
             <button
               id="searchRoute"
-              className=" bg-gray-500 text-white rounded px-4 py-2 hover:bg-gray-600 transition duration-100 ease-in-out">
+              className=" bg-gray-500 text-white rounded px-4 py-2 hover:bg-gray-600 transition duration-100 ease-in-out"
+            >
               검색
             </button>
           </div>
