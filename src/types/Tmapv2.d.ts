@@ -5,11 +5,17 @@ declare namespace Tmapv2 {
     addListener(event: string, callback: (event: any) => void): void;
   }
 
+  export class LatLngBounds {
+    constructor();
+    extend(latLng: LatLng): void;
+  }
+
   export class LatLng {
     constructor(lat: number, lng: number);
   }
 
   export class Marker {
+    _marker_data: any;
     constructor(options: MarkerOptions);
     setPosition(latLng: LatLng): void;
     setMap(map: Map | null): void;
@@ -42,14 +48,20 @@ declare namespace Tmapv2 {
     export class TData {
       getAddressFromGeoJson(lat: number, lon: number, optionObj: any, params: any): void;
     }
+    export class GeoJSON {
+      read(data: any): any;
+      drawRoute(map: Map, jsonForm: any, options: any, callback: (e: any) => void): void;
+    }
   }
 
   export interface MarkerOptions {
     position?: LatLng;
-    icon: string;
+    icon?: string;
+    iconHTML?: string;
     offset?: Point;
     iconSize: Size;
     map: Map;
+    title?: string;
     zIndex?: number;
   }
 }
