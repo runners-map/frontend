@@ -32,7 +32,7 @@ export default function MapPostList({
                 src={createMarkerIcon(
                   index + 1,
                   item.arriveYn ? "review" : "post"
-                )} // 마커 이미지를 리스트 항목에 표시
+                )}
                 alt={`marker-${index + 1}`}
                 className="w-8 h-8 mr-2"
               />

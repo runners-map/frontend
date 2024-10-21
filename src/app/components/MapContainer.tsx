@@ -2,19 +2,20 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import MapSearchPOI from "@/app/map/MapSearchPOI";
-import MapFilter from "@/app/map/MapFilter";
-import MapCurrentLocation from "@/app/map/MapCurrentLocation";
-import MapPostList from "@/app/map/MapPostList";
-import MapPOIList from "@/app/map/MapPOIList";
-import MapPostDetails from "./MapPostDetails";
+import MapSearchPOI from "@/app/components/MapSearchPOI";
+import MapFilter from "@/app/components/MapFilter";
+import MapCurrentLocation from "@/app/components/MapCurrentLocation";
+import MapPostList from "@/app/components/MapPostList";
+import MapPOIList from "@/app/components/MapPOIList";
+import MapPostDetails from "@/app/components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
+import { useRouter } from "next/navigation";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
-    centerLat: 37.570028,
-    centerLng: 126.986072,
+    centerLat: 0,
+    centerLng: 0,
     gender: "",
     paceMinStart: "",
     paceMinEnd: "",
@@ -22,19 +23,22 @@ export default function MapContainer() {
     distanceEnd: "",
     startDate: "",
     startTime: "",
-    limitMemberCnt: 10,
+    limitMemberCnt: 0,
     page: "",
     size: "",
   });
-  const [map, setMap] = useState(null);
+
+  const [map, setMap] = useState<Tmapv2.Map | null>(null);
   const [isListVisible, setIsListVisible] = useState(true);
 
   const [poiSearchData, setPoiSearchData] = useState(null);
-  const [poiMarkerArr, setPoiMarkerArr] = useState<Tmapv2.Marker | null>([]);
+  const [poiMarkerArr, setPoiMarkerArr] = useState<Tmapv2.Marker[] | null>([]);
   const [isPoiSearched, setIsPoiSearched] = useState(false);
 
   const [postData, setPostData] = useState(null);
-  const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker | null>([]);
+  const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker[] | null>(
+    []
+  );
 
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -69,20 +73,21 @@ export default function MapContainer() {
   }, []);
 
   const searchPosts = async () => {
-    if (postMarkerArr.length > 0) {
-      postMarkerArr.forEach((marker) => marker.setMap(null)); // 모든 마커 삭제
-      setPostMarkerArr([]); // 배열 초기화
+    // 마커 삭제
+    if (postMarkerArr !== null) {
+      postMarkerArr.forEach((marker) => marker.setMap(null));
+      setPostMarkerArr([]);
     }
 
     const params = {
-      lat_gte: queryParams.centerLat - 1 / 111, // 중심 위도에서 1km 남쪽
-      lat_lte: queryParams.centerLat + 1 / 111, // 중심 위도에서 1km 북쪽
+      lat_gte: queryParams.centerLat - 1 / 111,
+      lat_lte: queryParams.centerLat + 1 / 111,
       lng_gte:
         queryParams.centerLng -
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))), // 중심 경도에서 1km 서쪽
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
       lng_lte:
         queryParams.centerLng +
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))), // 중심 경도에서 1km 동쪽
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
       gender: queryParams.gender,
       limitMemberCnt: queryParams.limitMemberCnt,
     };
@@ -193,6 +198,12 @@ export default function MapContainer() {
     }
   }, [isPoiSearched]);
 
+  const router = useRouter(); // useRouter 훅 사용
+
+  const handleClick = () => {
+    router.push("/post/create/searchRoute"); // 원하는 경로로 이동
+  };
+
   return (
     <>
       <div id="map_div"></div>
@@ -215,7 +226,10 @@ export default function MapContainer() {
       >
         <div className="px-3">
           <div className="flex justify-end">
-            <button className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full">
+            <button
+              onClick={handleClick}
+              className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full"
+            >
               <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
             </button>
           </div>

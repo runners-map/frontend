@@ -23,7 +23,6 @@ export default function MapPOIList({
               onClick={() => handleClickList(item.noorLat, item.noorLon)}
               className="flex items-center w-full p-2"
             >
-              {" "}
               <img
                 src={createMarkerIcon(index + 1, "poi")} // 마커 이미지를 리스트 항목에 표시
                 alt={`marker-${index + 1}`}

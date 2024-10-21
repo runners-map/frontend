@@ -15,9 +15,9 @@ export default function Navigation() {
   return (
     <nav className="btm-nav max-w-md mx-auto">
       <Link
-        href={"/map"}
+        href={"/"}
         className={`text-primary ${
-          currentPath === "/map" ? "active" : "text-gray-500"
+          currentPath === "/" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineMap size={25} />

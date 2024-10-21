@@ -9,7 +9,6 @@ export default function MapSearchPOI({
   map,
   poiMarkerArr,
   setPoiMarkerArr,
-  poiSearchData,
   setPoiSearchData,
   isPoiSearched,
   setIsPoiSearched,
@@ -67,8 +66,8 @@ export default function MapSearchPOI({
       const center = positionBounds.getCenter();
       setQueryParams((prevParams) => ({
         ...prevParams,
-        centerLat: parseFloat(center._lat), // 문자열을 float으로 변환
-        centerLng: parseFloat(center._lng), // 문자열을 float으로 변환
+        centerLat: parseFloat(center._lat),
+        centerLng: parseFloat(center._lng),
       }));
     } catch (error) {
       console.error("Error:", error.response?.status, error.response?.data);
