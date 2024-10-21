@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { LuImage } from "react-icons/lu";
 
 export default function PhotoUploadForm() {
   const {
@@ -29,51 +30,47 @@ export default function PhotoUploadForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="card border-2 border-primary">
-        <figure className="px-4 pt-4">
-          <div className="h-52 w-full border-2 border-primary relative rounded-xl">
-            {preview ? (
-              <Image
-                src={`${preview}`}
-                alt="review photo"
-                fill
-                className="rounded-xl"
-                style={{ objectFit: "contain" }}
-              />
-            ) : (
-              <Image
-                src="https://i.namu.wiki/i/fWenvmJ3QN7ciEV-oypu67EEvZNRWTDn-XPVCDEW8LcxJT7igFFH8T-E0P8dfqOI9z0kZnw0cGTz8yPQIsPNB_LAzBBU7vwPXNEd19Xpoe3nn_j1OtjqbGojMv1wB6pt7h88bi3fVHcJEwNoIvktMA.webp"
-                alt="default"
-                className="rounded-xl"
-                width={500}
-                height={100}
-              />
-            )}
-          </div>
-        </figure>
-        <div className="card-body p-4">
-          <Controller
-            name="file"
-            control={control}
-            defaultValue={null}
-            render={({ field }) => (
-              <>
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    field.onChange(e.target.files);
-                    handlePreview(e.target.files);
-                  }}
-                  className="file-input file-input-primary"
-                />
-                {errors.file && (
-                  <p className="text-red-500">파일을 업로드 해주세요!</p>
-                )}
-              </>
-            )}
-            rules={{ required: true }}
+      <div className="w-full h-full border-2 border-primary rounded-xl mb-4 aspect-w-16 aspect-h-9">
+        {preview ? (
+          <Image
+            src={`${preview}`}
+            alt="review photo"
+            layout="responsive"
+            width={16} // 비율 유지: 16:9
+            height={9}
+            className="rounded-lg object-contain"
           />
-          <div className="card-actions space-y-1 mt-1">
+        ) : (
+          <div className="flex justify-center items-center bg-gray-300 w-full h-full rounded-lg text-gray-500">
+            <LuImage size={50} />
+          </div>
+        )}
+      </div>
+
+      <div className="card border-2 border-primary">
+        <div className="card-body">
+          <div className="card-actions space-y-1">
+            <Controller
+              name="file"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => (
+                <>
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      field.onChange(e.target.files);
+                      handlePreview(e.target.files);
+                    }}
+                    className="file-input file-input-primary w-full"
+                  />
+                  {errors.file && (
+                    <p className="text-red-500">파일을 업로드 해주세요!</p>
+                  )}
+                </>
+              )}
+              rules={{ required: true }}
+            />
             <button type="submit" className="btn btn-primary w-full">
               업로드
             </button>
