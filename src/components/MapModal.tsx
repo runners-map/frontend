@@ -38,7 +38,7 @@ export default function MapModal() {
         onRequestClose={closeModal}
         contentLabel="Example Modal"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-        className="relative max-w-sm my-20 mx-auto max-h-[60vh] overflow-y-auto rounded-lg p-10 transition-transform duration-300 ease-in-out focus:outline-none bg-white">
+        className="relative z-50 max-w-sm my-20 mx-auto max-h-[60vh] overflow-y-auto rounded-lg p-10 transition-transform duration-300 ease-in-out focus:outline-none bg-white">
         <p onClick={closeModal} className="absolute top-0 left-2 cursor-pointer">
           X
         </p>

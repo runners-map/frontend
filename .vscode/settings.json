@@ -1,3 +1,22 @@
 {
-  "cSpell.words": ["endx", "endy", "EPSG", "jibun", "latlng", "polylines", "startx", "starty", "Tmap", "Tmapv"]
+  "cSpell.words": [
+    "chartjs",
+    "clsx",
+    "daisyui",
+    "datepicker",
+    "endx",
+    "endy",
+    "EPSG",
+    "jibun",
+    "latlng",
+    "polylines",
+    "startx",
+    "starty",
+    "tailwindcss",
+    "tanstack",
+    "Tmap",
+    "Tmapv",
+    "toastify",
+    "zustand"
+  ]
 }
