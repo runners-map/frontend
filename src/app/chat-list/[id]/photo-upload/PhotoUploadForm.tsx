@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { LuImage } from "react-icons/lu";
@@ -12,6 +13,12 @@ export default function PhotoUploadForm() {
   } = useForm();
 
   const [preview, setPreview] = useState(null);
+
+  const router = useRouter();
+
+  const handleExit = () => {
+    router.push("/");
+  };
 
   const handlePreview = (file) => {
     if (file && file[0]) {
@@ -26,22 +33,21 @@ export default function PhotoUploadForm() {
 
   const onSubmit = (data) => {
     console.log(data);
+    // 사진 업로드
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="w-full h-full border-2 border-primary rounded-xl mb-4 aspect-w-16 aspect-h-9">
+      <div className="w-[380px] h-[284px] mx-auto border-2 border-primary rounded-xl mb-4 relative">
         {preview ? (
           <Image
             src={`${preview}`}
             alt="review photo"
-            layout="responsive"
-            width={16} // 비율 유지: 16:9
-            height={9}
-            className="rounded-lg object-contain"
+            fill
+            className="rounded-lg object-cover"
           />
         ) : (
-          <div className="flex justify-center items-center bg-gray-300 w-full h-full rounded-lg text-gray-500">
+          <div className="flex justify-center items-center bg-gray-200 w-full h-full rounded-lg text-gray-400">
             <LuImage size={50} />
           </div>
         )}
@@ -74,7 +80,11 @@ export default function PhotoUploadForm() {
             <button type="submit" className="btn btn-primary w-full">
               업로드
             </button>
-            <button type="button" className="btn btn-secondary w-full">
+            <button
+              type="button"
+              onClick={handleExit}
+              className="btn btn-secondary w-full"
+            >
               나가기
             </button>
           </div>
