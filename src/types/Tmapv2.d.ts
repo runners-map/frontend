@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare namespace Tmapv2 {
   export class Map {
+    zoomOut() {
+      throw new Error('Method not implemented.');
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    panToBounds(positionBounds: LatLngBounds) {
+      throw new Error('Method not implemented.');
+    }
     constructor(containerId: string, options: MapOptions);
     addListener(event: string, callback: (event: any) => void): void;
   }
@@ -46,6 +53,17 @@ declare namespace Tmapv2 {
 
   export namespace extension {
     export class TData {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      getRoutePlanForPeopleJson(
+        startLatLng: LatLng,
+        endLatLng: LatLng,
+        arg2: string,
+        arg3: string,
+        optionObj: { reqCoordType: string; resCoordType: string; passList: string },
+        params: { onComplete: (result: any) => void; onError: () => void }
+      ) {
+        throw new Error('Method not implemented.');
+      }
       getAddressFromGeoJson(lat: number, lon: number, optionObj: any, params: any): void;
     }
     export class GeoJSON {

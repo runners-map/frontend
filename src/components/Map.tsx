@@ -333,6 +333,7 @@ export default function Map() {
               markerArr.push(m);
             }
             for (const l of e.polylines) {
+              console.log(l);
               lineArr.push(l);
             }
 
