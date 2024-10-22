@@ -1,9 +1,9 @@
-'use client';
-import { CiSearch } from 'react-icons/ci';
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-import { Controller, useForm } from 'react-hook-form';
-import { GetPostsRequest } from '@/types/Post';
+"use client";
+import { CiSearch } from "react-icons/ci";
+import React, { useState } from "react";
+import Modal from "react-modal";
+import { Controller, useForm } from "react-hook-form";
+import { GetPostsRequest } from "@/types/Post";
 
 export default function MapModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,10 +11,10 @@ export default function MapModal() {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<GetPostsRequest>();
 
-  Modal.setAppElement('body');
+  Modal.setAppElement("body");
 
   const openModal = () => {
     setIsOpen(true);
@@ -32,18 +32,29 @@ export default function MapModal() {
 
   return (
     <div>
-      <CiSearch size={30} onClick={openModal} className="cursor-pointer absolute bottom-20 right-5" />
+      <CiSearch
+        size={30}
+        onClick={openModal}
+        className="cursor-pointer absolute bottom-20 right-5"
+      />
       <Modal
         isOpen={isOpen}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-        className="relative max-w-sm my-20 mx-auto max-h-[60vh] overflow-y-auto rounded-lg p-10 transition-transform duration-300 ease-in-out focus:outline-none bg-white">
-        <p onClick={closeModal} className="absolute top-0 left-2 cursor-pointer">
+        className="relative max-w-sm my-20 mx-auto max-h-[60vh] overflow-y-auto rounded-lg p-10 transition-transform duration-300 ease-in-out focus:outline-none bg-white"
+      >
+        <p
+          onClick={closeModal}
+          className="absolute top-0 left-2 cursor-pointer"
+        >
           X
         </p>
         <h2 className="text-xl font-semibold">모집글 조회하기</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-10">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-col-2 gap-4 pt-10 mx-10"
+        >
           {/* 성별 */}
           <div className="flex justify-between">
             <Controller
@@ -56,8 +67,9 @@ export default function MapModal() {
                   {...field}
                   id="gender"
                   className={`select select-bordered w-full focus:border-transparent ${
-                    errors.gender ? 'border-red-500 focus:outline-red-500' : ''
-                  }`}>
+                    errors.gender ? "border-red-500 focus:outline-red-500" : ""
+                  }`}
+                >
                   <option value="" disabled>
                     성별을 골라주세요
                   </option>
@@ -75,18 +87,20 @@ export default function MapModal() {
               name="limitMemberCnt"
               control={control}
               defaultValue={0}
-              rules={{ required: true, validate: value => value > 0 }}
+              rules={{ required: true, validate: (value) => value > 0 }}
               render={({ field }) => (
                 <input
                   {...field}
                   type="number"
                   className={`input input-bordered w-full focus:border-transparent ${
-                    errors.limitMemberCnt ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.limitMemberCnt
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                   min={1}
                   max={10}
-                  value={field.value === 0 ? '' : field.value}
-                  onChange={e => field.onChange(Number(e.target.value))}
+                  value={field.value === 0 ? "" : field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                   placeholder="최대인원 (1~10명)"
                 />
               )}
@@ -105,7 +119,9 @@ export default function MapModal() {
                   {...field}
                   type="date"
                   className={`input input-bordered w-full focus:border-transparent ${
-                    errors.startDate ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.startDate
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                 />
               )}
@@ -124,7 +140,9 @@ export default function MapModal() {
                   type="time"
                   {...field}
                   className={`input input-bordered w-full focus:border-transparent ${
-                    errors.startTime ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.startTime
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                 />
               )}
@@ -137,17 +155,19 @@ export default function MapModal() {
               name="paceMinStart"
               control={control}
               defaultValue={0}
-              rules={{ required: true, validate: value => value >= 1 }}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
                   {...field}
                   className={`input input-bordered w-1/2 focus:border-transparent ${
-                    errors.paceMinStart ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.paceMinStart
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                   min={1}
                   max={59}
-                  value={field.value === 0 ? '' : field.value}
+                  value={field.value === 0 ? "" : field.value}
                   placeholder="시작"
                 />
               )}
@@ -157,16 +177,18 @@ export default function MapModal() {
               name="paceMinEnd"
               control={control}
               defaultValue={0}
-              rules={{ required: true, validate: value => value >= 1 }}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
                   {...field}
                   className={`input input-bordered w-1/2 focus:border-transparent ${
-                    errors.paceMinEnd ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.paceMinEnd
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                   placeholder="끝"
-                  value={field.value === 0 ? '' : field.value}
+                  value={field.value === 0 ? "" : field.value}
                   min={1}
                   max={59}
                 />
@@ -181,17 +203,19 @@ export default function MapModal() {
               name="distanceStart"
               control={control}
               defaultValue={0}
-              rules={{ required: true, validate: value => value >= 1 }}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
                   {...field}
                   className={`input input-bordered w-1/2 focus:border-transparent ${
-                    errors.paceMinStart ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.paceMinStart
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                   min={1}
                   max={59}
-                  value={field.value === 0 ? '' : field.value}
+                  value={field.value === 0 ? "" : field.value}
                   placeholder="시작"
                 />
               )}
@@ -201,16 +225,18 @@ export default function MapModal() {
               name="distanceEnd"
               control={control}
               defaultValue={0}
-              rules={{ required: true, validate: value => value >= 1 }}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
                   {...field}
                   className={`input input-bordered w-1/2 focus:border-transparent ${
-                    errors.paceMinEnd ? 'border-red-500 focus:outline-red-500' : ''
+                    errors.paceMinEnd
+                      ? "border-red-500 focus:outline-red-500"
+                      : ""
                   }`}
                   placeholder="끝"
-                  value={field.value === 0 ? '' : field.value}
+                  value={field.value === 0 ? "" : field.value}
                   min={1}
                   max={59}
                 />
@@ -219,8 +245,12 @@ export default function MapModal() {
             <p>KM</p>
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? '조회 중...' : '조회하기'}
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "조회 중..." : "조회하기"}
           </button>
         </form>
       </Modal>
