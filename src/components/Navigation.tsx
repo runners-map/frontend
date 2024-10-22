@@ -17,7 +17,7 @@ export default function Navigation() {
       <Link
         href={"/"}
         className={`text-primary ${
-          currentPath === "/" ? "active" : "text-gray-400"
+          currentPath === "/" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineMap size={25} />
@@ -26,7 +26,7 @@ export default function Navigation() {
       <Link
         href={"/chat-list"}
         className={`text-primary ${
-          currentPath === "/chat-list" ? "active" : "text-gray-400"
+          currentPath === "/chat-list" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineChatBubbleOvalLeftEllipsis size={25} />
@@ -35,7 +35,7 @@ export default function Navigation() {
       <Link
         href={"/ranking"}
         className={`text-primary ${
-          currentPath === "/ranking" ? "active" : "text-gray-400"
+          currentPath === "/ranking" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineTrophy size={25} />
@@ -44,7 +44,7 @@ export default function Navigation() {
       <Link
         href={"/chart"}
         className={`text-primary ${
-          currentPath === "/chart" ? "active" : "text-gray-400"
+          currentPath === "/chart" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineChartBar size={25} />
@@ -53,7 +53,7 @@ export default function Navigation() {
       <Link
         href={"/mypage"}
         className={`text-primary ${
-          currentPath === "/mypage" ? "active" : "text-gray-400"
+          currentPath === "/mypage" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineUser size={25} />
