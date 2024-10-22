@@ -3,61 +3,54 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  HiOutlineMap,
-  HiOutlineChatBubbleOvalLeftEllipsis,
-  HiOutlineChartBar,
-  HiOutlineTrophy,
-  HiOutlineUser,
+  HiMap,
+  HiChatBubbleOvalLeftEllipsis,
+  HiChartBar,
+  HiMiniTrophy,
+  HiMiniUser,
 } from "react-icons/hi2";
 
 export default function Navigation() {
   const currentPath = usePathname();
   return (
-    <nav className="btm-nav max-w-md mx-auto">
+    <nav className="btm-nav max-w-md mx-auto rounded-t-3xl shadow-2xl shadow-black">
       <Link
         href={"/"}
-        className={`text-primary ${
-          currentPath === "/" ? "active" : "text-gray-500"
-        }`}
+        className={`${currentPath === "/" ? "text-primary" : "text-gray-400"}`}
       >
-        <HiOutlineMap size={25} />
-        <span className="btm-nav-label">맵</span>
+        <HiMap size={25} />
       </Link>
       <Link
         href={"/post-list"}
-        className={`text-primary ${
-          currentPath === "/post-list" ? "active" : "text-gray-500"
+        className={`${
+          currentPath === "/post-list" ? "text-primary" : "text-gray-400"
         }`}
       >
-        <HiOutlineChatBubbleOvalLeftEllipsis size={25} />
-        <span className="btm-nav-label">모집글</span>
+        <HiChatBubbleOvalLeftEllipsis size={25} />
       </Link>
       <Link
         href={"/ranking"}
-        className={`text-primary ${
-          currentPath === "/ranking" ? "active" : "text-gray-500"
+        className={`${
+          currentPath === "/ranking" ? "text-primary" : "text-gray-400"
         }`}
       >
-        <HiOutlineTrophy size={25} />
-        <span className="btm-nav-label">랭킹</span>
+        <HiMiniTrophy size={25} />
       </Link>
       <Link
         href={"/chart"}
-        className={`text-primary ${
-          currentPath === "/chart" ? "active" : "text-gray-500"
+        className={`${
+          currentPath === "/chart" ? "text-primary" : "text-gray-400"
         }`}
       >
-        <HiOutlineChartBar size={25} />
-        <span className="btm-nav-label">기록</span>
+        <HiChartBar size={25} />
       </Link>
       <Link
         href={"/mypage"}
-        className={`text-primary ${
-          currentPath === "/mypage" ? "active" : "text-gray-500"
+        className={`${
+          currentPath === "/mypage" ? "text-primary" : "text-gray-400"
         }`}
       >
-        <HiOutlineUser size={25} />
-        <span className="btm-nav-label">마이 페이지</span>
+        <HiMiniUser size={25} />
       </Link>
     </nav>
   );
