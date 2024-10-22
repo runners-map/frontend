@@ -56,7 +56,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
   }, [queryParams, reset]);
 
   return (
-    <>
+    <div>
       <button className="text-primary w-10 h-10 rounded-full bg-white flex justify-center items-center">
         <HiOutlineFunnel
           size={30}
@@ -87,6 +87,8 @@ export default function MapFilter({ queryParams, setQueryParams }) {
             <Controller
               name="gender"
               control={control}
+              defaultValue=""
+              rules={{ required: true }}
               render={({ field }) => (
                 <select
                   {...field}
@@ -98,9 +100,9 @@ export default function MapFilter({ queryParams, setQueryParams }) {
                   <option value="" disabled>
                     성별을 골라주세요
                   </option>
-                  <option value="">무관</option>
-                  <option value="M">남성</option>
-                  <option value="F">여성</option>
+                  <option value="all">All</option>
+                  <option value="M">M</option>
+                  <option value="F">F</option>
                 </select>
               )}
             />
@@ -111,6 +113,8 @@ export default function MapFilter({ queryParams, setQueryParams }) {
             <Controller
               name="limitMemberCnt"
               control={control}
+              defaultValue={0}
+              rules={{ required: true, validate: (value) => value > 0 }}
               render={({ field }) => (
                 <input
                   {...field}
@@ -120,9 +124,9 @@ export default function MapFilter({ queryParams, setQueryParams }) {
                       ? "border-red-500 focus:outline-red-500"
                       : ""
                   }`}
-                  min={0}
+                  min={1}
                   max={10}
-                  value={field.value === 0 ? "" : field.value} // 0일 때 값을 빈 문자열로 설정
+                  value={field.value === 0 ? "" : field.value}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                   placeholder="최대인원 (1~10명)"
                 />
@@ -136,6 +140,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="startDate"
               control={control}
               defaultValue=""
+              rules={{ required: true }}
               render={({ field }) => (
                 <input
                   {...field}
@@ -156,6 +161,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="startTime"
               control={control}
               defaultValue=""
+              rules={{ required: true }}
               render={({ field }) => (
                 <input
                   type="time"
@@ -176,6 +182,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="paceMinStart"
               control={control}
               defaultValue={0}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
@@ -197,6 +204,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="paceMinEnd"
               control={control}
               defaultValue={0}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
@@ -222,6 +230,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="distanceStart"
               control={control}
               defaultValue={0}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
@@ -243,6 +252,7 @@ export default function MapFilter({ queryParams, setQueryParams }) {
               name="distanceEnd"
               control={control}
               defaultValue={0}
+              rules={{ required: true, validate: (value) => value >= 1 }}
               render={({ field }) => (
                 <input
                   type="number"
@@ -271,6 +281,6 @@ export default function MapFilter({ queryParams, setQueryParams }) {
           </button>
         </form>
       </Modal>
-    </>
+    </div>
   );
 }

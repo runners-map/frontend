@@ -97,7 +97,7 @@ export default function MapSearchPOI({
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="absolute top-10 justify-center w-full z-10 px-6"
+        className="absolute top-10 justify-center w-full px-6"
       >
         <Controller
           name="searchKeyword"

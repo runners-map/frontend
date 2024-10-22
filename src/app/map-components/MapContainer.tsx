@@ -99,29 +99,11 @@ export default function MapContainer() {
       const res = await axios.get("http://localhost:3001/Post");
       const posts = res.data;
 
-      // 클라이언트 측에서 필터링
-      const filteredPosts = posts.filter((post) => {
-        const lat = parseFloat(post.lat);
-        const lng = parseFloat(post.lng);
-        const gender = post.gender;
-        const limitMemberCnt = post.limitMemberCnt;
+      console.log("게시글 목록", posts);
+      setPostData(posts);
 
-        return (
-          lat >= params.lat_gte &&
-          lat <= params.lat_lte &&
-          lng >= params.lng_gte &&
-          lng <= params.lng_lte &&
-          (params.gender === "" || params.gender === gender) &&
-          (params.limitMemberCnt === null ||
-            limitMemberCnt <= params.limitMemberCnt)
-        );
-      });
-
-      console.log("필터링된 결과", filteredPosts);
-      setPostData(filteredPosts);
-
-      if (filteredPosts.length > 0) {
-        filteredPosts.forEach((markerData, index) => {
+      if (posts.length > 0) {
+        posts.forEach((markerData, index) => {
           const markerPosition = new Tmapv2.LatLng(
             markerData.lat,
             markerData.lng
@@ -212,7 +194,6 @@ export default function MapContainer() {
         map={map}
         poiMarkerArr={poiMarkerArr}
         setPoiMarkerArr={setPoiMarkerArr}
-        poiSearchData={poiSearchData}
         setPoiSearchData={setPoiSearchData}
         isPoiSearched={isPoiSearched}
         setIsPoiSearched={setIsPoiSearched}
