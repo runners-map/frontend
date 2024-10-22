@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import MapContainer from "@/app/components/MapContainer";
+import MapContainer from "@/app/map-components/MapContainer";
 
 export const metadata = {
   title: "Runner's Map",

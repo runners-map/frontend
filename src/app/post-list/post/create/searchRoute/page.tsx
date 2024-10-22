@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-sync-scripts */
-import MapRoute from "@/app/post/create/searchRoute/MapRoute";
+import MapRoute from "@/app/post-list/post/create/searchRoute/MapRoute";
 
 export const metadata = {
   title: "경로 설정하기",

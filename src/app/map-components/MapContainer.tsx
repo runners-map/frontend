@@ -2,12 +2,12 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import MapSearchPOI from "@/app/components/MapSearchPOI";
-import MapFilter from "@/app/components/MapFilter";
-import MapCurrentLocation from "@/app/components/MapCurrentLocation";
-import MapPostList from "@/app/components/MapPostList";
-import MapPOIList from "@/app/components/MapPOIList";
-import MapPostDetails from "@/app/components/MapPostDetails";
+import MapSearchPOI from "@/app/map-components/MapSearchPOI";
+import MapFilter from "@/app/map-components/MapFilter";
+import MapCurrentLocation from "@/app/map-components/MapCurrentLocation";
+import MapPostList from "@/app/map-components/MapPostList";
+import MapPOIList from "@/app/map-components/MapPOIList";
+import MapPostDetails from "@/app/map-components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
 import { useRouter } from "next/navigation";
@@ -183,7 +183,7 @@ export default function MapContainer() {
   const router = useRouter(); // useRouter 훅 사용
 
   const handleClick = () => {
-    router.push("/post/create/searchRoute"); // 원하는 경로로 이동
+    router.push("/post-list/post/create/searchRoute"); // 원하는 경로로 이동
   };
 
   return (

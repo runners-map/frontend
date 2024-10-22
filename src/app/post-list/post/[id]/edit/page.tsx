@@ -1,4 +1,4 @@
-import PostEditForm from "./PostEditForm";
+import PostEditForm from "@/app/post-list/post/[id]/edit/PostEditForm";
 
 export const metadata = {
   title: "모집글 수정",

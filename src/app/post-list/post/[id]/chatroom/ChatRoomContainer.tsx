@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useRef, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 
 interface ChatFormData {
   message: string;
@@ -13,7 +13,7 @@ export default function ChatRoomContainer() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const onSubmit = (data: ChatFormData) => {
-    if (data.message.trim() === '') {
+    if (data.message.trim() === "") {
       return;
     }
     setMessages([...messages, data.message]);
@@ -21,7 +21,7 @@ export default function ChatRoomContainer() {
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
@@ -30,7 +30,9 @@ export default function ChatRoomContainer() {
       <div className="flex-grow mb-4 space-y-2 overflow-y-auto p-4">
         {messages.map((message, index) => (
           <div key={index} className="chat chat-end">
-            <div className="chat-bubble bg-green-500 text-white rounded-lg p-2 max-w-[80%] break-words">{message}</div>
+            <div className="chat-bubble bg-green-500 text-white rounded-lg p-2 max-w-[80%] break-words">
+              {message}
+            </div>
           </div>
         ))}
         <div ref={messagesEndRef} />

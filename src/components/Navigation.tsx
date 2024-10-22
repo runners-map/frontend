@@ -24,13 +24,13 @@ export default function Navigation() {
         <span className="btm-nav-label">맵</span>
       </Link>
       <Link
-        href={"/chat-list"}
+        href={"/post-list"}
         className={`text-primary ${
-          currentPath === "/chat-list" ? "active" : "text-gray-500"
+          currentPath === "/post-list" ? "active" : "text-gray-500"
         }`}
       >
         <HiOutlineChatBubbleOvalLeftEllipsis size={25} />
-        <span className="btm-nav-label">채팅</span>
+        <span className="btm-nav-label">모집글</span>
       </Link>
       <Link
         href={"/ranking"}
