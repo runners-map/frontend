@@ -3,7 +3,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MapSearchPOI from "@/app/map-components/MapSearchPOI";
-import MapFilter from "@/app/map-components/MapFilter";
 import MapCurrentLocation from "@/app/map-components/MapCurrentLocation";
 import MapPostList from "@/app/map-components/MapPostList";
 import MapPOIList from "@/app/map-components/MapPOIList";
@@ -205,38 +204,30 @@ export default function MapContainer() {
           isListVisible ? "translate-y-0" : "translate-y-80"
         }`}
       >
-        <div className="px-3">
-          <div className="flex justify-end">
-            <button
-              onClick={handleClick}
-              className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full"
-            >
-              <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
-            </button>
-          </div>
-          <div className="flex w-full justify-between items-center ">
-            <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
-            <button
-              className="btn bg-white text-primary h-10"
-              onClick={toggleVisibility}
-            >
-              {isListVisible ? (
-                <>
-                  <HiMiniChevronDown size={20} style={{ strokeWidth: 1.5 }} />
-                  목록 숨기기
-                </>
-              ) : (
-                <>
-                  <HiMiniChevronUp size={20} style={{ strokeWidth: 1.5 }} />
-                  목록 보기
-                </>
-              )}
-            </button>
-            <MapFilter
-              queryParams={queryParams}
-              setQueryParams={setQueryParams}
-            />
-          </div>
+        <div className="flex w-full justify-between items-center px-3">
+          <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
+          <button
+            className="btn bg-white text-primary h-10"
+            onClick={toggleVisibility}
+          >
+            {isListVisible ? (
+              <>
+                <HiMiniChevronDown size={20} style={{ strokeWidth: 1.5 }} />
+                목록 숨기기
+              </>
+            ) : (
+              <>
+                <HiMiniChevronUp size={20} style={{ strokeWidth: 1.5 }} />
+                목록 보기
+              </>
+            )}
+          </button>
+          <button
+            onClick={handleClick}
+            className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full"
+          >
+            <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
+          </button>
         </div>
 
         <div className="carousel carousel-center w-full h-72 space-x-1 px-4">
@@ -257,7 +248,7 @@ export default function MapContainer() {
               )}
               <div
                 id="item2"
-                className="carousel-item w-full bg-white border-2 border-primary rounded-xl overflow-y-auto"
+                className="carousel-item w-full bg-white rounded-xl overflow-y-auto"
               >
                 <MapPostList
                   postData={postData}

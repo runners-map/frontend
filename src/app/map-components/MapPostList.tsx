@@ -21,12 +21,12 @@ export default function MapPostList({
   };
   return (
     <>
-      <ul className="divide-y divide-gray-300 w-full">
+      <ul className="w-full space-y-3 p-4">
         {postData?.map((item, index) => (
           <li key={item.postId}>
             <div
               onClick={() => handleClickList(item.lat, item.lng, item)}
-              className="flex items-center p-2"
+              className="flex items-center p-2 rounded-2xl bg-gray-50 shadow"
             >
               <img
                 src={createMarkerIcon(
