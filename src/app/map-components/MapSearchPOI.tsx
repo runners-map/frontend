@@ -2,7 +2,10 @@
 
 import { Controller, useForm } from "react-hook-form";
 import { HiMagnifyingGlass, HiOutlineXCircle } from "react-icons/hi2";
+import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
+import MapFilter from "@/app/map-components/MapFilter";
 import axios from "axios";
+import { useState } from "react";
 
 export default function MapSearchPOI({
   setQueryParams,
@@ -15,6 +18,10 @@ export default function MapSearchPOI({
   createMarkerIcon,
 }) {
   const { control, handleSubmit } = useForm();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const toggleFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
+  };
 
   const handleSearchPOI = async (searchKeyword) => {
     try {
@@ -94,39 +101,45 @@ export default function MapSearchPOI({
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="absolute top-10 justify-center w-full px-6"
-      >
-        <Controller
-          name="searchKeyword"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <label className="input input-bordered input-primary flex items-center gap-2">
-              <input
-                {...field}
-                type="text"
-                className="grow"
-                placeholder="검색어를 입력하세요"
-              />
-              <button type="submit" className="text-primary">
-                <HiMagnifyingGlass size={20} style={{ strokeWidth: 1.5 }} />
-              </button>
-              {isPoiSearched && (
-                <button
-                  type="button"
-                  onClick={handleSearchReset}
-                  className="text-primary"
-                >
-                  <HiOutlineXCircle size={25} style={{ strokeWidth: 2 }} />
+    <div className="flex-col absolute top-0 w-full bg-white rounded-b-2xl shadow-lg">
+      <div className="px-3 py-3 flex gap-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
+          <Controller
+            name="searchKeyword"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <label className="h-10 rounded-2xl bg-gray-100 px-2 flex items-center gap-2">
+                <input
+                  {...field}
+                  type="text"
+                  className="grow outline-none bg-inherit pl-2"
+                  placeholder="검색어를 입력하세요"
+                />
+                <button type="submit" className="text-gray-400">
+                  <HiMagnifyingGlass size={20} style={{ strokeWidth: 1.5 }} />
                 </button>
-              )}
-            </label>
-          )}
-        />
-      </form>
-    </>
+                {isPoiSearched && (
+                  <button
+                    type="button"
+                    onClick={handleSearchReset}
+                    className="text-gray-400"
+                  >
+                    <HiOutlineXCircle size={25} style={{ strokeWidth: 2 }} />
+                  </button>
+                )}
+              </label>
+            )}
+          />
+        </form>
+        <button
+          onClick={toggleFilter}
+          className="list-none bg-gray-100 text-gray-400 flex items-center justify-center w-10 h-10 rounded-2xl"
+        >
+          <HiMiniAdjustmentsHorizontal size={23} />
+        </button>
+      </div>
+      {isFilterOpen && <MapFilter />}
+    </div>
   );
 }

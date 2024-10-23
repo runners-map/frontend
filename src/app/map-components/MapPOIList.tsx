@@ -16,7 +16,7 @@ export default function MapPOIList({
 
   return (
     <>
-      <ul className="w-full  divide-y divide-gray-300">
+      <ul className="w-full divide-gray-300">
         {poiSearchData?.map((item, index) => (
           <li key={item.name}>
             <div
