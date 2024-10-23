@@ -1,12 +1,12 @@
 'use client';
 
 import { LoginFormData } from '@/types/LoginForm';
-import { useUserInfo } from '@/types/UserInfo';
+import { UserInfoType, useUserInfo } from '@/types/UserInfo';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import fetchCall from '@/lib/axios';
 
 export default function LoginForm() {
   const {
@@ -26,12 +26,13 @@ export default function LoginForm() {
     const { email, password } = data;
 
     try {
-      const response = await axios.post('/api/user/loginin', {
-        email,
-        password
-      });
+      const result = await fetchCall<{ accessToken: string; refreshToken: string; userInfo: UserInfoType }>(
+        'user/loginin',
+        'post',
+        { email, password }
+      );
 
-      const { accessToken, refreshToken, userInfo } = response.data;
+      const { accessToken, refreshToken, userInfo } = result;
 
       saveUser(userInfo);
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
