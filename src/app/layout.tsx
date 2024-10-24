@@ -14,9 +14,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const noNavPaths = ["/login", "/register", "/mypage/setting", "/404"];
   const hideNav =
-    noNavPaths.includes(pathname) ||
-    pathname.startsWith("/post/") ||
-    pathname.startsWith("/chat-list/");
+    noNavPaths.includes(pathname) || pathname.startsWith("/post-list/");
 
   return (
     <html lang="ko" className="bg-gray-200">

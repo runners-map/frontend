@@ -8,7 +8,7 @@ export default async function Loading() {
       {Array.from({ length: response.data.length }).map((_, index) => (
         <div
           key={index}
-          className="bg-gradient-to-r from-blue-200 to-purple-200 shadow-lg rounded-lg w-full h-20 mb-5 skeleton"></div>
+          className="bg-gradient-to-r from-primary p-5 via-blue-500 to-blue-400 shadow-lg rounded-lg w-full h-20 mb-5 skeleton"></div>
       ))}
     </div>
   );
