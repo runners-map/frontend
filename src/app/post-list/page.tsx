@@ -17,7 +17,7 @@ export default async function ChatListPage() {
   const chats = await getChatList();
 
   return (
-    <ul className="p-14">
+    <ul className="p-10">
       <div className="bg-gradient-to-r from-primary p-5 via-blue-500 to-blue-400 shadow-2xl rounded-3xl text-white mb-10 ">
         <h1 className="text-2xl font-semibold border-b-2 border-gray-400 pb-4 mb-5">
           참여중인 러닝크루 <span className="text-3xl"> ({chats.length}) </span>
