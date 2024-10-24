@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 export default function EditButton({ id }: { id: string }) {
   const router = useRouter();
@@ -11,10 +11,9 @@ export default function EditButton({ id }: { id: string }) {
 
   return (
     <button
-      className="btn btn-outline btn-success"
-      onClick={() => handleEdit(id)}
-    >
-      수정
+      className="shadow-lg rounded-full bg-blue-200 w-12 h-12 active:bg-blue-400 transition-colors duration-150 ease-in-out"
+      onClick={() => handleEdit(id)}>
+      📝
     </button>
   );
 }
