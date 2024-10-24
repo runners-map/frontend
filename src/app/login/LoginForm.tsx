@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import fetchCall from '@/lib/axios'; // fetchCall 사용
+import fetchCall from '@/lib/axios';
 
 export default function LoginForm() {
   const {
@@ -26,30 +26,24 @@ export default function LoginForm() {
     const { email, password } = data;
 
     try {
-      // fetchCall을 사용하여 로그인 요청 처리
       const result = await fetchCall<{
         accessToken: string;
         refreshToken: string;
         userInfo: UserInfoType;
-      }>('api/user/login', 'post', { email, password });
+      }>('user/loginin', 'post', { email, password });
 
       const { accessToken, refreshToken, userInfo } = result;
 
-      // Cookies 설정
+      saveUser(userInfo);
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
-
-      // saveUser 함수 호출하여 사용자 정보 저장
-      saveUser(userInfo);
-
-      // 로그인 상태 확인 후 페이지 이동
       checkLogin();
+
       router.push('/');
     } catch (error) {
       console.log('로그인 실패', error);
     }
   };
-
   const handleResister = () => {
     router.push('/register');
   };
