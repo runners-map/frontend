@@ -16,12 +16,12 @@ export default function MapPOIList({
 
   return (
     <>
-      <ul className="w-full divide-gray-300">
+      <ul className="w-full divide-gray-300 p-2">
         {poiSearchData?.map((item, index) => (
           <li key={item.name}>
             <div
               onClick={() => handleClickList(item.noorLat, item.noorLon)}
-              className="flex items-center w-full p-2"
+              className="flex items-center w-full"
             >
               <img
                 src={createMarkerIcon(index + 1, "poi")} // 마커 이미지를 리스트 항목에 표시

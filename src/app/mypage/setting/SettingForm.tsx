@@ -54,7 +54,7 @@ export default function SettingForm() {
       <div className="card border-2 border-primary">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="card-body space-y-6">
-            <div className="flex flex-col items-center space-y-6">
+            <div className="flex flex-col items-center gap-y-4">
               <Image
                 src={
                   preview

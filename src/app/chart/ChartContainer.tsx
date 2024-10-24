@@ -91,13 +91,16 @@ export default function ChartContainer() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div
+      className="flex flex-col gap-5 py-5 px-5"
+      style={{ height: "calc(100vh - 124px)" }}
+    >
       {isLoading ? (
         <ChartLoading />
       ) : (
         <>
           <ChartStat />
-          <div className="border-2 border-primary rounded-2xl px-1 py-2 mb-3 relative">
+          <div className="bg-white rounded-2xl px-1 py-2 relative shadow-md shadow-slate-300 flex-shrink-0">
             <div className="flex flex-none items-center justify-center space-x-3">
               <button
                 onClick={handlePreviousMonth}
@@ -150,7 +153,7 @@ export default function ChartContainer() {
               )}
             </div>
           </div>
-          <div className="overflow-y-auto max-h-60">
+          <div className="overflow-y-auto flex-1 rounded-xl shadow-md shadow-slate-300 bg-white py-2">
             <ChartList
               chartData={chartData || []}
               listRef={listRef}

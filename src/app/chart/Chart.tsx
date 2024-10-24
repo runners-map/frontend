@@ -57,6 +57,12 @@ export default function Chart({
         backgroundColor: backgroundColors,
         borderColor: borderColors,
         borderWidth: 1,
+        borderRadius: {
+          topLeft: 10,
+          topRight: 10,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
       },
     ],
   };

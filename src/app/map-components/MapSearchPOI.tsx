@@ -139,7 +139,13 @@ export default function MapSearchPOI({
           <HiMiniAdjustmentsHorizontal size={23} />
         </button>
       </div>
-      {isFilterOpen && <MapFilter />}
+      <div
+        className={`overflow-hidden transition-all duration-700 linear ${
+          isFilterOpen ? "max-h-screen" : "max-h-0"
+        }`}
+      >
+        <MapFilter />
+      </div>
     </div>
   );
 }

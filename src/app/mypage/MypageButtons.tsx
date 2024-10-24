@@ -15,16 +15,16 @@ export default function MyPageButtons() {
   return (
     <>
       <button
-        className="btn btn-outline btn-primary w-full"
+        className="btn btn-primary w-full rounded-full shadow-2xl text-base"
         onClick={handleClickSettingBtn}
       >
-        <HiOutlineCog6Tooth />내 정보 변경
+        <HiOutlineCog6Tooth size={25} />내 정보 변경
       </button>
-      <button className="btn btn-outline btn-primary w-full">
+      <button className="btn btn-primary w-full rounded-full shadow-2xl text-base">
         <HiMiniArrowRightOnRectangle />
         로그아웃
       </button>
-      <button className="btn btn-outline btn-secondary w-full">
+      <button className="btn btn-secondary w-full rounded-full shadow-2xl text-base">
         <HiOutlineUserMinus />
         회원 탈퇴
       </button>

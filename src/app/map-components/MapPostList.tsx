@@ -21,7 +21,7 @@ export default function MapPostList({
   };
   return (
     <>
-      <ul className="w-full space-y-3 p-4">
+      <ul className="w-full space-y-3 m-4">
         {postData?.map((item, index) => (
           <li key={item.postId}>
             <div

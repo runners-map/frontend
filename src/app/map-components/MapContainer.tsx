@@ -230,7 +230,7 @@ export default function MapContainer() {
           </button>
         </div>
 
-        <div className="carousel carousel-center w-full h-72 space-x-1 px-4">
+        <div className="carousel carousel-center w-full h-72 space-x-1 p-4">
           {isListVisible && (
             <>
               {isPoiSearched && (
@@ -248,7 +248,7 @@ export default function MapContainer() {
               )}
               <div
                 id="item2"
-                className="carousel-item w-full bg-white rounded-xl overflow-y-auto"
+                className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
               >
                 <MapPostList
                   postData={postData}
