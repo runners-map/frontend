@@ -1,12 +1,12 @@
 'use client';
 
 import { LoginFormData } from '@/types/LoginForm';
-import { UserInfoType, useUserInfo } from '@/types/UserInfo';
+import { useUserInfo } from '@/types/UserInfo';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import fetchCall from '@/lib/axios';
+import axios from 'axios';
 
 export default function LoginForm() {
   const {
@@ -26,17 +26,40 @@ export default function LoginForm() {
     const { email, password } = data;
 
     try {
-      const result = await fetchCall<{ accessToken: string; refreshToken: string; userInfo: UserInfoType }>(
-        'user/loginin',
-        'post',
-        { email, password }
-      );
+      const { data: response } = await axios.post<{
+        accessToken: string;
+        refreshToken: string;
+        userId: number;
+        nickname: string;
+        email: string;
+        gender: string;
+        lastPosition: string | null;
+        profileImageUrl: string;
+      }>('api/user/login', { email, password });
 
-      const { accessToken, refreshToken, userInfo } = result;
+      const {
+        accessToken,
+        refreshToken,
+        userId,
+        nickname,
+        email: userEmail,
+        gender,
+        lastPosition,
+        profileImageUrl
+      } = response;
 
-      saveUser(userInfo);
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
+
+      saveUser({
+        userId,
+        nickname,
+        email: userEmail,
+        gender,
+        lastPosition,
+        profileImageUrl
+      });
+
       checkLogin();
 
       router.push('/');
@@ -82,7 +105,7 @@ export default function LoginForm() {
                 rules={{
                   required: '비밀번호를 입력해 주세요.',
                   minLength: {
-                    value: 8,
+                    value: 6,
                     message: '비밀번호는 최소 8자 이상이어야 합니다.'
                   }
                 }}
