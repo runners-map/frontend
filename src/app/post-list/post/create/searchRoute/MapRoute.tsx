@@ -3,6 +3,7 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AddressInfo from './AddressInfo';
+import { FaSearch } from 'react-icons/fa';
 
 export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
@@ -376,8 +377,8 @@ export default function MapRoute() {
         <div className="flex absolute right-12 top-5 justify-center items-center ml-1 z-10 mt-2">
           <button
             id="searchRoute"
-            className=" bg-gray-500 text-white rounded px-4 py-2 hover:bg-gray-600 transition duration-100 ease-in-out">
-            검색
+            className=" bg-primary text-white rounded px-4 py-2 active:bg-blue-500 transition-colors duration-150 ease-in-out">
+            <FaSearch />
           </button>
         </div>
       </div>

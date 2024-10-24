@@ -4,9 +4,10 @@ import Cookies from 'js-cookie';
 export interface UserInfoType {
   userId: number;
   gender: string;
-  lastPosition: string;
+  lastPosition: string | null;
   email: string;
   nickname: string;
+  profileImageUrl: string;
 }
 
 interface AuthState {
