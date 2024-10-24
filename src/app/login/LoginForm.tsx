@@ -1,12 +1,12 @@
 'use client';
 
 import { LoginFormData } from '@/types/LoginForm';
-import { useUserInfo } from '@/types/UserInfo';
+import { UserInfoType, useUserInfo } from '@/types/UserInfo';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import fetchCall from '@/lib/axios'; // fetchCall 사용
 
 export default function LoginForm() {
   const {
@@ -26,47 +26,30 @@ export default function LoginForm() {
     const { email, password } = data;
 
     try {
-      const { data: response } = await axios.post<{
+      // fetchCall을 사용하여 로그인 요청 처리
+      const result = await fetchCall<{
         accessToken: string;
         refreshToken: string;
-        userId: number;
-        nickname: string;
-        email: string;
-        gender: string;
-        lastPosition: string | null;
-        profileImageUrl: string;
-      }>('api/user/login', { email, password });
+        userInfo: UserInfoType;
+      }>('api/user/login', 'post', { email, password });
 
-      const {
-        accessToken,
-        refreshToken,
-        userId,
-        nickname,
-        email: userEmail,
-        gender,
-        lastPosition,
-        profileImageUrl
-      } = response;
+      const { accessToken, refreshToken, userInfo } = result;
 
+      // Cookies 설정
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
 
-      saveUser({
-        userId,
-        nickname,
-        email: userEmail,
-        gender,
-        lastPosition,
-        profileImageUrl
-      });
+      // saveUser 함수 호출하여 사용자 정보 저장
+      saveUser(userInfo);
 
+      // 로그인 상태 확인 후 페이지 이동
       checkLogin();
-
       router.push('/');
     } catch (error) {
       console.log('로그인 실패', error);
     }
   };
+
   const handleResister = () => {
     router.push('/register');
   };
@@ -105,7 +88,7 @@ export default function LoginForm() {
                 rules={{
                   required: '비밀번호를 입력해 주세요.',
                   minLength: {
-                    value: 6,
+                    value: 8,
                     message: '비밀번호는 최소 8자 이상이어야 합니다.'
                   }
                 }}
