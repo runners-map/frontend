@@ -28,7 +28,7 @@ export default function LoginForm() {
     try {
       const result = await fetchCall<{
         accessToken: string;
-        refreshToken: string; 
+        refreshToken: string;
         userInfo: UserInfoType;
       }>("user/loginin", "post", { email, password });
 
