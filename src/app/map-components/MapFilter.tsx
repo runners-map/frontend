@@ -16,7 +16,7 @@ export default function MapFilter() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex-col px-4 space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex-col px-3 space-y-4">
       <fieldset className="flex gap-2">
         <legend className="text-gray-400">성별</legend>
         <Controller
@@ -74,7 +74,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("F")}
                   className="hidden"
                 />
-                🏃‍♀️여성
+                🏃‍♀️ 여성
               </label>
             </>
           )}
@@ -82,7 +82,7 @@ export default function MapFilter() {
       </fieldset>
 
       <fieldset className="flex gap-2">
-        <legend className="text-gray-400">거리</legend>
+        <legend className="text-gray-400">거리 (km)</legend>
         <Controller
           name="distance"
           control={control}
@@ -104,7 +104,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("0-5")}
                   className="hidden"
                 />
-                💧3~5
+                💧 3~5
               </label>
 
               <label
@@ -122,7 +122,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("5-10")}
                   className="hidden"
                 />
-                💦 5~10 km
+                💦 5~10
               </label>
 
               <label
@@ -158,7 +158,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("15+")}
                   className="hidden"
                 />
-                🔥15~
+                🔥 15~
               </label>
             </>
           )}
@@ -166,7 +166,7 @@ export default function MapFilter() {
       </fieldset>
 
       <fieldset className="flex gap-2">
-        <legend className="text-gray-400">페이스</legend>
+        <legend className="text-gray-400">페이스 (분)</legend>
         <Controller
           name="pace"
           control={control}
@@ -188,7 +188,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("6+")}
                   className="hidden"
                 />
-                🐢 ~6'
+                🐢 6~
               </label>
 
               <label
@@ -206,7 +206,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("5-6")}
                   className="hidden"
                 />
-                🐇 6'~5'
+                🐇 5~6
               </label>
 
               <label
@@ -224,7 +224,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("4-5")}
                   className="hidden"
                 />
-                🐈 5'~4'
+                🐈 4~5
               </label>
 
               <label
@@ -242,14 +242,14 @@ export default function MapFilter() {
                   onChange={() => field.onChange("4-")}
                   className="hidden"
                 />
-                🐆 4'~
+                🐆 4~
               </label>
             </>
           )}
         />
       </fieldset>
       <fieldset className="flex gap-2">
-        <legend className="text-gray-400">제한 인원</legend>
+        <legend className="text-gray-400">제한 인원 (명)</legend>
         <Controller
           name="groupSize"
           control={control}
@@ -271,7 +271,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("2")}
                   className="hidden"
                 />
-                🌱 2명
+                🌱 2
               </label>
               <label
                 className={`cursor-pointer px-4 py-2 rounded-full shadow-md ${
@@ -288,7 +288,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("3-5")}
                   className="hidden"
                 />
-                🍀 3~4명
+                🍀 3~4
               </label>
               <label
                 className={`cursor-pointer px-4 py-2 rounded-full shadow-md ${
@@ -305,7 +305,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("6-8")}
                   className="hidden"
                 />
-                🌿 5~7명
+                🌿 5~7
               </label>
               <label
                 className={`cursor-pointer px-4 py-2 rounded-full shadow-md ${
@@ -322,7 +322,7 @@ export default function MapFilter() {
                   onChange={() => field.onChange("9-10")}
                   className="hidden"
                 />
-                🌳 8~10명
+                🌳 8~10
               </label>
             </>
           )}
