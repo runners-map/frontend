@@ -1,5 +1,6 @@
+import { create } from 'zustand';
+
 export interface Post {
-  postId: number;
   adminId: number;
   title: string;
   content: string;
@@ -12,8 +13,30 @@ export interface Post {
   distance: number;
   paceMin: number;
   paceSec: number;
-  path: string;
+  path: string[];
 }
+
+interface PostState {
+  adminId: number;
+  path: string[];
+  distance: number;
+  startPosition: string;
+  setAdminId: (adminId: number) => void;
+  setPath: (path: string[]) => void;
+  setDistance: (distance: number) => void;
+  setStartPosition: (startPosition: string) => void;
+}
+
+export const usePostStore = create<PostState>(set => ({
+  adminId: 0,
+  path: [],
+  distance: 0,
+  startPosition: '',
+  setAdminId: newAdminId => set({ adminId: newAdminId }),
+  setPath: newPath => set({ path: newPath }),
+  setDistance: newDistance => set({ distance: newDistance }),
+  setStartPosition: newPosition => set({ startPosition: newPosition })
+}));
 
 export interface GetPostsRequest {
   swLatlng: string;

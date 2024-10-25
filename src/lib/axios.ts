@@ -1,7 +1,7 @@
+import { useUserInfo } from '@/types/UserInfo';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 
 const axiosInstance = axios.create({
   baseURL: '/api',
@@ -24,14 +24,41 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 401) {
-      toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요');
-      const router = useRouter();
-      router.push('/login');
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  async error => {
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const refreshToken = Cookies.get('refreshToken');
+
+      try {
+        const response = await axios.post('/api/user/refresh', {
+          refreshToken: refreshToken
+        });
+
+        const { accessToken, newRefreshToken } = response.data;
+
+        console.log('Access token renewed:', accessToken);
+
+        Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
+        Cookies.set('refreshToken', newRefreshToken, { sameSite: 'strict' });
+
+        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+        return axios(originalRequest);
+      } catch (refreshError) {
+        console.log('refreshToken 만료 또는 갱신 실패', refreshError);
+        const { logout } = useUserInfo();
+        const router = useRouter();
+        router.push('/login');
+        logout();
+      }
     }
+
     return Promise.reject(error);
   }
 );

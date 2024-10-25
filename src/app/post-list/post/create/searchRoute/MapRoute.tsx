@@ -4,10 +4,13 @@ import { ReactElement, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AddressInfo from './AddressInfo';
 import { FaSearch } from 'react-icons/fa';
+import { usePostStore } from '@/types/Post';
+import { useRouter } from 'next/navigation';
 
 export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
-
+  const { setPath, setDistance, setStartPosition } = usePostStore();
+  const router = useRouter();
   useEffect(() => {
     const map = new Tmapv2.Map('map_div', {
       center: new Tmapv2.LatLng(37.567439753187976, 126.98903560638469),
@@ -181,7 +184,7 @@ export default function MapRoute() {
           inputStartX.value = x.toString();
           inputStartY.value = y.toString();
         }
-
+        setStartPosition(address);
         if (markerStart) {
           markerStart.setPosition(new Tmapv2.LatLng(y, x));
         } else {
@@ -299,11 +302,35 @@ export default function MapRoute() {
       const params = {
         onComplete: function (result: any) {
           const resultData = result._responseData.features;
-          console.log(resultData);
+          const coordinates = resultData.map((result: any) => result.geometry.coordinates);
+          const flattenCoordinates = coordinates.flatMap((coord: any) => {
+            if (Array.isArray(coord[0])) {
+              return coord.map((innerCoord: any) => ({
+                lat: innerCoord[1],
+                lng: innerCoord[0]
+              }));
+            } else {
+              return [{ lat: coord[1], lng: coord[0] }];
+            }
+          });
+
           const totalTime = (resultData[0].properties.totalTime / 60).toFixed(0);
           const totalDistance = (resultData[0].properties.totalDistance / 1000).toFixed(1);
+          console.log(flattenCoordinates);
 
-          const routeResult = <div>{`${totalTime}분 | ${totalDistance}km`}</div>;
+          const routeResult = (
+            <div>
+              {`${totalTime}분 | ${totalDistance}km`}
+              <button
+                onClick={() => {
+                  setPath(flattenCoordinates);
+                  setDistance(Number(totalDistance));
+                  router.push('/post-list/post/create');
+                }}>
+                저장하기
+              </button>
+            </div>
+          );
           setAddressInfo(routeResult);
 
           if (lineArr.length > 0) {
@@ -344,7 +371,7 @@ export default function MapRoute() {
     };
 
     document.getElementById('searchRoute')!.onclick = drawRoute;
-  }, []);
+  }, [setPath, router, setDistance, setStartPosition]);
 
   return (
     <>

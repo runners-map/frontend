@@ -3,10 +3,11 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { Post } from '@/types/Post';
+import { Post, usePostStore } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import fetchCall from '@/lib/axios';
 
 export default function PostCreateForm() {
   const {
@@ -16,24 +17,33 @@ export default function PostCreateForm() {
   } = useForm<Post>();
 
   const router = useRouter();
-
+  const { path, adminId, distance, startPosition } = usePostStore();
   const searchRoute = () => {
     console.log('searchRoute');
-    router.push('/post/create/searchRoute');
+    router.push('/post-list/post/create/searchRoute');
   };
 
-  const onSubmit = (data: Post) => {
-    const { startDateTime } = data;
+  const onSubmit = async (data: Post) => {
+    const { startDateTime, ...otherData } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
       : null;
 
     const finalData = {
-      ...data,
-      startDateTime: formattedDateTime
+      ...otherData,
+      startDateTime: formattedDateTime,
+      adminId,
+      distance,
+      startPosition,
+      path
     };
 
-    console.log(finalData);
+    try {
+      const response = await fetchCall<Post>('user/posts', 'post', finalData);
+      console.log('Post created successfully', response);
+    } catch (error) {
+      console.log('Error creating post', error);
+    }
   };
 
   return (
