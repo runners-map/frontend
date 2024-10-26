@@ -3,7 +3,7 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { Post, usePostStore } from '@/types/Post';
+import { GetPostResponse, Post, usePostStore } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
@@ -20,7 +20,7 @@ export default function PostCreateForm() {
   const { path, adminId, distance, startPosition } = usePostStore();
   const searchRoute = () => {
     console.log('searchRoute');
-    router.push('/post-list/post/create/searchRoute');
+    router.push('/post-list/post/create/searchRoute?mode=create');
   };
 
   const onSubmit = async (data: Post) => {
@@ -35,12 +35,29 @@ export default function PostCreateForm() {
       adminId,
       distance,
       startPosition,
-      path
+      centerlat: path[0].lat,
+      centerlng: path[0].lng,
+      path: path.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
+    console.log(finalData);
+
     try {
-      const response = await fetchCall<Post>('user/posts', 'post', finalData);
+      const response = await fetchCall<GetPostResponse>('/posts', 'post', finalData);
       console.log('Post created successfully', response);
+      // const setPostResponse = usePostResponseStore.getState();
+
+      // setPostResponse.setPostIdResponse(response.postId);
+      // setPostResponse.setAdminIdResponse(finalData.adminId);
+      // setPostResponse.setTitleResponse(finalData.title);
+      // setPostResponse.setContentResponse(finalData.content);
+      // setPostResponse.setLimitMemberCntResponse(finalData.limitMemberCnt);
+      // setPostResponse.setGenderResponse(finalData.gender);
+      // setPostResponse.setStartPositionResponse(finalData.startPosition);
+      // setPostResponse.setDistanceResponse(finalData.distance);
+      // setPostResponse.setPaceMinResponse(finalData.paceMin);
+      // setPostResponse.setPaceSecResponse(finalData.paceSec);
+      // setPostResponse.setPathResponse(finalData.path);
     } catch (error) {
       console.log('Error creating post', error);
     }

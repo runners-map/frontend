@@ -1,7 +1,6 @@
 import { useUserInfo } from '@/types/UserInfo';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
 
 const axiosInstance = axios.create({
   baseURL: '/api',
@@ -53,8 +52,6 @@ axios.interceptors.response.use(
       } catch (refreshError) {
         console.log('refreshToken 만료 또는 갱신 실패', refreshError);
         const { logout } = useUserInfo();
-        const router = useRouter();
-        router.push('/login');
         logout();
       }
     }

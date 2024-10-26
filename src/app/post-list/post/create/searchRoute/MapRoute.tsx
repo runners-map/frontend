@@ -5,12 +5,16 @@ import { toast } from 'react-toastify';
 import AddressInfo from './AddressInfo';
 import { FaSearch } from 'react-icons/fa';
 import { usePostStore } from '@/types/Post';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Header from '@/components/Header';
 
 export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
   const { setPath, setDistance, setStartPosition } = usePostStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const mode = searchParams.get('mode');
+
   useEffect(() => {
     const map = new Tmapv2.Map('map_div', {
       center: new Tmapv2.LatLng(37.567439753187976, 126.98903560638469),
@@ -319,16 +323,30 @@ export default function MapRoute() {
           console.log(flattenCoordinates);
 
           const routeResult = (
-            <div>
-              {`${totalTime}분 | ${totalDistance}km`}
-              <button
-                onClick={() => {
-                  setPath(flattenCoordinates);
-                  setDistance(Number(totalDistance));
-                  router.push('/post-list/post/create');
-                }}>
-                저장하기
-              </button>
+            <div className="flex justify-between items-center ">
+              <div>{`${Math.floor(Number(totalTime) / 60) > 0 ? `${Math.floor(Number(totalTime) / 60)}시간 ` : ''}${
+                Number(totalTime) % 60
+              }분 | ${totalDistance}km`}</div>
+              {mode === 'edit' ? (
+                <button
+                  onClick={() => {
+                    setPath(flattenCoordinates);
+                    setDistance(Number(totalDistance));
+                    router.back();
+                  }}>
+                  수정하기
+                </button>
+              ) : mode === 'create' ? (
+                <button
+                  onClick={() => {
+                    setPath(flattenCoordinates);
+                    setDistance(Number(totalDistance));
+                    router.push('/post-list/post/create');
+                  }}
+                  className="bg-primary text-white right-0 mr-2 p-3 ml-10 rounded-full">
+                  저장하기
+                </button>
+              ) : null}
             </div>
           );
           setAddressInfo(routeResult);
@@ -371,10 +389,11 @@ export default function MapRoute() {
     };
 
     document.getElementById('searchRoute')!.onclick = drawRoute;
-  }, [setPath, router, setDistance, setStartPosition]);
+  }, [setPath, router, setDistance, setStartPosition, mode]);
 
   return (
     <>
+      {mode === 'edit' && <Header />}
       <div id="map_div" className="flex relative" />
       <div id="hiddenInput">
         <input type="hidden" id="startx" />

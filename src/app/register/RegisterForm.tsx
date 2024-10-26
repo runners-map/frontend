@@ -7,6 +7,7 @@ import { RegisterFormData } from '@/types/ResisterForm';
 // import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import fetchCall from '@/lib/axios';
+import axios from 'axios';
 
 export default function RegisterForm() {
   const {
@@ -29,7 +30,7 @@ export default function RegisterForm() {
     try {
       const { email, password, confirmPassword, nickname, gender } = data;
 
-      const res = await fetchCall('/user/sign-up', 'post', {
+      const res = await axios.post(`api/user/sign-up`, {
         email,
         password,
         confirmPassword,

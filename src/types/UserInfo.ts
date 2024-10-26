@@ -14,6 +14,7 @@ export interface UserInfoType {
 
 interface AuthState {
   user: UserInfoType | null;
+  userId: number;
   saveUser: (
     accessToken: string,
     refreshToken: string,
@@ -27,10 +28,12 @@ interface AuthState {
   isLogin: boolean;
   checkLogin: () => void;
   logout: () => void;
+  setUserId: (userId: number) => void;
 }
 
 export const useUserInfo = create<AuthState>(set => ({
   user: null,
+  userId: 0,
   isLogin: false,
   saveUser: (accessToken, refreshToken, userId, gender, lastPosition, nickname, email, profileImageUrl) => {
     const user: UserInfoType = {
@@ -58,5 +61,6 @@ export const useUserInfo = create<AuthState>(set => ({
     Cookies.remove('accessToken');
     Cookies.remove('refreshToken');
     set({ user: null, isLogin: false });
-  }
+  },
+  setUserId: newUserId => set({ userId: newUserId })
 }));

@@ -20,7 +20,7 @@ export default function LoginForm() {
       password: ''
     }
   });
-  const { saveUser, checkLogin, logout } = useUserInfo();
+  const { saveUser, checkLogin, logout, setUserId } = useUserInfo();
   const router = useRouter();
   const { setAdminId } = usePostStore();
 
@@ -37,6 +37,7 @@ export default function LoginForm() {
 
       saveUser(accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl, email);
       setAdminId(userId);
+      setUserId(userId);
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
 
