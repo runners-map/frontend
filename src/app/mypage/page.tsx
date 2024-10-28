@@ -5,7 +5,7 @@ import Image from "next/image";
 import { TbGenderFemale, TbGenderMale } from "react-icons/tb";
 
 export default function MyPagePage() {
-  const { user, logout } = useUserInfo();
+  const { user } = useUserInfo();
   console.log(user);
 
   return (
@@ -42,7 +42,7 @@ export default function MyPagePage() {
           <span className="text-center text-xl">{user?.email}</span>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-md shadow-slate-300 space-y-4 mt-8">
-          <MyPageButtons logout={logout} />
+          <MyPageButtons />
         </div>
       </div>
     </>

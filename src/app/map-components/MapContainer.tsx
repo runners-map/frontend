@@ -10,6 +10,7 @@ import MapPostDetails from "@/app/map-components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
