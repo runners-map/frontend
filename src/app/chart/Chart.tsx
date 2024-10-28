@@ -16,7 +16,7 @@ import { Record } from "@/types/Record";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Legend);
 
 interface ChartProps {
-  chartData: Record[];
+  chartData: [];
   year: number;
   month: number;
   selectedDay: number | null;
@@ -35,9 +35,9 @@ export default function Chart({
   const distances = Array(daysInMonth).fill(0);
 
   chartData.forEach((data) => {
-    if (data.year === year && data.month === month) {
+    if (data.day && data.day <= daysInMonth) {
       const day = data.day;
-      distances[day - 1] = data.totalDistance;
+      distances[day - 1] = data.distance; // distance를 사용
     }
   });
 

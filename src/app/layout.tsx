@@ -1,8 +1,10 @@
 "use client";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -11,10 +13,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const router = useRouter();
   const pathname = usePathname();
-  const noNavPaths = ["/login", "/register", "/mypage/setting", "/404"];
+  const noNavPaths = [
+    "/login",
+    "/register",
+    "/mypage/setting",
+    "/mypage/delete-account",
+    "/404",
+  ];
   const hideNav =
     noNavPaths.includes(pathname) || pathname.startsWith("/post-list/");
+  const accessToken = Cookies.get("accessToken");
+
+  // useEffect(() => {
+  //   if (!accessToken && pathname !== "/login" && pathname !== "/register") {
+  //     router.push("/login");
+  //   }
+  //   if (accessToken && (pathname === "/login" || pathname === "/register")) {
+  //     router.push("/");
+  //   }
+  // }, [accessToken, pathname, router]);
 
   return (
     <html lang="ko" className="bg-gray-200">

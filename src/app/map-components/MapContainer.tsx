@@ -10,21 +10,23 @@ import MapPostDetails from "@/app/map-components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { MapPostQuery } from "@/types/Post";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function MapContainer() {
-  const [queryParams, setQueryParams] = useState({
-    centerLat: 0,
-    centerLng: 0,
+  const [queryParams, setQueryParams] = useState<MapPostQuery>({
+    centerLat: "",
+    centerLng: "",
     gender: "",
     paceMinStart: "",
     paceMinEnd: "",
     distanceStart: "",
     distanceEnd: "",
+    limitMemberCntStart: "",
+    limitMemberCntEnd: "",
     startDate: "",
     startTime: "",
-    limitMemberCnt: 0,
-    page: "",
-    size: "",
   });
 
   const [map, setMap] = useState<Tmapv2.Map | null>(null);
@@ -34,17 +36,24 @@ export default function MapContainer() {
   const [poiMarkerArr, setPoiMarkerArr] = useState<Tmapv2.Marker[] | null>([]);
   const [isPoiSearched, setIsPoiSearched] = useState(false);
 
-  const [postData, setPostData] = useState(null);
+  const [postData, setPostData] = useState([]);
   const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker[] | null>(
     []
   );
 
   const [selectedPost, setSelectedPost] = useState(null);
 
+  const { user } = useUserInfo();
+
   useEffect(() => {
+    // const [lat, lng] = user?.lastPosition
+    //   .replace(/[()]/g, "")
+    //   .split(",")
+    //   .map((coord) => parseFloat(coord.trim()));
+
     if (window.Tmapv2) {
       const newMap = new Tmapv2.Map("map_div", {
-        center: new Tmapv2.LatLng(37.570028, 126.986072),
+        center: new Tmapv2.LatLng(33.450936, 126.569477),
         width: "100%",
         height: "100vh",
         zoom: 15,
@@ -78,49 +87,38 @@ export default function MapContainer() {
       setPostMarkerArr([]);
     }
 
-    const params = {
-      lat_gte: queryParams.centerLat - 1 / 111,
-      lat_lte: queryParams.centerLat + 1 / 111,
-      lng_gte:
-        queryParams.centerLng -
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
-      lng_lte:
-        queryParams.centerLng +
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
-      gender: queryParams.gender,
-      limitMemberCnt: queryParams.limitMemberCnt,
-    };
-
-    console.log("실제 요청 파라미터", params);
-
     try {
-      // 모든 데이터를 가져오기
-      const res = await axios.get("http://localhost:3001/Post");
+      const res = await axios.get("/api/posts/map-posts", {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+        params: queryParams,
+      });
       const posts = res.data;
-
-      console.log("게시글 목록", posts);
       setPostData(posts);
 
+      console.log("게시글 목록", posts);
+
       if (posts.length > 0) {
-        posts.forEach((markerData, index) => {
+        posts.forEach((post, index) => {
           const markerPosition = new Tmapv2.LatLng(
-            markerData.lat,
-            markerData.lng
+            post.centerLat,
+            post.centerLng
           );
 
           const marker = new Tmapv2.Marker({
             position: markerPosition,
             icon: createMarkerIcon(
               index + 1,
-              markerData.arriveYn ? "review" : "post"
+              post.arriveYn ? "review" : "post"
             ),
             iconSize: new Tmapv2.Size(40, 40),
-            title: markerData.title,
+            title: post.title,
             map: map,
           });
 
           marker.addListener("touchstart", function () {
-            setSelectedPost(markerData);
+            setSelectedPost(post);
             setIsListVisible(true);
             const targetElement = document.getElementById("item3");
             if (targetElement) {
@@ -197,17 +195,14 @@ export default function MapContainer() {
         isPoiSearched={isPoiSearched}
         setIsPoiSearched={setIsPoiSearched}
         createMarkerIcon={createMarkerIcon}
+        setIsListVisible={setIsListVisible}
       />
 
-      <div
-        className={`flex-col space-y-2 absolute w-full flex justify-center bottom-24 transition-transform duration-300 ${
-          isListVisible ? "translate-y-0" : "translate-y-80"
-        }`}
-      >
+      <div className="flex-col absolute w-full flex justify-center bottom-12 transition-transform duration-300">
         <div className="flex w-full justify-between items-center px-3">
           <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
           <button
-            className="btn bg-white text-primary h-10"
+            className="btn bg-white text-primary border-0 h-10 rounded-full shadow-md shadow-slate-300"
             onClick={toggleVisibility}
           >
             {isListVisible ? (
@@ -224,49 +219,49 @@ export default function MapContainer() {
           </button>
           <button
             onClick={handleClick}
-            className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full"
+            className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full shadow-md shadow-slate-300"
           >
             <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
           </button>
         </div>
 
-        <div className="carousel carousel-center w-full h-72 space-x-1 p-4">
-          {isListVisible && (
-            <>
-              {isPoiSearched && (
-                <div
-                  id="item1"
-                  className="carousel-item w-full bg-white border-2 border-primary rounded-xl overflow-y-auto"
-                >
-                  <MapPOIList
-                    poiSearchData={poiSearchData}
-                    setQueryParams={setQueryParams}
-                    map={map}
-                    createMarkerIcon={createMarkerIcon}
-                  />
-                </div>
-              )}
-              <div
-                id="item2"
-                className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
-              >
-                <MapPostList
-                  postData={postData}
-                  setQueryParams={setQueryParams}
-                  map={map}
-                  createMarkerIcon={createMarkerIcon}
-                  setSelectedPost={setSelectedPost}
-                />
-              </div>
-              {selectedPost && (
-                <div
-                  id="item3"
-                  className="carousel-item w-full bg-white border-2 border-primary rounded-xl"
-                >
-                  <MapPostDetails post={selectedPost} />
-                </div>
-              )}
-            </>
+        <div
+          className={`carousel carousel-center w-full h-72 space-x-1 px-4 pb-6 pt-2 overflow-hidden transition-all duration-700 linear ${
+            isListVisible ? "max-h-72" : "max-h-0"
+          }`}
+        >
+          {isPoiSearched && (
+            <div
+              id="item1"
+              className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+            >
+              <MapPOIList
+                poiSearchData={poiSearchData}
+                setQueryParams={setQueryParams}
+                map={map}
+                createMarkerIcon={createMarkerIcon}
+              />
+            </div>
+          )}
+          <div
+            id="item2"
+            className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+          >
+            <MapPostList
+              postData={postData}
+              setQueryParams={setQueryParams}
+              map={map}
+              createMarkerIcon={createMarkerIcon}
+              setSelectedPost={setSelectedPost}
+            />
+          </div>
+          {selectedPost && (
+            <div
+              id="item3"
+              className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+            >
+              <MapPostDetails post={selectedPost} />
+            </div>
           )}
         </div>
       </div>

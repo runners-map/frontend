@@ -31,10 +31,10 @@ export default function ChartCalendar({
           const isRunningDay = chartData.some(
             (data) =>
               data.day === date.getDate() &&
-              date.getMonth() + 1 === chartData[0].month &&
-              date.getFullYear() === chartData[0].year
+              new Date(data.actualStartTime).getMonth() === date.getMonth() &&
+              new Date(data.actualStartTime).getFullYear() ===
+                date.getFullYear()
           );
-
           if (isToday) {
             return "today";
           } else if (isRunningDay) {
@@ -48,14 +48,16 @@ export default function ChartCalendar({
       }}
       tileDisabled={({ date, view }) => {
         if (view === "month") {
-          const isRunningDay = chartData.some(
-            (data) =>
-              data.day === date.getDate() &&
-              date.getMonth() + 1 === chartData[0].month &&
-              date.getFullYear() === chartData[0].year
-          );
+          const isRunningDay = chartData.some((data) => {
+            const actualDate = new Date(data.actualStartTime); // 문자열을 Date 객체로 변환
+            return (
+              actualDate.getDate() === date.getDate() &&
+              actualDate.getMonth() === date.getMonth() &&
+              actualDate.getFullYear() === date.getFullYear()
+            );
+          });
 
-          return !isRunningDay;
+          return !isRunningDay; // isRunningDay가 false인 경우 비활성화
         }
         return false;
       }}

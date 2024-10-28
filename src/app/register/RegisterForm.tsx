@@ -10,6 +10,7 @@ import {
 import { PiGenderIntersexBold } from "react-icons/pi";
 import { RegisterFormData } from "@/types/ResisterForm";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   const {
@@ -27,20 +28,21 @@ export default function RegisterForm() {
     },
   });
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     try {
       const { email, password, confirmPassword, nickname, gender } = data;
-      const res = await axios.post(
-        "http://43.202.152.217:8080/api/user/sign-up",
-        {
-          email,
-          password,
-          confirmPassword,
-          nickname,
-          gender,
-        }
-      );
+      const res = await axios.post("/api/user/sign-up", {
+        email,
+        password,
+        confirmPassword,
+        nickname,
+        gender,
+      });
       console.log("회원가입 성공", res.data);
+
+      router.push("/login");
     } catch (error) {
       console.error("회원가입 실패:", error);
     }
@@ -48,12 +50,12 @@ export default function RegisterForm() {
 
   const password = watch("password");
   return (
-    <>
-      <div className="card border-2 border-primary">
+    <div className="px-4 mt-8 bg-white">
+      <div className="rounded-2xl shadow-md shadow-slate-300">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-body space-y-6">
+          <div className="card-body space-y-4">
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+              <label className="input input-bordered rounded-full input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="email"
                   control={control}
@@ -85,7 +87,7 @@ export default function RegisterForm() {
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+              <label className="input input-bordered rounded-full input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="password"
                   control={control}
@@ -116,7 +118,7 @@ export default function RegisterForm() {
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+              <label className="input input-bordered rounded-full input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="confirmPassword"
                   control={control}
@@ -145,7 +147,7 @@ export default function RegisterForm() {
               )}
             </div>
             <div>
-              <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+              <label className="input input-bordered rounded-full input-primary flex items-center gap-2 mb-1">
                 <Controller
                   name="nickname"
                   control={control}
@@ -176,7 +178,7 @@ export default function RegisterForm() {
               )}
             </div>
             <div>
-              <div className="flex items-center border border-primary rounded-lg px-4 h-12 mb-1 gap-2">
+              <div className="flex items-center border border-primary rounded-full px-4 h-12 mb-1 gap-2">
                 <PiGenderIntersexBold className="opacity-70" size={20} />
                 <span className="opacity-50">성별</span>
                 <Controller
@@ -225,14 +227,21 @@ export default function RegisterForm() {
             <div className="card-actions">
               <button
                 type="submit"
-                className="btn btn-primary w-full text-base text-white"
+                className="btn btn-primary w-full text-base text-white rounded-full"
               >
                 가입하기
+              </button>
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="btn btn-secondary w-full text-base text-white rounded-full"
+              >
+                뒤로가기
               </button>
             </div>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }

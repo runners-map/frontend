@@ -34,3 +34,32 @@ export interface GetPostsResponse {
   message?: string;
   data: Post[];
 }
+
+export interface PostFilter {
+  gender: string;
+  pace: string;
+  paceMinStart: number | null | "";
+  paceMinEnd: number | null | "";
+  distance: string;
+  distanceStart: number | null | "";
+  distanceEnd: number | null | "";
+  limitMemberCnt: string;
+  limitMemberCntStart: number | null | "";
+  limitMemberCntEnd: number | null | "";
+  startDate: string;
+  startTime: string;
+}
+
+export interface MapPostQuery {
+  centerLat: number | null;
+  centerLng: number | null;
+  gender: string;
+  paceMinStart: number | null | "";
+  paceMinEnd: number | null | "";
+  distanceStart: number | null | "";
+  distanceEnd: number | null | "";
+  limitMemberCntStart: number | null | "";
+  limitMemberCntEnd: number | null | "";
+  startDate: string;
+  startTime: string;
+}

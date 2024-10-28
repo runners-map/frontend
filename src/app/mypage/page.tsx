@@ -1,29 +1,12 @@
 "use client";
 import MyPageButtons from "@/app/mypage/MypageButtons";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useUserInfo } from "@/types/UserInfo";
 import Image from "next/image";
-import { TbGenderFemale } from "react-icons/tb";
-
-const fetchUserData = async () => {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-    params: {
-      userId: 1,
-    },
-  });
-  console.log(response.data);
-  return response.data;
-};
+import { TbGenderFemale, TbGenderMale } from "react-icons/tb";
 
 export default function MyPagePage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUserData,
-  });
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  const { user, logout } = useUserInfo();
+  console.log(user);
 
   return (
     <>
@@ -32,23 +15,34 @@ export default function MyPagePage() {
       </div>
       <div className="px-4">
         <div className="bg-white shadow-md shadow-slate-300 rounded-2xl flex flex-col items-center py-10 gap-3 mt-8">
-          <Image
-            src="https://i.namu.wiki/i/zN7ASE4kyQNHO9jeAobgriDh2fqdbqiJVk5v7K-Tb_bCtOtem2v47wkFV4cQfYJYwbjr7bgoVqKVyHkp_Gy_6A.webp"
-            width={100}
-            height={100}
-            alt="profile"
-            className="rounded-full object-cover w-36 h-36 "
-          />
+          <div className="w-36 h-36 rounded-full relative shadow-md shadow-slate-300">
+            {user && user.profileImageUrl !== "" ? (
+              <Image
+                src={user.profileImageUrl}
+                fill
+                alt="profile"
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
+                사진 없음
+              </div>
+            )}
+          </div>
           <div className="flex items-center">
             <span className="text-center font-bold text-2xl">
-              {data[0].nickname}
+              {user?.nickname}
             </span>
-            <TbGenderFemale size={20} />
+            {user?.gender === "M" ? (
+              <TbGenderMale size={20} />
+            ) : (
+              <TbGenderFemale size={20} />
+            )}
           </div>
-          <span className="text-center text-xl">{data[0].email}</span>
+          <span className="text-center text-xl">{user?.email}</span>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-md shadow-slate-300 space-y-4 mt-8">
-          <MyPageButtons />
+          <MyPageButtons logout={logout} />
         </div>
       </div>
     </>

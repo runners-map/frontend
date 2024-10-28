@@ -1,5 +1,5 @@
 export interface SettingFormData {
-  profileImage: File;
+  profileImage: null | File | "";
   nickname: string;
   password: string;
   confirmPassword: string;

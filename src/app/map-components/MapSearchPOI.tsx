@@ -16,11 +16,13 @@ export default function MapSearchPOI({
   isPoiSearched,
   setIsPoiSearched,
   createMarkerIcon,
+  setIsListVisible,
 }) {
   const { control, handleSubmit } = useForm();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
+    setIsListVisible(false);
   };
 
   const handleSearchPOI = async (searchKeyword) => {
@@ -101,7 +103,7 @@ export default function MapSearchPOI({
   };
 
   return (
-    <div className="flex-col absolute top-0 w-full bg-white rounded-b-2xl shadow-lg">
+    <div className="flex-col absolute top-0 w-full bg-white rounded-b-2xl shadow-md shadow-slate-300">
       <div className="px-3 py-3 flex gap-2">
         <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
           <Controller
@@ -134,7 +136,9 @@ export default function MapSearchPOI({
         </form>
         <button
           onClick={toggleFilter}
-          className="list-none bg-gray-100 text-gray-400 flex items-center justify-center w-10 h-10 rounded-2xl"
+          className={`list-none flex items-center justify-center w-10 h-10 rounded-2xl transition-all duration-700 linear ${
+            isFilterOpen ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
+          }`}
         >
           <HiMiniAdjustmentsHorizontal size={23} />
         </button>
@@ -144,7 +148,10 @@ export default function MapSearchPOI({
           isFilterOpen ? "max-h-screen" : "max-h-0"
         }`}
       >
-        <MapFilter />
+        <MapFilter
+          setQueryParams={setQueryParams}
+          setIsFilterOpen={setIsFilterOpen}
+        />
       </div>
     </div>
   );

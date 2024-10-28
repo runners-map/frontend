@@ -1,12 +1,11 @@
 "use client";
-
-import { LoginFormData } from "@/types/LoginForm";
 import { UserInfoType, useUserInfo } from "@/types/UserInfo";
+import { LoginFormData } from "@/types/LoginForm";
+import axios from "axios";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { HiMiniEnvelope, HiLockClosed } from "react-icons/hi2";
-import Cookies from "js-cookie";
-import fetchCall from "@/lib/axios";
 
 export default function LoginForm() {
   const {
@@ -19,25 +18,43 @@ export default function LoginForm() {
       password: "",
     },
   });
-  const { saveUser, checkLogin } = useUserInfo();
+
   const router = useRouter();
+  const { saveUser, user } = useUserInfo();
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     const { email, password } = data;
 
     try {
-      const result = await fetchCall<{
-        accessToken: string;
-        refreshToken: string;
-        userInfo: UserInfoType;
-      }>("user/loginin", "post", { email, password });
+      const result = await axios.post("/api/user/login", {
+        email: email,
+        password: password,
+      });
 
-      const { accessToken, refreshToken, userInfo } = result;
+      const { accessToken, refreshToken } = result.data;
 
-      saveUser(userInfo);
-      Cookies.set("accessToken", accessToken, { sameSite: "strict" });
-      Cookies.set("refreshToken", refreshToken, { sameSite: "strict" });
-      checkLogin();
+      Cookies.set("accessToken", accessToken, {
+        sameSite: "strict",
+      });
+      Cookies.set("refreshToken", refreshToken, {
+        sameSite: "strict",
+      });
+
+      saveUser({
+        userId: result.data.userId,
+        nickname: result.data.nickname,
+        email: result.data.email,
+        gender: result.data.gender,
+        lastPosition: result.data.lastPosition || "", // null 값 처리
+        profileImageUrl: result.data.profileImageUrl || "", // null 값 처리
+      });
+
+      console.log("Zustand에 저장된 유저 정보:", user);
+      const storedAccessToken = Cookies.get("accessToken");
+      const storedRefreshToken = Cookies.get("refreshToken");
+
+      console.log("저장된 accessToken:", storedAccessToken);
+      console.log("저장된 refreshToken:", storedRefreshToken);
 
       router.push("/");
     } catch (error) {
@@ -49,11 +66,12 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="card border-2 border-primary">
+    <div className="shadow-md shadow-slate-300 rounded-2xl px-4 py-20">
+      <h2 className="text-3xl font-bold mb-8 text-center">Runner&apos;s Map</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="card-body space-y-6">
+        <div className="space-y-8">
           <div>
-            <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+            <label className="input input-bordered input-primary flex items-center gap-2 mb-1 rounded-full">
               <Controller
                 name="email"
                 control={control}
@@ -84,7 +102,7 @@ export default function LoginForm() {
             )}
           </div>
           <div>
-            <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
+            <label className="input input-bordered input-primary flex items-center gap-2 mb-1 rounded-full">
               <Controller
                 name="password"
                 control={control}
@@ -114,17 +132,17 @@ export default function LoginForm() {
               </span>
             )}
           </div>
-          <div className="card-actions">
+          <div className="flex flex-col gap-y-2">
             <button
               type="submit"
-              className="btn btn-primary w-full mb-2 text-base text-white"
+              className="btn btn-primary w-full mb-2 text-base text-white rounded-full"
             >
               로그인
             </button>
             <button
               type="button"
               onClick={handleResister}
-              className="btn btn-primary w-full text-base text-white"
+              className="btn btn-primary w-full text-base text-white rounded-full"
             >
               회원가입
             </button>
