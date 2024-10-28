@@ -2,10 +2,15 @@
 'use client';
 import { ReactElement, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import AddressInfo from './AddressInfo';
+import MapAddress from '@/app/map-components/MapAddress';
+import { FaSearch } from 'react-icons/fa';
+import { usePostStore } from '@/types/Post';
+import { useRouter } from 'next/navigation';
 
 export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
+  const { setPath, setDistance, setStartPosition } = usePostStore();
+  const router = useRouter();
 
   useEffect(() => {
     const map = new Tmapv2.Map('map_div', {
@@ -52,7 +57,7 @@ export default function MapRoute() {
           const fullAddress = arrResult.fullAddress.split(',');
           const newRoadAddr = fullAddress[2];
 
-          setAddressInfo(<AddressInfo newRoadAddr={newRoadAddr} lat={lat} lon={lon} enterDest={enterDest} />);
+          setAddressInfo(<MapAddress newRoadAddr={newRoadAddr} lat={lat} lon={lon} enterDest={enterDest} />);
         },
         onProgress: function () {},
         onError: function () {
@@ -180,7 +185,6 @@ export default function MapRoute() {
           inputStartX.value = x.toString();
           inputStartY.value = y.toString();
         }
-
         if (markerStart) {
           markerStart.setPosition(new Tmapv2.LatLng(y, x));
         } else {
@@ -298,11 +302,37 @@ export default function MapRoute() {
       const params = {
         onComplete: function (result: any) {
           const resultData = result._responseData.features;
-          console.log(resultData);
+          const coordinates = resultData.map((result: any) => result.geometry.coordinates);
+          const flattenCoordinates = coordinates.flatMap((coord: any) => {
+            if (Array.isArray(coord[0])) {
+              return coord.map((innerCoord: any) => ({
+                lat: innerCoord[1],
+                lng: innerCoord[0]
+              }));
+            } else {
+              return [{ lat: coord[1], lng: coord[0] }];
+            }
+          });
+
           const totalTime = (resultData[0].properties.totalTime / 60).toFixed(0);
           const totalDistance = (resultData[0].properties.totalDistance / 1000).toFixed(1);
-
-          const routeResult = <div>{`${totalTime}분 | ${totalDistance}km`}</div>;
+          const routeResult = (
+            <div className="flex justify-between items-center ">
+              <div>{`${Math.floor(Number(totalTime) / 60) > 0 ? `${Math.floor(Number(totalTime) / 60)}시간 ` : ''}${
+                Number(totalTime) % 60
+              }분 | ${totalDistance}km`}</div>
+              <button
+                onClick={() => {
+                  setStartPosition(`(${startX}, ${startY})`);
+                  setPath(flattenCoordinates);
+                  setDistance(Number(totalDistance));
+                  router.push(`/post-list/post/create`);
+                }}
+                className="bg-primary text-white right-0 mr-2 p-3 ml-10 rounded-full">
+                저장하기
+              </button>
+            </div>
+          );
           setAddressInfo(routeResult);
 
           if (lineArr.length > 0) {
@@ -343,7 +373,7 @@ export default function MapRoute() {
     };
 
     document.getElementById('searchRoute')!.onclick = drawRoute;
-  }, []);
+  }, [setDistance, setPath, setStartPosition, router]);
 
   return (
     <>
@@ -376,8 +406,8 @@ export default function MapRoute() {
         <div className="flex absolute right-12 top-5 justify-center items-center ml-1 z-10 mt-2">
           <button
             id="searchRoute"
-            className=" bg-gray-500 text-white rounded px-4 py-2 hover:bg-gray-600 transition duration-100 ease-in-out">
-            검색
+            className=" bg-primary text-white rounded px-4 py-2 active:bg-blue-500 transition-colors duration-150 ease-in-out">
+            <FaSearch />
           </button>
         </div>
       </div>

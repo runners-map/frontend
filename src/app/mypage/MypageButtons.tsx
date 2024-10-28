@@ -35,6 +35,27 @@ export default function MyPageButtons({ logout }) {
   };
 
   const router = useRouter();
+  const { logout } = useUserInfo();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "/api/user/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("accessToken")}`,
+          },
+        }
+      );
+      console.log("액세스 토큰은", Cookies.get("accessToken"));
+      logout();
+      router.push("/login");
+      console.log("로그아웃 성공");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
+  };
 
   const handleClickSettingBtn = () => {
     router.push("/mypage/setting");

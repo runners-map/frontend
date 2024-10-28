@@ -10,23 +10,21 @@ import MapPostDetails from "@/app/map-components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { MapPostQuery } from "@/types/Post";
-import { useUserInfo } from "@/types/UserInfo";
 
 export default function MapContainer() {
-  const [queryParams, setQueryParams] = useState<MapPostQuery>({
-    centerLat: "",
-    centerLng: "",
+  const [queryParams, setQueryParams] = useState({
+    centerLat: 0,
+    centerLng: 0,
     gender: "",
     paceMinStart: "",
     paceMinEnd: "",
     distanceStart: "",
     distanceEnd: "",
-    limitMemberCntStart: "",
-    limitMemberCntEnd: "",
     startDate: "",
     startTime: "",
+    limitMemberCnt: 0,
+    page: "",
+    size: "",
   });
 
   const [map, setMap] = useState<Tmapv2.Map | null>(null);
@@ -36,7 +34,7 @@ export default function MapContainer() {
   const [poiMarkerArr, setPoiMarkerArr] = useState<Tmapv2.Marker[] | null>([]);
   const [isPoiSearched, setIsPoiSearched] = useState(false);
 
-  const [postData, setPostData] = useState([]);
+  const [postData, setPostData] = useState(null);
   const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker[] | null>(
     []
   );
@@ -53,7 +51,7 @@ export default function MapContainer() {
 
     if (window.Tmapv2) {
       const newMap = new Tmapv2.Map("map_div", {
-        center: new Tmapv2.LatLng(33.450936, 126.569477),
+        center: new Tmapv2.LatLng(37.570028, 126.986072),
         width: "100%",
         height: "100vh",
         zoom: 15,
@@ -87,38 +85,51 @@ export default function MapContainer() {
       setPostMarkerArr([]);
     }
 
+    const params = {
+      lat_gte: queryParams.centerLat - 1 / 111,
+      lat_lte: queryParams.centerLat + 1 / 111,
+      lng_gte:
+        queryParams.centerLng -
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+      lng_lte:
+        queryParams.centerLng +
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+      gender: queryParams.gender,
+      limitMemberCnt: queryParams.limitMemberCnt,
+    };
+
+    console.log("실제 요청 파라미터", params);
+
     try {
-      const res = await axios.get("/api/posts/map-posts", {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-        params: queryParams,
-      });
+      // 모든 데이터를 가져오기
+      const res = await axios.get("http://localhost:3001/Post");
       const posts = res.data;
+
+      console.log("게시글 목록", posts);
       setPostData(posts);
 
       console.log("게시글 목록", posts);
 
       if (posts.length > 0) {
-        posts.forEach((post, index) => {
+        posts.forEach((markerData, index) => {
           const markerPosition = new Tmapv2.LatLng(
-            post.centerLat,
-            post.centerLng
+            markerData.lat,
+            markerData.lng
           );
 
           const marker = new Tmapv2.Marker({
             position: markerPosition,
             icon: createMarkerIcon(
               index + 1,
-              post.arriveYn ? "review" : "post"
+              markerData.arriveYn ? "review" : "post"
             ),
             iconSize: new Tmapv2.Size(40, 40),
-            title: post.title,
+            title: markerData.title,
             map: map,
           });
 
           marker.addListener("touchstart", function () {
-            setSelectedPost(post);
+            setSelectedPost(markerData);
             setIsListVisible(true);
             const targetElement = document.getElementById("item3");
             if (targetElement) {

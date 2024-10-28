@@ -1,9 +1,9 @@
 'use client';
 
-import { Post } from '@/types/Post';
-import axios from 'axios';
+import fetchCall from '@/lib/axios';
+import { Post, usePostResponseStore } from '@/types/Post';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import { Controller, useForm } from 'react-hook-form';
 import { FaRegCalendarAlt } from 'react-icons/fa';
@@ -15,56 +15,81 @@ export default function PostEditForm({ id }: { id: string }) {
     reset,
     formState: { errors, isSubmitting }
   } = useForm<Post>();
-  const [postId, setPostId] = useState<number | null>(null);
   const router = useRouter();
+  const {
+    setPathResponse,
+    pathResponse,
+    setDistanceResponse,
+    distanceResponse,
+    setStartPositionResponse,
+    startPositionResponse
+  } = usePostResponseStore();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/Post`);
-        const postData = response.data.find((data: Post) => data.postId === parseInt(id));
-        console.log(postData.id);
-
-        if (postData) {
-          setPostId(postData.id);
-          reset({
-            gender: postData.gender,
-            limitMemberCnt: postData.limitMemberCnt,
-            startDateTime: postData.startDateTime ? new Date(postData.startDateTime) : undefined,
-            paceMin: postData.paceMin,
-            paceSec: postData.paceSec,
-            title: postData.title,
-            content: postData.content
-          });
-        }
+        const response = await fetchCall<Post>(`posts/${id}`, 'get');
+        const {
+          gender,
+          limitMemberCnt,
+          startDateTime,
+          paceMin,
+          paceSec,
+          title,
+          content,
+          distance,
+          startPosition,
+          path
+        } = response;
+        setPathResponse(path);
+        setStartPositionResponse(startPosition);
+        setDistanceResponse(distance);
+        reset({
+          gender: gender,
+          limitMemberCnt: limitMemberCnt,
+          startDateTime: startDateTime ? new Date(startDateTime) : undefined,
+          paceMin: paceMin,
+          paceSec: paceSec,
+          title: title,
+          content: content
+        });
       } catch (error) {
         console.log('Failed to fetch the post data', error);
       }
     };
+
     fetchPost();
-  }, [id, reset]);
+  }, [id, reset, setDistanceResponse, setPathResponse, setStartPositionResponse]);
 
   const searchRoute = () => {
-    console.log('Search Route');
+    router.push('/post-list/post/create/searchRoute?mode=edit');
   };
 
   const onSubmit = async (data: Post) => {
-    const { startDateTime } = data;
+    const { startDateTime, ...otherData } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
       : null;
 
     const finalData = {
-      ...data,
-      startDateTime: formattedDateTime
+      ...otherData,
+      startDateTime: formattedDateTime,
+      distance: distanceResponse,
+      startPosition: startPositionResponse,
+      centerlat: pathResponse[0].lat,
+      centerlng: pathResponse[0].lng,
+      path: pathResponse.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
+    console.log(finalData);
+
     try {
-      const response = await axios.patch(`${process.env.NEXT_PUBLIC_API_URL}/Post/${postId}`, finalData);
-      console.log('Post updated successfully:', response.data);
-      router.push(`/chat-list/${id}/post-info`);
+      await fetchCall(`/posts/${id}`, 'put', finalData);
+      console.log('Post updated successfully');
+
+      router.push(`/post-list`);
     } catch (error) {
-      console.error('Failed to update the post', error);
+      console.log('Error updating post', error);
     }
   };
 
@@ -267,6 +292,7 @@ export default function PostEditForm({ id }: { id: string }) {
       <button type="submit" className="btn btn-primary text-white" disabled={isSubmitting}>
         {isSubmitting ? '수정 중...' : '수정'}
       </button>
+      <button onClick={() => router.push(`post-list/post/${id}/post-info`)}>취소</button>
     </form>
   );
 }

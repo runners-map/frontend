@@ -5,7 +5,7 @@ interface AddressInfoProps {
   enterDest: (type: 'start' | 'end' | 'wp', address: string, x: number, y: number) => void;
 }
 
-export default function AddressInfo({ newRoadAddr, lat, lon, enterDest }: AddressInfoProps) {
+export default function MapAddress({ newRoadAddr, lat, lon, enterDest }: AddressInfoProps) {
   return (
     <div className="bg-gray-100 p-4">
       <div className="flex flex-col space-y-2">

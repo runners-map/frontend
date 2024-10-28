@@ -1,11 +1,13 @@
 "use client";
-import { UserInfoType, useUserInfo } from "@/types/UserInfo";
+
 import { LoginFormData } from "@/types/LoginForm";
-import axios from "axios";
-import Cookies from "js-cookie";
+import { UserInfoType, useUserInfo } from "@/types/UserInfo";
 import { useRouter } from "next/navigation";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { HiMiniEnvelope, HiLockClosed } from "react-icons/hi2";
+import Cookies from "js-cookie";
+import { usePostStore } from "@/types/Post";
+import axios from "axios";
 
 export default function LoginForm() {
   const {
@@ -18,44 +20,49 @@ export default function LoginForm() {
       password: "",
     },
   });
-
+  const { saveUser, checkLogin, logout, setUserId } = useUserInfo();
   const router = useRouter();
-  const { saveUser, user } = useUserInfo();
+  const { setAdminId } = usePostStore();
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     const { email, password } = data;
 
     try {
-      const result = await axios.post("/api/user/login", {
-        email: email,
-        password: password,
+      const response = await axios.post<UserInfoType>("api/user/login", {
+        email,
+        password,
       });
 
-      const { accessToken, refreshToken } = result.data;
+      const {
+        accessToken,
+        refreshToken,
+        userId,
+        gender,
+        lastPosition,
+        nickname,
+        profileImageUrl,
+      } = response.data;
 
-      Cookies.set("accessToken", accessToken, {
-        sameSite: "strict",
-      });
-      Cookies.set("refreshToken", refreshToken, {
-        sameSite: "strict",
-      });
+      if (Cookies.get("accessToken")) {
+        logout();
+      }
 
-      saveUser({
-        userId: result.data.userId,
-        nickname: result.data.nickname,
-        email: result.data.email,
-        gender: result.data.gender,
-        lastPosition: result.data.lastPosition || "", // null 값 처리
-        profileImageUrl: result.data.profileImageUrl || "", // null 값 처리
-      });
+      saveUser(
+        accessToken,
+        refreshToken,
+        userId,
+        gender,
+        lastPosition,
+        nickname,
+        profileImageUrl,
+        email
+      );
+      setAdminId(userId);
+      setUserId(userId);
+      Cookies.set("accessToken", accessToken, { sameSite: "strict" });
+      Cookies.set("refreshToken", refreshToken, { sameSite: "strict" });
 
-      console.log("Zustand에 저장된 유저 정보:", user);
-      const storedAccessToken = Cookies.get("accessToken");
-      const storedRefreshToken = Cookies.get("refreshToken");
-
-      console.log("저장된 accessToken:", storedAccessToken);
-      console.log("저장된 refreshToken:", storedRefreshToken);
-
+      checkLogin();
       router.push("/");
     } catch (error) {
       console.log("로그인 실패", error);
@@ -132,17 +139,17 @@ export default function LoginForm() {
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-y-2">
+          <div className="card-actions">
             <button
               type="submit"
-              className="btn btn-primary w-full mb-2 text-base text-white rounded-full"
+              className="btn btn-primary w-full mb-2 text-base text-white"
             >
               로그인
             </button>
             <button
               type="button"
               onClick={handleResister}
-              className="btn btn-primary w-full text-base text-white rounded-full"
+              className="btn btn-primary w-full text-base text-white"
             >
               회원가입
             </button>

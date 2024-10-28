@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware"; // persist 미들웨어 추가
 import Cookies from "js-cookie";
 
 export interface UserInfoType {
+  accessToken: string;
+  refreshToken: string;
   userId: number;
   gender: string;
   email: string;

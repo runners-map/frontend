@@ -10,8 +10,8 @@ export default function Header() {
     <header>
       <button
         onClick={() => router.back()}
-        className="absolute left-0 rounded-full w-12 h-12 active:bg-gray-500 transition-colors duration-150 ease-in-out">
-        <IoIosArrowBack size={35} color="white" />
+        className="absolute left-0 rounded-full w-12 h-12 active:bg-gray-500 transition-colors duration-150 ease-in-out z-50">
+        <IoIosArrowBack size={35} color="black" />
       </button>
     </header>
   );
