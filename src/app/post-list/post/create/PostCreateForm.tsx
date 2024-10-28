@@ -3,10 +3,12 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { Post } from '@/types/Post';
+import { Post, usePostStore } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function PostCreateForm() {
   const {
@@ -14,26 +16,65 @@ export default function PostCreateForm() {
     control,
     formState: { errors, isSubmitting }
   } = useForm<Post>();
+  const accessToken = Cookies.get('accessToken');
 
   const router = useRouter();
-
+  const { path, adminId, distance, startPosition } = usePostStore();
   const searchRoute = () => {
     console.log('searchRoute');
-    router.push('/post/create/searchRoute');
+    router.push('/post-list/post/create/searchRoute');
   };
 
-  const onSubmit = (data: Post) => {
-    const { startDateTime } = data;
+  const onSubmit = async (data: Post) => {
+    const { startDateTime, paceMin, paceSec, ...otherData } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
       : null;
 
     const finalData = {
-      ...data,
-      startDateTime: formattedDateTime
+      ...otherData,
+      startDateTime: formattedDateTime,
+      adminId,
+      paceMin: Number(paceMin),
+      paecSec: Number(paceSec),
+      distance,
+      startPosition,
+      centerlat: path[0].lat,
+      centerlng: path[0].lng,
+      path: path.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
     console.log(finalData);
+
+    try {
+      const response = await axios.post(
+        '/api/posts',
+        { finalData },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          },
+          withCredentials: true
+        }
+      );
+      console.log('Post created successfully', response);
+      // const setPostResponse = usePostResponseStore.getState();
+
+      // setPostResponse.setPostIdResponse(response.postId);
+      // setPostResponse.setAdminIdResponse(finalData.adminId);
+      // setPostResponse.setTitleResponse(finalData.title);
+      // setPostResponse.setContentResponse(finalData.content);
+      // setPostResponse.setLimitMemberCntResponse(finalData.limitMemberCnt);
+      // setPostResponse.setGenderResponse(finalData.gender);
+      // setPostResponse.setStartPositionResponse(finalData.startPosition);
+      // setPostResponse.setDistanceResponse(finalData.distance);
+      // setPostResponse.setPaceMinResponse(finalData.paceMin);
+      // setPostResponse.setPaceSecResponse(finalData.paceSec);
+      // setPostResponse.setPathResponse(finalData.path);
+    } catch (error) {
+      console.log('Error creating post', error);
+    }
   };
 
   return (

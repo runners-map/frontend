@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import Cookies from 'js-cookie';
 
 export interface UserInfoType {
+  accessToken: string;
+  refreshToken: string;
   userId: number;
   gender: string;
   lastPosition: string | null;
@@ -12,16 +14,38 @@ export interface UserInfoType {
 
 interface AuthState {
   user: UserInfoType | null;
-  saveUser: (user: UserInfoType) => void;
+  userId: number;
+  saveUser: (
+    accessToken: string,
+    refreshToken: string,
+    userId: number,
+    gender: string,
+    lastPosition: string | null,
+    nickname: string,
+    email: string,
+    profileImageUrl: string
+  ) => void;
   isLogin: boolean;
   checkLogin: () => void;
   logout: () => void;
+  setUserId: (userId: number) => void;
 }
 
 export const useUserInfo = create<AuthState>(set => ({
   user: null,
+  userId: 0,
   isLogin: false,
-  saveUser: user => {
+  saveUser: (accessToken, refreshToken, userId, gender, lastPosition, nickname, email, profileImageUrl) => {
+    const user: UserInfoType = {
+      accessToken,
+      refreshToken,
+      userId,
+      gender,
+      lastPosition,
+      email,
+      nickname,
+      profileImageUrl
+    };
     set({ user, isLogin: true });
   },
   checkLogin: () => {
@@ -37,5 +61,6 @@ export const useUserInfo = create<AuthState>(set => ({
     Cookies.remove('accessToken');
     Cookies.remove('refreshToken');
     set({ user: null, isLogin: false });
-  }
+  },
+  setUserId: newUserId => set({ userId: newUserId })
 }));
