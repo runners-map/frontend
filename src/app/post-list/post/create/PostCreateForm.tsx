@@ -3,11 +3,12 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { GetPostResponse, Post, usePostStore } from '@/types/Post';
+import { Post, usePostStore } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import fetchCall from '@/lib/axios';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function PostCreateForm() {
   const {
@@ -15,16 +16,17 @@ export default function PostCreateForm() {
     control,
     formState: { errors, isSubmitting }
   } = useForm<Post>();
+  const accessToken = Cookies.get('accessToken');
 
   const router = useRouter();
   const { path, adminId, distance, startPosition } = usePostStore();
   const searchRoute = () => {
     console.log('searchRoute');
-    router.push('/post-list/post/create/searchRoute?mode=create');
+    router.push('/post-list/post/create/searchRoute');
   };
 
   const onSubmit = async (data: Post) => {
-    const { startDateTime, ...otherData } = data;
+    const { startDateTime, paceMin, paceSec, ...otherData } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
       : null;
@@ -33,6 +35,8 @@ export default function PostCreateForm() {
       ...otherData,
       startDateTime: formattedDateTime,
       adminId,
+      paceMin: Number(paceMin),
+      paecSec: Number(paceSec),
       distance,
       startPosition,
       centerlat: path[0].lat,
@@ -43,7 +47,17 @@ export default function PostCreateForm() {
     console.log(finalData);
 
     try {
-      const response = await fetchCall<GetPostResponse>('/posts', 'post', finalData);
+      const response = await axios.post(
+        '/api/posts',
+        { finalData },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          },
+          withCredentials: true
+        }
+      );
       console.log('Post created successfully', response);
       // const setPostResponse = usePostResponseStore.getState();
 

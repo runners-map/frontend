@@ -2,18 +2,15 @@
 'use client';
 import { ReactElement, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import AddressInfo from './AddressInfo';
+import MapAddress from '@/app/map-components/MapAddress';
 import { FaSearch } from 'react-icons/fa';
 import { usePostStore } from '@/types/Post';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Header from '@/components/Header';
+import { useRouter } from 'next/navigation';
 
 export default function MapRoute() {
   const [addressInfo, setAddressInfo] = useState<ReactElement | null>(null);
   const { setPath, setDistance, setStartPosition } = usePostStore();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const mode = searchParams.get('mode');
 
   useEffect(() => {
     const map = new Tmapv2.Map('map_div', {
@@ -60,7 +57,7 @@ export default function MapRoute() {
           const fullAddress = arrResult.fullAddress.split(',');
           const newRoadAddr = fullAddress[2];
 
-          setAddressInfo(<AddressInfo newRoadAddr={newRoadAddr} lat={lat} lon={lon} enterDest={enterDest} />);
+          setAddressInfo(<MapAddress newRoadAddr={newRoadAddr} lat={lat} lon={lon} enterDest={enterDest} />);
         },
         onProgress: function () {},
         onError: function () {
@@ -188,7 +185,6 @@ export default function MapRoute() {
           inputStartX.value = x.toString();
           inputStartY.value = y.toString();
         }
-        setStartPosition(address);
         if (markerStart) {
           markerStart.setPosition(new Tmapv2.LatLng(y, x));
         } else {
@@ -320,33 +316,21 @@ export default function MapRoute() {
 
           const totalTime = (resultData[0].properties.totalTime / 60).toFixed(0);
           const totalDistance = (resultData[0].properties.totalDistance / 1000).toFixed(1);
-          console.log(flattenCoordinates);
-
           const routeResult = (
             <div className="flex justify-between items-center ">
               <div>{`${Math.floor(Number(totalTime) / 60) > 0 ? `${Math.floor(Number(totalTime) / 60)}시간 ` : ''}${
                 Number(totalTime) % 60
               }분 | ${totalDistance}km`}</div>
-              {mode === 'edit' ? (
-                <button
-                  onClick={() => {
-                    setPath(flattenCoordinates);
-                    setDistance(Number(totalDistance));
-                    router.back();
-                  }}>
-                  수정하기
-                </button>
-              ) : mode === 'create' ? (
-                <button
-                  onClick={() => {
-                    setPath(flattenCoordinates);
-                    setDistance(Number(totalDistance));
-                    router.push('/post-list/post/create');
-                  }}
-                  className="bg-primary text-white right-0 mr-2 p-3 ml-10 rounded-full">
-                  저장하기
-                </button>
-              ) : null}
+              <button
+                onClick={() => {
+                  setStartPosition(`(${startX}, ${startY})`);
+                  setPath(flattenCoordinates);
+                  setDistance(Number(totalDistance));
+                  router.push(`/post-list/post/create`);
+                }}
+                className="bg-primary text-white right-0 mr-2 p-3 ml-10 rounded-full">
+                저장하기
+              </button>
             </div>
           );
           setAddressInfo(routeResult);
@@ -389,11 +373,10 @@ export default function MapRoute() {
     };
 
     document.getElementById('searchRoute')!.onclick = drawRoute;
-  }, [setPath, router, setDistance, setStartPosition, mode]);
+  }, [setDistance, setPath, setStartPosition, router]);
 
   return (
     <>
-      {mode === 'edit' && <Header />}
       <div id="map_div" className="flex relative" />
       <div id="hiddenInput">
         <input type="hidden" id="startx" />

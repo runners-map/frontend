@@ -1,7 +1,7 @@
 'use client';
 
 import fetchCall from '@/lib/axios';
-import { Post, usePostStore } from '@/types/Post';
+import { Post, usePostResponseStore } from '@/types/Post';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import DatePicker from 'react-datepicker';
@@ -16,13 +16,34 @@ export default function PostEditForm({ id }: { id: string }) {
     formState: { errors, isSubmitting }
   } = useForm<Post>();
   const router = useRouter();
-  const { path, adminId, distance, startPosition } = usePostStore();
+  const {
+    setPathResponse,
+    pathResponse,
+    setDistanceResponse,
+    distanceResponse,
+    setStartPositionResponse,
+    startPositionResponse
+  } = usePostResponseStore();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await fetchCall<Post>(`posts/${id}`, 'get');
-        const { gender, limitMemberCnt, startDateTime, paceMin, paceSec, title, content } = response;
+        const {
+          gender,
+          limitMemberCnt,
+          startDateTime,
+          paceMin,
+          paceSec,
+          title,
+          content,
+          distance,
+          startPosition,
+          path
+        } = response;
+        setPathResponse(path);
+        setStartPositionResponse(startPosition);
+        setDistanceResponse(distance);
         reset({
           gender: gender,
           limitMemberCnt: limitMemberCnt,
@@ -38,7 +59,7 @@ export default function PostEditForm({ id }: { id: string }) {
     };
 
     fetchPost();
-  }, [id, reset]);
+  }, [id, reset, setDistanceResponse, setPathResponse, setStartPositionResponse]);
 
   const searchRoute = () => {
     router.push('/post-list/post/create/searchRoute?mode=edit');
@@ -53,12 +74,11 @@ export default function PostEditForm({ id }: { id: string }) {
     const finalData = {
       ...otherData,
       startDateTime: formattedDateTime,
-      adminId,
-      distance,
-      startPosition,
-      centerlat: path[0].lat,
-      centerlng: path[0].lng,
-      path: path.map(point => ({ lat: point.lat, lng: point.lng }))
+      distance: distanceResponse,
+      startPosition: startPositionResponse,
+      centerlat: pathResponse[0].lat,
+      centerlng: pathResponse[0].lng,
+      path: pathResponse.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
     console.log(finalData);
@@ -272,6 +292,7 @@ export default function PostEditForm({ id }: { id: string }) {
       <button type="submit" className="btn btn-primary text-white" disabled={isSubmitting}>
         {isSubmitting ? '수정 중...' : '수정'}
       </button>
+      <button onClick={() => router.push(`post-list/post/${id}/post-info`)}>취소</button>
     </form>
   );
 }

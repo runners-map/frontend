@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import fetchCall from '@/lib/axios';
 import { usePostStore } from '@/types/Post';
+import axios from 'axios';
 
 export default function LoginForm() {
   const {
@@ -28,8 +28,12 @@ export default function LoginForm() {
     const { email, password } = data;
 
     try {
-      const response = await fetchCall<UserInfoType>('/user/login', 'post', { email, password });
-      const { accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl } = response;
+      const response = await axios.post<UserInfoType>('api/user/login', {
+        email,
+        password
+      });
+
+      const { accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl } = response.data;
 
       if (Cookies.get('accessToken')) {
         logout();
@@ -42,7 +46,6 @@ export default function LoginForm() {
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
 
       checkLogin();
-
       router.push('/');
     } catch (error) {
       console.log('로그인 실패', error);

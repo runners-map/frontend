@@ -4,9 +4,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniUser, HiMiniEnvelope, HiLockClosed, HiCheckCircle } from 'react-icons/hi2';
 import { PiGenderIntersexBold } from 'react-icons/pi';
 import { RegisterFormData } from '@/types/ResisterForm';
-// import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import fetchCall from '@/lib/axios';
 import axios from 'axios';
 
 export default function RegisterForm() {

@@ -170,7 +170,7 @@ export default function MapContainer() {
   const router = useRouter(); // useRouter 훅 사용
 
   const handleClick = () => {
-    router.push('/post-list/post/create/searchRoute?mode=create'); // 원하는 경로로 이동
+    router.push('/post-list/post/create/searchRoute'); // 원하는 경로로 이동
   };
 
   return (
