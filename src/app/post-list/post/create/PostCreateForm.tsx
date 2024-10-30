@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import { Post, usePostStore } from '@/types/Post';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaRegCalendarAlt } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useUserInfo } from '@/types/UserInfo';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function PostCreateForm() {
   const {
@@ -17,14 +19,10 @@ export default function PostCreateForm() {
     formState: { errors, isSubmitting }
   } = useForm<Post>();
   const accessToken = Cookies.get('accessToken');
-
   const router = useRouter();
-  const { path, adminId, distance, startPosition } = usePostStore();
-  const searchRoute = () => {
-    console.log('searchRoute');
-    router.push('/post-list/post/create/searchRoute');
-  };
 
+  const { path, distance, startPosition } = usePostStore();
+  const { userId } = useUserInfo();
   const onSubmit = async (data: Post) => {
     const { startDateTime, paceMin, paceSec, ...otherData } = data;
     const formattedDateTime = startDateTime
@@ -34,44 +32,26 @@ export default function PostCreateForm() {
     const finalData = {
       ...otherData,
       startDateTime: formattedDateTime,
-      adminId,
+      adminId: userId,
       paceMin: Number(paceMin),
-      paecSec: Number(paceSec),
+      paceSec: Number(paceSec),
       distance,
       startPosition,
-      centerlat: path[0].lat,
-      centerlng: path[0].lng,
+      centerLat: path[0].lat,
+      centerLng: path[0].lng,
       path: path.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
-    console.log(finalData);
-
     try {
-      const response = await axios.post(
-        '/api/posts',
-        { finalData },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          },
-          withCredentials: true
-        }
-      );
-      console.log('Post created successfully', response);
-      // const setPostResponse = usePostResponseStore.getState();
-
-      // setPostResponse.setPostIdResponse(response.postId);
-      // setPostResponse.setAdminIdResponse(finalData.adminId);
-      // setPostResponse.setTitleResponse(finalData.title);
-      // setPostResponse.setContentResponse(finalData.content);
-      // setPostResponse.setLimitMemberCntResponse(finalData.limitMemberCnt);
-      // setPostResponse.setGenderResponse(finalData.gender);
-      // setPostResponse.setStartPositionResponse(finalData.startPosition);
-      // setPostResponse.setDistanceResponse(finalData.distance);
-      // setPostResponse.setPaceMinResponse(finalData.paceMin);
-      // setPostResponse.setPaceSecResponse(finalData.paceSec);
-      // setPostResponse.setPathResponse(finalData.path);
+      const response = await axios.post('/api/posts', finalData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        withCredentials: true
+      });
+      toast.success(`성공적으로 작성되었습니다`);
+      router.push('/post-list');
     } catch (error) {
       console.log('Error creating post', error);
     }
@@ -80,6 +60,7 @@ export default function PostCreateForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-20">
       {/* 성별 */}
+
       <div className="flex flex-col justify-between">
         <label className="text-primary font-bold mb-2">성별</label>
         <Controller
@@ -190,9 +171,6 @@ export default function PostCreateForm() {
         />
       </div>
 
-      <button type="button" onClick={searchRoute} className="btn btn-primary text-white">
-        경로 설정하기
-      </button>
       {/* 페이스 */}
       <div>
         <label className="text-primary font-bold">페이스</label>

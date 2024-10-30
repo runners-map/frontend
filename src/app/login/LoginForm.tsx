@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
 import Cookies from 'js-cookie';
-import { usePostStore } from '@/types/Post';
 import axios from 'axios';
 
 export default function LoginForm() {
@@ -20,9 +19,8 @@ export default function LoginForm() {
       password: ''
     }
   });
-  const { saveUser, checkLogin, logout, setUserId } = useUserInfo();
+  const { saveUser, checkLogin, setUserId } = useUserInfo();
   const router = useRouter();
-  const { setAdminId } = usePostStore();
 
   const onSubmit: SubmitHandler<LoginFormData> = async data => {
     const { email, password } = data;
@@ -35,13 +33,9 @@ export default function LoginForm() {
 
       const { accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl } = response.data;
 
-      if (Cookies.get('accessToken')) {
-        logout();
-      }
-
       saveUser(accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl, email);
-      setAdminId(userId);
       setUserId(userId);
+      console.log(userId);
       Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
       Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
 

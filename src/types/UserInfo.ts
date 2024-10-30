@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
 export interface UserInfoType {
@@ -31,36 +32,46 @@ interface AuthState {
   setUserId: (userId: number) => void;
 }
 
-export const useUserInfo = create<AuthState>(set => ({
-  user: null,
-  userId: 0,
-  isLogin: false,
-  saveUser: (accessToken, refreshToken, userId, gender, lastPosition, nickname, email, profileImageUrl) => {
-    const user: UserInfoType = {
-      accessToken,
-      refreshToken,
-      userId,
-      gender,
-      lastPosition,
-      email,
-      nickname,
-      profileImageUrl
-    };
-    set({ user, isLogin: true });
-  },
-  checkLogin: () => {
-    const accessToken = Cookies.get('accessToken');
-    const refreshToken = Cookies.get('refreshToken');
-    if (accessToken && refreshToken) {
-      set({ isLogin: true });
-    } else {
-      set({ user: null, isLogin: false });
+export const useUserInfo = create<AuthState>()(
+  persist(
+    set => ({
+      user: null,
+      userId: 0,
+      isLogin: false,
+      saveUser: (accessToken, refreshToken, userId, gender, lastPosition, nickname, email, profileImageUrl) => {
+        const user: UserInfoType = {
+          accessToken,
+          refreshToken,
+          userId,
+          gender,
+          lastPosition,
+          email,
+          nickname,
+          profileImageUrl
+        };
+        set({ user, userId, isLogin: true });
+        Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
+        Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
+      },
+      checkLogin: () => {
+        const accessToken = Cookies.get('accessToken');
+        const refreshToken = Cookies.get('refreshToken');
+        if (accessToken && refreshToken) {
+          set({ isLogin: true });
+        } else {
+          set({ user: null, isLogin: false });
+        }
+      },
+      logout: () => {
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
+        set({ user: null, userId: 0, isLogin: false });
+      },
+      setUserId: newUserId => set({ userId: newUserId })
+    }),
+    {
+      name: 'user-info-storage',
+      partialize: state => ({ user: state.user, userId: state.userId, isLogin: state.isLogin })
     }
-  },
-  logout: () => {
-    Cookies.remove('accessToken');
-    Cookies.remove('refreshToken');
-    set({ user: null, isLogin: false });
-  },
-  setUserId: newUserId => set({ userId: newUserId })
-}));
+  )
+);

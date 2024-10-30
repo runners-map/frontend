@@ -326,6 +326,7 @@ export default function MapRoute() {
                   setStartPosition(`(${startX}, ${startY})`);
                   setPath(flattenCoordinates);
                   setDistance(Number(totalDistance));
+                  toast.success('성공적으로 저장되었습니다');
                   router.push(`/post-list/post/create`);
                 }}
                 className="bg-primary text-white right-0 mr-2 p-3 ml-10 rounded-full">
@@ -376,7 +377,7 @@ export default function MapRoute() {
   }, [setDistance, setPath, setStartPosition, router]);
 
   return (
-    <>
+    <div>
       <div id="map_div" className="flex relative" />
       <div id="hiddenInput">
         <input type="hidden" id="startx" />
@@ -416,6 +417,6 @@ export default function MapRoute() {
           {addressInfo}
         </div>
       )}
-    </>
+    </div>
   );
 }

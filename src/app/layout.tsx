@@ -1,20 +1,21 @@
-"use client";
-import "./globals.css";
-import Navigation from "@/components/Navigation";
-import { usePathname } from "next/navigation";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+'use client';
+import './globals.css';
+import Navigation from '@/components/Navigation';
+import { usePathname } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const noNavPaths = ["/login", "/register", "/mypage/setting", "/404"];
-  const hideNav =
-    noNavPaths.includes(pathname) || pathname.startsWith("/post-list/");
+  const noNavPaths = ['/login', '/register', '/mypage/setting', '/404'];
+  const hideNav = noNavPaths.includes(pathname) || pathname.startsWith('/post-list/');
 
   return (
     <html lang="ko" className="bg-gray-200">
@@ -23,6 +24,14 @@ export default function RootLayout({
           {children}
           {!hideNav && <Navigation />}
         </QueryClientProvider>
+        <ToastContainer
+          position="top-center"
+          autoClose={1500}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
       </body>
     </html>
   );

@@ -1,13 +1,16 @@
 'use client';
 
-import fetchCall from '@/lib/axios';
 import { Post, usePostResponseStore } from '@/types/Post';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { Controller, useForm } from 'react-hook-form';
 import { FaRegCalendarAlt } from 'react-icons/fa';
-
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import { useUserInfo } from '@/types/UserInfo';
 export default function PostEditForm({ id }: { id: string }) {
   const {
     handleSubmit,
@@ -24,32 +27,31 @@ export default function PostEditForm({ id }: { id: string }) {
     setStartPositionResponse,
     startPositionResponse
   } = usePostResponseStore();
+  const accessToken = Cookies.get('accessToken');
+  const { userId } = useUserInfo();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetchCall<Post>(`posts/${id}`, 'get');
-        const {
-          gender,
-          limitMemberCnt,
-          startDateTime,
-          paceMin,
-          paceSec,
-          title,
-          content,
-          distance,
-          startPosition,
-          path
-        } = response;
+        const response = await axios.get<Post>(`/api/posts`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          params: {
+            postId: id
+          }
+        });
+        const { gender, limitMemberCnt, startDateTime, paceTime, title, content, distance, startPosition, path } =
+          response.data;
         setPathResponse(path);
         setStartPositionResponse(startPosition);
         setDistanceResponse(distance);
+        console.log(paceTime);
         reset({
           gender: gender,
           limitMemberCnt: limitMemberCnt,
           startDateTime: startDateTime ? new Date(startDateTime) : undefined,
-          paceMin: paceMin,
-          paceSec: paceSec,
           title: title,
           content: content
         });
@@ -59,33 +61,39 @@ export default function PostEditForm({ id }: { id: string }) {
     };
 
     fetchPost();
-  }, [id, reset, setDistanceResponse, setPathResponse, setStartPositionResponse]);
-
-  const searchRoute = () => {
-    router.push('/post-list/post/create/searchRoute?mode=edit');
-  };
+  }, [id, reset, setDistanceResponse, setPathResponse, setStartPositionResponse, accessToken]);
 
   const onSubmit = async (data: Post) => {
-    const { startDateTime, ...otherData } = data;
+    const { startDateTime, paceMin, paceSec, ...otherData } = data;
     const formattedDateTime = startDateTime
       ? new Date(startDateTime.getTime() - startDateTime.getTimezoneOffset() * 60000).toISOString()
       : null;
 
     const finalData = {
       ...otherData,
+      postId: id,
+      adminId: userId,
       startDateTime: formattedDateTime,
       distance: distanceResponse,
       startPosition: startPositionResponse,
-      centerlat: pathResponse[0].lat,
-      centerlng: pathResponse[0].lng,
+      paceMin: Number(paceMin),
+      paceSec: Number(paceSec),
+      centerLat: pathResponse[0].lat,
+      centerLng: pathResponse[0].lng,
       path: pathResponse.map(point => ({ lat: point.lat, lng: point.lng }))
     };
 
     console.log(finalData);
 
     try {
-      await fetchCall(`/posts/${id}`, 'put', finalData);
-      console.log('Post updated successfully');
+      await axios.put(`/api/posts`, finalData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        withCredentials: true
+      });
+      toast.success('성공적으로 업데이트 되었습니다');
 
       router.push(`/post-list`);
     } catch (error) {
@@ -145,11 +153,11 @@ export default function PostEditForm({ id }: { id: string }) {
 
       {/* 출발 날짜 및 시간 */}
       <div className="flex flex-col justify-center">
-        <label className="text-primary font-bold mb-2">달릴 날짜</label>
-
+        <label className="text-primary mb-2 font-bold">달릴 날짜</label>
         <Controller
           name="startDateTime"
           control={control}
+          defaultValue={undefined}
           rules={{ required: true }}
           render={({ field }) => (
             <>
@@ -168,7 +176,7 @@ export default function PostEditForm({ id }: { id: string }) {
                 dateFormat="yyyy/MM/dd"
                 customInput={
                   <div
-                    className={`flex items-center border border-gray-300 rounded-lg py-3 px-4 ${
+                    className={`flex items-center border border-gray-300 rounded-lg py-3 px-5 ${
                       errors.startDateTime ? 'border-red-500 focus:outline-red-500' : ''
                     }`}>
                     <FaRegCalendarAlt className="mr-2" />
@@ -184,8 +192,9 @@ export default function PostEditForm({ id }: { id: string }) {
                 }
               />
               <div className="flex flex-col w-full mt-4">
-                <label className="text-primary font-bold mb-2">달릴 시간</label>
-
+                <label htmlFor="startDateTime" className="text-primary mb-2 font-bold">
+                  달릴 시간
+                </label>
                 <input
                   type="time"
                   className={`input input-bordered w-full mr-2 ${
@@ -203,9 +212,6 @@ export default function PostEditForm({ id }: { id: string }) {
           )}
         />
       </div>
-      <button type="button" onClick={searchRoute} className="btn btn-primary text-white">
-        경로 설정하기
-      </button>
 
       {/* 페이스 */}
       <div>
@@ -292,7 +298,9 @@ export default function PostEditForm({ id }: { id: string }) {
       <button type="submit" className="btn btn-primary text-white" disabled={isSubmitting}>
         {isSubmitting ? '수정 중...' : '수정'}
       </button>
-      <button onClick={() => router.push(`post-list/post/${id}/post-info`)}>취소</button>
+      <button onClick={() => router.push(`/post-list/post/${id}/post-info`)} className="btn btn-primary text-white">
+        취소
+      </button>
     </form>
   );
 }

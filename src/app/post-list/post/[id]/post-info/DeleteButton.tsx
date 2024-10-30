@@ -1,14 +1,24 @@
 'use client';
-
-import fetchCall from '@/lib/axios';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 export default function DeleteButton({ id }: { id: string }) {
   const router = useRouter();
+  const accessToken = Cookies.get('accessToken');
   const handleDelete = async () => {
     try {
-      await fetchCall(`/posts/${id}`, 'delete');
-      console.log('Post deleted successfully');
+      await axios.delete(`/api/posts`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          postId: id
+        }
+      });
+      toast.success('Post deleted successfully');
       router.push('/post-list');
     } catch (error) {
       console.error('Failed to delete the post', error);

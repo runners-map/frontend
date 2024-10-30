@@ -17,6 +17,7 @@ export interface Post {
   distance: number;
   paceMin: number;
   paceSec: number;
+  paceTime: string;
   path: PathPoint[];
   departureYn: boolean;
   arriveYn: boolean;
