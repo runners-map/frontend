@@ -1,30 +1,31 @@
-'use client';
+"use client";
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import MapSearchPOI from '@/app/map-components/MapSearchPOI';
-import MapCurrentLocation from '@/app/map-components/MapCurrentLocation';
-import MapPostList from '@/app/map-components/MapPostList';
-import MapPOIList from '@/app/map-components/MapPOIList';
-import MapPostDetails from '@/app/map-components/MapPostDetails';
-import { HiMiniChevronUp, HiMiniChevronDown } from 'react-icons/hi2';
-import { LuPencilLine } from 'react-icons/lu';
-import { useRouter } from 'next/navigation';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import MapSearchPOI from "@/app/map-components/MapSearchPOI";
+import MapCurrentLocation from "@/app/map-components/MapCurrentLocation";
+import MapPostList from "@/app/map-components/MapPostList";
+import MapPOIList from "@/app/map-components/MapPOIList";
+import MapPostDetails from "@/app/map-components/MapPostDetails";
+import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
+import { LuPencilLine } from "react-icons/lu";
+import { useRouter } from "next/navigation";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
     centerLat: 0,
     centerLng: 0,
-    gender: '',
-    paceMinStart: '',
-    paceMinEnd: '',
-    distanceStart: '',
-    distanceEnd: '',
-    startDate: '',
-    startTime: '',
+    gender: "",
+    paceMinStart: "",
+    paceMinEnd: "",
+    distanceStart: "",
+    distanceEnd: "",
+    startDate: "",
+    startTime: "",
     limitMemberCnt: 0,
-    page: '',
-    size: ''
+    page: "",
+    size: "",
   });
 
   const [map, setMap] = useState<Tmapv2.Map | null>(null);
@@ -35,32 +36,41 @@ export default function MapContainer() {
   const [isPoiSearched, setIsPoiSearched] = useState(false);
 
   const [postData, setPostData] = useState(null);
-  const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker[] | null>([]);
+  const [postMarkerArr, setPostMarkerArr] = useState<Tmapv2.Marker[] | null>(
+    []
+  );
 
   const [selectedPost, setSelectedPost] = useState(null);
 
+  const { user } = useUserInfo();
+
   useEffect(() => {
+    // const [lat, lng] = user?.lastPosition
+    //   .replace(/[()]/g, "")
+    //   .split(",")
+    //   .map((coord) => parseFloat(coord.trim()));
+
     if (window.Tmapv2) {
-      const newMap = new Tmapv2.Map('map_div', {
+      const newMap = new Tmapv2.Map("map_div", {
         center: new Tmapv2.LatLng(37.570028, 126.986072),
-        width: '100%',
-        height: '100vh',
+        width: "100%",
+        height: "100vh",
         zoom: 15,
-        httpsMode: true
+        httpsMode: true,
       });
 
-      newMap.addListener('dragstart', function () {});
+      newMap.addListener("dragstart", function () {});
 
-      newMap.addListener('dragend', function () {
+      newMap.addListener("dragend", function () {
         const center = newMap.getCenter();
         const centerLat = center.lat();
         const centerLng = center.lng();
 
         // 중심 좌표를 숫자형으로 저장
-        setQueryParams(prevParams => ({
+        setQueryParams((prevParams) => ({
           ...prevParams,
           centerLat: parseFloat(centerLat),
-          centerLng: parseFloat(centerLng)
+          centerLng: parseFloat(centerLng),
         }));
       });
 
@@ -72,55 +82,67 @@ export default function MapContainer() {
   const searchPosts = async () => {
     // 마커 삭제
     if (postMarkerArr !== null) {
-      postMarkerArr.forEach(marker => marker.setMap(null));
+      postMarkerArr.forEach((marker) => marker.setMap(null));
       setPostMarkerArr([]);
     }
 
     const params = {
       lat_gte: queryParams.centerLat - 1 / 111,
       lat_lte: queryParams.centerLat + 1 / 111,
-      lng_gte: queryParams.centerLng - 1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
-      lng_lte: queryParams.centerLng + 1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+      lng_gte:
+        queryParams.centerLng -
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+      lng_lte:
+        queryParams.centerLng +
+        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
       gender: queryParams.gender,
-      limitMemberCnt: queryParams.limitMemberCnt
+      limitMemberCnt: queryParams.limitMemberCnt,
     };
 
-    console.log('실제 요청 파라미터', params);
+    console.log("실제 요청 파라미터", params);
 
     try {
       // 모든 데이터를 가져오기
-      const res = await axios.get('http://localhost:3001/Post');
+      const res = await axios.get("http://localhost:3001/Post");
       const posts = res.data;
 
-      console.log('게시글 목록', posts);
+      console.log("게시글 목록", posts);
       setPostData(posts);
+
+      console.log("게시글 목록", posts);
 
       if (posts.length > 0) {
         posts.forEach((markerData, index) => {
-          const markerPosition = new Tmapv2.LatLng(markerData.lat, markerData.lng);
+          const markerPosition = new Tmapv2.LatLng(
+            markerData.lat,
+            markerData.lng
+          );
 
           const marker = new Tmapv2.Marker({
             position: markerPosition,
-            icon: createMarkerIcon(index + 1, markerData.arriveYn ? 'review' : 'post'),
+            icon: createMarkerIcon(
+              index + 1,
+              markerData.arriveYn ? "review" : "post"
+            ),
             iconSize: new Tmapv2.Size(40, 40),
             title: markerData.title,
-            map: map
+            map: map,
           });
 
-          marker.addListener('touchstart', function () {
+          marker.addListener("touchstart", function () {
             setSelectedPost(markerData);
             setIsListVisible(true);
-            const targetElement = document.getElementById('item3');
+            const targetElement = document.getElementById("item3");
             if (targetElement) {
-              targetElement.scrollIntoView({ behavior: 'smooth' });
+              targetElement.scrollIntoView({ behavior: "smooth" });
             }
           });
 
-          setPostMarkerArr(prevArr => [...prevArr, marker]);
+          setPostMarkerArr((prevArr) => [...prevArr, marker]);
         });
       }
     } catch (error) {
-      console.error('데이터 가져오기 실패', error);
+      console.error("데이터 가져오기 실패", error);
     }
   };
 
@@ -131,17 +153,17 @@ export default function MapContainer() {
   const createMarkerIcon = (index, type) => {
     let color;
     switch (type) {
-      case 'post':
-        color = 'rgb(74, 0, 255)'; // Post 상태일 때 색상
+      case "post":
+        color = "rgb(74, 0, 255)"; // Post 상태일 때 색상
         break;
-      case 'poi':
-        color = 'rgb(0, 215, 192)'; // POI 상태일 때 색상
+      case "poi":
+        color = "rgb(0, 215, 192)"; // POI 상태일 때 색상
         break;
-      case 'review':
-        color = 'rgb(255 0 211)'; // Review 상태일 때 색상
+      case "review":
+        color = "rgb(255 0 211)"; // Review 상태일 때 색상
         break;
       default:
-        color = 'rgb(0, 0, 0)';
+        color = "rgb(0, 0, 0)";
     }
     const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
@@ -160,9 +182,9 @@ export default function MapContainer() {
 
   useEffect(() => {
     if (isPoiSearched) {
-      const targetElement = document.getElementById('item1');
+      const targetElement = document.getElementById("item1");
       if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth' });
+        targetElement.scrollIntoView({ behavior: "smooth" });
       }
     }
   }, [isPoiSearched]);
@@ -170,7 +192,7 @@ export default function MapContainer() {
   const router = useRouter(); // useRouter 훅 사용
 
   const handleClick = () => {
-    router.push('/post-list/post/create/searchRoute'); // 원하는 경로로 이동
+    router.push("/post-list/post/create/searchRoute"); // 원하는 경로로 이동
   };
 
   return (
@@ -185,15 +207,16 @@ export default function MapContainer() {
         isPoiSearched={isPoiSearched}
         setIsPoiSearched={setIsPoiSearched}
         createMarkerIcon={createMarkerIcon}
+        setIsListVisible={setIsListVisible}
       />
 
-      <div
-        className={`flex-col space-y-2 absolute w-full flex justify-center bottom-24 transition-transform duration-300 ${
-          isListVisible ? 'translate-y-0' : 'translate-y-80'
-        }`}>
+      <div className="flex-col absolute w-full flex justify-center bottom-12 transition-transform duration-300">
         <div className="flex w-full justify-between items-center px-3">
           <MapCurrentLocation setQueryParams={setQueryParams} map={map} />
-          <button className="btn bg-white text-primary h-10" onClick={toggleVisibility}>
+          <button
+            className="btn bg-white text-primary border-0 h-10 rounded-full shadow-md shadow-slate-300"
+            onClick={toggleVisibility}
+          >
             {isListVisible ? (
               <>
                 <HiMiniChevronDown size={20} style={{ strokeWidth: 1.5 }} />
@@ -208,43 +231,49 @@ export default function MapContainer() {
           </button>
           <button
             onClick={handleClick}
-            className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full">
+            className="flex justify-center items-center bg-white text-primary h-10 w-10 rounded-full shadow-md shadow-slate-300"
+          >
             <LuPencilLine size={23} style={{ strokeWidth: 2.5 }} />
           </button>
         </div>
 
-        <div className="carousel carousel-center w-full h-72 space-x-1 p-4">
-          {isListVisible && (
-            <>
-              {isPoiSearched && (
-                <div
-                  id="item1"
-                  className="carousel-item w-full bg-white border-2 border-primary rounded-xl overflow-y-auto">
-                  <MapPOIList
-                    poiSearchData={poiSearchData}
-                    setQueryParams={setQueryParams}
-                    map={map}
-                    createMarkerIcon={createMarkerIcon}
-                  />
-                </div>
-              )}
-              <div
-                id="item2"
-                className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500">
-                <MapPostList
-                  postData={postData}
-                  setQueryParams={setQueryParams}
-                  map={map}
-                  createMarkerIcon={createMarkerIcon}
-                  setSelectedPost={setSelectedPost}
-                />
-              </div>
-              {selectedPost && (
-                <div id="item3" className="carousel-item w-full bg-white border-2 border-primary rounded-xl">
-                  <MapPostDetails post={selectedPost} />
-                </div>
-              )}
-            </>
+        <div
+          className={`carousel carousel-center w-full h-72 space-x-1 px-4 pb-6 pt-2 overflow-hidden transition-all duration-700 linear ${
+            isListVisible ? "max-h-72" : "max-h-0"
+          }`}
+        >
+          {isPoiSearched && (
+            <div
+              id="item1"
+              className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+            >
+              <MapPOIList
+                poiSearchData={poiSearchData}
+                setQueryParams={setQueryParams}
+                map={map}
+                createMarkerIcon={createMarkerIcon}
+              />
+            </div>
+          )}
+          <div
+            id="item2"
+            className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+          >
+            <MapPostList
+              postData={postData}
+              setQueryParams={setQueryParams}
+              map={map}
+              createMarkerIcon={createMarkerIcon}
+              setSelectedPost={setSelectedPost}
+            />
+          </div>
+          {selectedPost && (
+            <div
+              id="item3"
+              className="carousel-item w-full bg-white rounded-xl overflow-y-auto shadow-md shadow-slate-500"
+            >
+              <MapPostDetails post={selectedPost} />
+            </div>
           )}
         </div>
       </div>

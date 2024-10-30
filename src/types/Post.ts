@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface PathPoint {
   lat: number;
@@ -39,15 +39,15 @@ interface PostState {
   setStartPosition: (startPosition: string) => void;
 }
 
-export const usePostStore = create<PostState>(set => ({
+export const usePostStore = create<PostState>((set) => ({
   adminId: 0,
   path: [],
   distance: 0,
-  startPosition: '',
-  setAdminId: newAdminId => set({ adminId: newAdminId }),
-  setPath: newPath => set({ path: newPath }),
-  setDistance: newDistance => set({ distance: newDistance }),
-  setStartPosition: newPosition => set({ startPosition: newPosition })
+  startPosition: "",
+  setAdminId: (newAdminId) => set({ adminId: newAdminId }),
+  setPath: (newPath) => set({ path: newPath }),
+  setDistance: (newDistance) => set({ distance: newDistance }),
+  setStartPosition: (newPosition) => set({ startPosition: newPosition }),
 }));
 
 export interface GetPostResponse {
@@ -74,11 +74,40 @@ export interface GetPostResponseState {
   setStartPositionResponse: (startPosition: string) => void;
 }
 
-export const usePostResponseStore = create<GetPostResponseState>(set => ({
-  startPositionResponse: '',
+export interface PostFilter {
+  gender: string;
+  pace: string;
+  paceMinStart: number | null | "";
+  paceMinEnd: number | null | "";
+  distance: string;
+  distanceStart: number | null | "";
+  distanceEnd: number | null | "";
+  limitMemberCnt: string;
+  limitMemberCntStart: number | null | "";
+  limitMemberCntEnd: number | null | "";
+  startDate: string;
+  startTime: string;
+}
+
+export interface MapPostQuery {
+  centerLat: number | null;
+  centerLng: number | null;
+  gender: string;
+  paceMinStart: number | null | "";
+  paceMinEnd: number | null | "";
+  distanceStart: number | null | "";
+  distanceEnd: number | null | "";
+  limitMemberCntStart: number | null | "";
+  limitMemberCntEnd: number | null | "";
+  startDate: string;
+  startTime: string;
+}
+export const usePostResponseStore = create<GetPostResponseState>((set) => ({
+  startPositionResponse: "",
   distanceResponse: 0,
   pathResponse: [],
-  setStartPositionResponse: startPosition => set({ startPositionResponse: startPosition }),
-  setDistanceResponse: distance => set({ distanceResponse: distance }),
-  setPathResponse: path => set({ pathResponse: path })
+  setStartPositionResponse: (startPosition) =>
+    set({ startPositionResponse: startPosition }),
+  setDistanceResponse: (distance) => set({ distanceResponse: distance }),
+  setPathResponse: (path) => set({ pathResponse: path }),
 }));

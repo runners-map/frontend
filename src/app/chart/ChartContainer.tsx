@@ -15,19 +15,26 @@ import ChartCalendar from "./ChartCalendar";
 import axios from "axios";
 import ChartList from "./ChartList";
 import ChartStat from "./ChartStat";
+import { useUserInfo } from "@/types/UserInfo";
+import Cookies from "js-cookie";
 
-const fetchChartData = async (date: Date) => {
+const fetchChartData = async (date: Date, userId: number) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/record`,
-    {
-      params: {
-        year: year,
-        month: month,
-      },
-    }
-  );
+
+  const accessToken = Cookies.get("accessToken");
+
+  const response = await axios.get("/api/posts/record", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // 액세스 토큰 추가
+    },
+    params: {
+      userId,
+      year,
+      month,
+    },
+  });
+  console.log(response.data);
   return response.data;
 };
 
@@ -38,12 +45,20 @@ export default function ChartContainer() {
   const listRef = useRef<{ [key: number]: HTMLLIElement | null }>({});
   const currentDate = new Date();
   const queryClient = useQueryClient();
+  const { user } = useUserInfo();
 
-  const { data: chartData, isLoading } = useQuery<Record[]>({
+  const { data: chartData, isLoading } = useQuery<[]>({
     queryKey: ["chartData", date.getFullYear(), date.getMonth() + 1],
-    queryFn: () => fetchChartData(date),
-    staleTime: Infinity,
+    queryFn: () => fetchChartData(date, user?.userId),
+    staleTime: 0,
   });
+
+  const totalDistance =
+    chartData?.find((item) => item.type === "ALL")?.resultList || 0;
+  const monthDistance =
+    chartData?.find((item) => item.type === "MONTH")?.resultList || 0;
+  const dayData =
+    chartData?.find((item) => item.type === "DAY")?.resultList || [];
 
   const handlePreviousMonth = () => {
     setDate((prev) => {
@@ -59,8 +74,8 @@ export default function ChartContainer() {
       if (!queryClient.getQueryData(cacheKey)) {
         queryClient.fetchQuery({
           queryKey: cacheKey,
-          queryFn: () => fetchChartData(newDate),
-          staleTime: Infinity,
+          queryFn: () => fetchChartData(newDate, user?.userId),
+          staleTime: 0,
         });
       }
 
@@ -99,7 +114,10 @@ export default function ChartContainer() {
         <ChartLoading />
       ) : (
         <>
-          <ChartStat />
+          <ChartStat
+            totalDistance={totalDistance}
+            monthDistance={monthDistance}
+          />
           <div className="bg-white rounded-2xl px-1 py-2 relative shadow-md shadow-slate-300 flex-shrink-0">
             <div className="flex flex-none items-center justify-center space-x-3">
               <button
@@ -136,7 +154,7 @@ export default function ChartContainer() {
             <div className="flex justify-center">
               {isChart ? (
                 <Chart
-                  chartData={chartData || []}
+                  chartData={dayData || []}
                   year={date.getFullYear()}
                   month={date.getMonth() + 1}
                   selectedDay={selectedDay}
@@ -145,7 +163,7 @@ export default function ChartContainer() {
               ) : (
                 <ChartCalendar
                   chartData={chartData || []}
-                  date={date}
+                  date={dayData}
                   currentDate={currentDate}
                   selectedDay={selectedDay}
                   onDateClick={handleDateClick}
@@ -155,7 +173,7 @@ export default function ChartContainer() {
           </div>
           <div className="overflow-y-auto flex-1 rounded-xl shadow-md shadow-slate-300 bg-white py-2">
             <ChartList
-              chartData={chartData || []}
+              chartData={dayData || []}
               listRef={listRef}
               selectedDay={selectedDay}
               onListClick={handleDateClick}
