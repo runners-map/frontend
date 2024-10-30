@@ -6,7 +6,7 @@ export default function ChatButton({ id }: { id: string }) {
   const router = useRouter();
 
   const handleChat = (id: string) => {
-    router.push(`/post-list/post/${id}/chatroom`);
+    router.push(`/post-list/post/${id}/comment`);
   };
 
   return (

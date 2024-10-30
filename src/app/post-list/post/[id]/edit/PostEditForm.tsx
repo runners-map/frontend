@@ -8,7 +8,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Controller, useForm } from 'react-hook-form';
 import { FaRegCalendarAlt } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { useUserInfo } from '@/types/UserInfo';
 export default function PostEditForm({ id }: { id: string }) {
@@ -93,7 +92,6 @@ export default function PostEditForm({ id }: { id: string }) {
         },
         withCredentials: true
       });
-      toast.success('성공적으로 업데이트 되었습니다');
 
       router.push(`/post-list`);
     } catch (error) {
@@ -102,7 +100,7 @@ export default function PostEditForm({ id }: { id: string }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-20">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-10">
       {/* 성별 */}
 
       <div className="flex flex-col">

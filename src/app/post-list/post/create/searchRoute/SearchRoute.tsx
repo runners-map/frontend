@@ -14,10 +14,10 @@ export default function MapRoute() {
 
   useEffect(() => {
     const map = new Tmapv2.Map('map_div', {
-      center: new Tmapv2.LatLng(37.567439753187976, 126.98903560638469),
+      center: new Tmapv2.LatLng(37.51333427094256, 127.12357521057166),
       width: '100%',
       height: '100vh',
-      zoom: 16,
+      zoom: 14,
       httpsMode: true
     });
     let markerStart: Tmapv2.Marker | null = null;

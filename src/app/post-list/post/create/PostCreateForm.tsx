@@ -9,7 +9,6 @@ import { FaRegCalendarAlt } from 'react-icons/fa';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useUserInfo } from '@/types/UserInfo';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
 export default function PostCreateForm() {
@@ -50,7 +49,6 @@ export default function PostCreateForm() {
         },
         withCredentials: true
       });
-      toast.success(`성공적으로 작성되었습니다`);
       router.push('/post-list');
     } catch (error) {
       console.log('Error creating post', error);
@@ -58,7 +56,7 @@ export default function PostCreateForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-20">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-col-2 gap-4 pt-10 mx-10">
       {/* 성별 */}
 
       <div className="flex flex-col justify-between">
