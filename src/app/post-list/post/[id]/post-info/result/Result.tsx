@@ -95,16 +95,16 @@ export default function Result({ id }: { id: string }) {
       </div>
       <div className="flex flex-col items-center justify-center mt-16 px-14">
         <p>나에게 딱 맞는 최적의 러닝 속도를 찾아 더 효율적이고 똑똑한 러닝라이프를 즐기세요</p>
-        <div className="flex mt-5 space-x-5">
-          <div className="bg-gray-200 w-32 h-32 rounded-full flex flex-col items-center justify-center">
+        <div className="flex mt-5 space-x-1">
+          <div className="bg-gray-200 w-28 h-28 rounded-full flex flex-col items-center justify-center">
             <FaWeightHanging className="text-3xl mb-2" />
             <p>체중감소</p>
           </div>
-          <div className="bg-gray-200 w-32 h-32 rounded-full flex flex-col items-center justify-center">
+          <div className="bg-gray-200 w-28 h-28 rounded-full flex flex-col items-center justify-center">
             <FaBone className="text-3xl mb-2" />
             <p>골밀도 증가</p>
           </div>
-          <div className="bg-gray-200 w-32 h-32 rounded-full flex flex-col items-center justify-center">
+          <div className="bg-gray-200 w-28 h-28 rounded-full flex flex-col items-center justify-center">
             <FaSmile className="text-3xl mb-2" />
             <p>자존감 증가</p>
           </div>

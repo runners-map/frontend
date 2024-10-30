@@ -29,6 +29,8 @@ export default function PostInfo({ id }: { id: string }) {
   const [post, setPost] = useState<Post | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isExit, setIsExit] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -56,12 +58,18 @@ export default function PostInfo({ id }: { id: string }) {
   };
 
   const handleStopClick = () => {
-    const confirmExit = window.confirm('종료하시겠습니까?');
-    if (confirmExit) {
-      setIsRunning(false);
-      setTimeElapsed(0);
-      router.push(`/post-list/post/${id}/post-info/result?timeElapsed=${timeElapsed}`);
-    }
+    setShowConfirmModal(true);
+  };
+
+  const confirmExit = () => {
+    setIsRunning(false);
+    setTimeElapsed(0);
+    router.push(`/post-list/post/${id}/post-info/result?timeElapsed=${timeElapsed}`);
+    setShowConfirmModal(false);
+  };
+
+  const cancelExit = () => {
+    setShowConfirmModal(false);
   };
 
   const formatTime = (seconds: number) => {
@@ -72,6 +80,10 @@ export default function PostInfo({ id }: { id: string }) {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs
       .toString()
       .padStart(2, '0')}`;
+  };
+
+  const handleExit = () => {
+    setIsExit(true);
   };
 
   if (!post) return <p>Loading...</p>;
@@ -85,7 +97,7 @@ export default function PostInfo({ id }: { id: string }) {
       <main className="flex-1 p-6 bg-white shadow-2xl rounded-t-3xl">
         <section className="mb-6 bg-white p-4 rounded-2xl shadow-lg">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold">채팅방 정보</h2>
+            <h2 className="text-xl font-semibold">채팅방 정보</h2>
             <div className="flex space-x-2">
               <EditButton id={id} />
               <ChatButton id={id} />
@@ -128,6 +140,22 @@ export default function PostInfo({ id }: { id: string }) {
           <p className="mt-4 text-lg text-gray-800 leading-relaxed bg-gray-100 p-4 rounded-md border-2 border-primary border-dotted shadow-md">
             {post.content}
           </p>
+          <div className="mt-4 text-lg text-gray-800 leading-relaxed bg-gray-100 p-4 rounded-md border-2 border-primary border-dotted shadow-md">
+            {!isExit && (
+              <div className="flex justify-between">
+                <p>김제로</p>
+                <button onClick={handleExit}>강퇴</button>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <p>러너스하이</p>
+              <button>강퇴</button>
+            </div>
+            <div className="flex justify-between">
+              <p>sky_runners</p>
+              <button>강퇴</button>
+            </div>
+          </div>
         </section>
         <section className="flex flex-col items-center">
           {isRunning ? (
@@ -146,6 +174,22 @@ export default function PostInfo({ id }: { id: string }) {
           )}
         </section>
       </main>
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg">
+            <h2 className="text-lg">종료하시겠습니까?</h2>
+            <div className="flex justify-end mt-4">
+              <button className=" btn btn-primary mr-2" onClick={confirmExit}>
+                확인
+              </button>
+              <button onClick={cancelExit} className="btn btn-primary">
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
