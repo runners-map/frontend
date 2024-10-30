@@ -380,7 +380,13 @@ export default function EditRoute({ id }: { id: string }) {
 
   return (
     <>
-      <div id="map_div" className="flex relative" />
+      <div id="map_div" className="flex relative">
+        <button
+          onClick={() => router.push(`/post-list/post/${id}/edit`)}
+          className="absolute right-0 bg-red-600 text-white p-1 rounded-xl  z-20">
+          수정 안하기
+        </button>
+      </div>
       <div id="hiddenInput">
         <input type="hidden" id="startx" />
         <input type="hidden" id="starty" />
@@ -406,19 +412,15 @@ export default function EditRoute({ id }: { id: string }) {
             />
           </div>
         </div>
-        <div className="flex absolute right-12 top-5 justify-center items-center ml-1 z-10 mt-2">
+        <div className="flex flex-col absolute right-12 top-5 justify-center items-center ml-1 z-10 mt-2">
           <button
             id="searchRoute"
             className=" bg-primary text-white rounded px-4 py-2 active:bg-blue-500 transition-colors duration-150 ease-in-out">
             <FaSearch />
           </button>
-          <button
-            onClick={() => router.push(`post-list/post/${id}/edit`)}
-            className=" bg-primary text-white rounded px-4 py-2 active:bg-blue-500 transition-colors duration-150 ease-in-out">
-            경로 수정 안하기
-          </button>
         </div>
       </div>
+
       {addressInfo && (
         <div className="absolute bottom-3 left-3 right-3 bg-white border rounded-2xl p-3 border-primary">
           {addressInfo}

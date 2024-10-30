@@ -1,6 +1,8 @@
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware"; // persist 미들웨어 추가
 import Cookies from "js-cookie";
+
 
 export interface UserInfoType {
   accessToken: string;
@@ -21,6 +23,7 @@ interface AuthState {
   checkLogin: () => void;
   logout: () => void;
 }
+
 
 const localStorageCustom = {
   getItem: (name: string) => {
@@ -51,6 +54,7 @@ export const useUserInfo = create<AuthState>()(
       checkLogin: () => {
         const accessToken = Cookies.get("accessToken");
         const refreshToken = Cookies.get("refreshToken");
+
         if (accessToken && refreshToken) {
           set({ isLogin: true });
         } else {

@@ -1,20 +1,22 @@
-"use client";
-import "./globals.css";
-import Navigation from "@/components/Navigation";
-import { usePathname, useRouter } from "next/navigation";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Cookies from "js-cookie";
-import { useEffect } from "react";
+'use client';
+import './globals.css';
+import Navigation from '@/components/Navigation';
+import { usePathname } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const router = useRouter();
   const pathname = usePathname();
+
   const noNavPaths = [
     "/login",
     "/register",
@@ -42,6 +44,14 @@ export default function RootLayout({
           {children}
           {!hideNav && <Navigation />}
         </QueryClientProvider>
+        <ToastContainer
+          position="top-center"
+          autoClose={1500}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
       </body>
     </html>
   );

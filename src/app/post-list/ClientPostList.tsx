@@ -31,6 +31,7 @@ export default function ClientPostList() {
     getPostList();
   }, [userId, accessToken]);
 
+  console.log(posts);
   return (
     <ul className="p-10">
       <div className="bg-gradient-to-r from-primary p-5 via-blue-500 to-blue-400 shadow-2xl rounded-3xl text-white mb-10 ">
