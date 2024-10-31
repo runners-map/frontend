@@ -15,7 +15,7 @@
 
 ## Installation
 
-`npm install`을 통해 설치를 진행하고 `npm run dev`을 하면 실행이 됩니다, 초반에 mock데이터로 작업을 수행할때는, `db.json`파일이 있는데 같이 실행이 되게 설정을 해놨습니다. json-server --watch ./db.json --port 3001
+`npm install`을 통해 설치를 진행하고 `npm run dev`을 하면 실행이 됩니다, 초반에 mock데이터로 작업을 수행할때는, `db.json`파일이 있는데 같이 실행이 되게 설정을 해놨습니다. `json-server --watch ./db.json --port 3001`
 
 ## Project Doc
 
@@ -46,11 +46,11 @@
 
 ### Pages
 
-1. `src/app/chart`: 기록조회페이지
-2. `src/app/login`: 로그인페이지
+1. `src/app/chart`: 기록조회 페이지
+2. `src/app/login`: 로그인 페이지
 3. `src/app/register`: 회원가입 페이지
 4. `src/app/map-components`: 지도에 필요한 컴포넌트 폴더
-5. `src/app/mypage`: 마이페이지
+5. `src/app/mypage`: 마이 페이지
 6. `src/app/mypage/setting`: 개인정보 변경 페이지
 7. `src/app/post-list`: 모집글 리스트 조회 페이지
 8. `src/app/post-list/post/create`: 모집글 작성 페이지
@@ -87,7 +87,7 @@ export default function MapPage() {
 }
 ```
 
-### `src/layout.tsx`: 모든 페이지 레이아웃 화면
+### `src/app/layout.tsx`: 모든 페이지 레이아웃 화면
 
 ```tsx
 'use client';
