@@ -1,10 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
-import Cookies from "js-cookie";
-import { useUserInfo } from "@/types/UserInfo";
-
+import { useState } from "react";
+import {
+  HiMiniUser,
+  HiLockClosed,
+  HiCheckCircle,
+  HiOutlineCog6Tooth,
+  HiOutlineUserMinus,
+} from "react-icons/hi2";
 interface DeleteAccountFormData {
   password: string;
 }
@@ -14,63 +18,82 @@ export default function DeleteAccountForm() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<DeleteAccountFormData>();
+  } = useForm<DeleteAccountFormData>({
+    mode: "onChange", // onChange로 유효성 검사 트리거 설정
+  });
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const router = useRouter();
-  const { logout } = useUserInfo();
 
   const handleDeleteAccount = async (data: DeleteAccountFormData) => {
-    try {
-      await axios.delete("/api/user/my-page", {
-        data: { password: data.password },
-        headers: {
-          Authorization: `Bearer ${Cookies.get("accessToken")}`,
-        },
-      });
-      logout();
+    setPasswordError(null); // 이전 오류 메시지 초기화
+
+    // 특정 비밀번호 확인 - 여기서만 검사
+    if (data.password !== "qwer1234!") {
+      setPasswordError("비밀번호가 틀렸습니다."); // 오류 메시지 설정
+      return; // 서버 요청 방지
+    } else {
       router.push("/login");
-    } catch (error) {
-      console.error("계정 삭제 실패:", error);
     }
   };
 
   return (
-    <div className="delete-account-page">
-      <h1>계정 탈퇴</h1>
-      <p>계정 탈퇴를 위해 비밀번호를 입력하세요.</p>
-      <form onSubmit={handleSubmit(handleDeleteAccount)}>
-        <Controller
-          name="password"
-          control={control}
-          defaultValue=""
-          rules={{
-            required: "비밀번호는 필수 입력 항목입니다.",
-            minLength: {
-              value: 8,
-              message: "비밀번호는 최소 8자 이상이어야 합니다.",
-            },
-            pattern: {
-              value:
-                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-              message:
-                "비밀번호는 영어, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.",
-            },
-          }}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="password"
-              placeholder="비밀번호"
-              className="password-input"
+    <div className="flex flex-col bg-white rounded-2xl shadow-md shadow-slate-300 space-y-4 items-center py-20">
+      <h2 className="text-base"> 회원 탈퇴를 위해 비밀번호를 입력하세요.</h2>
+      <form
+        onSubmit={handleSubmit(handleDeleteAccount)}
+        className="flex-col flex w-full px-4"
+      >
+        <div className="w-full">
+          <label className="input input-bordered input-primary flex items-center gap-2 mb-1 rounded-full">
+            <Controller
+              name="password"
+              control={control}
+              rules={{
+                minLength: {
+                  value: 8,
+                  message: "비밀번호는 최소 8자 이상이어야 합니다.",
+                },
+                pattern: {
+                  value:
+                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                  message: "영어, 숫자, 특수문자를 모두 포함해야 합니다.",
+                },
+              }}
+              render={({ field }) => (
+                <>
+                  <HiLockClosed className="opacity-70" size={20} />
+                  <input
+                    type="password"
+                    className="grow"
+                    placeholder="비밀번호"
+                    {...field}
+                  />
+                </>
+              )}
             />
+          </label>
+          {errors.password && (
+            <span className="text-red-500 absolute">
+              {errors.password.message}
+            </span>
           )}
-        />
-        {errors.password && (
-          <span className="text-red-500 absolute">
-            {errors.password?.message}
-          </span>
-        )}
-        <button type="submit" className="btn btn-danger">
-          계정 탈퇴
+          {passwordError && (
+            <span className="text-red-500 absolute">{passwordError}</span>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-secondary text-base text-white w-full rounded-full mt-8 shadow-md shadow-slate-300"
+        >
+          <HiOutlineUserMinus size={25} />
+          회원 탈퇴
+        </button>
+        <button
+          type="submit"
+          className="btn btn-primary text-base text-white w-full rounded-full mt-3 shadow-md shadow-slate-300"
+        >
+          뒤로 가기
         </button>
       </form>
     </div>

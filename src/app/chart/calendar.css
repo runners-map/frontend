@@ -17,7 +17,7 @@
 }
 
 .react-calendar__month-view__days button:focus {
-  background-color: rgb(74 0 255) !important;
+  background-color: #0064ff !important;
   color: white;
 }
 
@@ -37,19 +37,19 @@
 }
 
 .running-day {
-  background-color: rgb(209 219 255);
+  background-color: lightgray;
   color: black;
   font-weight: bold;
 }
 
 .today {
-  border: 3px solid rgb(255 0 211) !important;
-  background-color: rgb(209 219 255);
+  border: 3px solid #4ed9c2 !important;
+  background-color: lightgray;
   color: black;
 }
 
 .selected-day {
-  background-color: rgb(74 0 255) !important;
+  background-color: #0064ff !important;
   color: white !important;
   font-weight: bold;
 }

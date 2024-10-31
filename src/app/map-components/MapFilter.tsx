@@ -22,8 +22,8 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
       paceMinEnd: data.paceMinEnd || null,
       limitMemberCntStart: data.limitMemberCntStart || null,
       limitMemberCntEnd: data.limitMemberCntStart || null,
-      startDate: data.startDate || "",
-      startTime: data.startTime || "",
+      startDate: data.startDate || null,
+      startTime: data.startTime || null,
     };
     setQueryParams(processedData);
     setIsFilterOpen(false);
@@ -103,7 +103,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
           render={({ field }) => (
             <>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "All"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -120,7 +120,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 🏃‍♀️🏃‍♂️ 혼성
               </label>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "M"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -137,7 +137,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 🏃‍♂️ 남성
               </label>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "F"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -158,7 +158,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
         />
       </fieldset>
 
-      <fieldset className="flex gap-2">
+      <fieldset className="flex gap-1">
         <legend className="text-gray-400 mb-2">거리 (km)</legend>
         <Controller
           name="distance"
@@ -167,7 +167,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
           render={({ field }) => (
             <>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`text-base cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "3-5"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -188,7 +188,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`text-base cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "5-10"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -209,7 +209,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`text-base cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "10-15"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -230,7 +230,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "15↑"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -263,7 +263,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
           render={({ field }) => (
             <>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "6↑"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -284,7 +284,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "6-5"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -305,7 +305,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "5-4"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -326,7 +326,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               </label>
 
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "4↓"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -358,7 +358,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
           render={({ field }) => (
             <>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "2"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -378,7 +378,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 🌱 2
               </label>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "3-4"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -398,7 +398,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 🍀 3-4
               </label>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "5-7"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -418,7 +418,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 🌿 5-7
               </label>
               <label
-                className={`cursor-pointer px-4 py-2 rounded-full shadow-md shadow-slate-300 ${
+                className={`cursor-pointer px-3 py-2 rounded-full shadow-md shadow-slate-300 ${
                   field.value === "8-10"
                     ? "bg-primary text-white"
                     : "text-gray-700 bg-gray-50"
@@ -459,7 +459,7 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="startTime"
             control={control}
             defaultValue=""
@@ -472,14 +472,26 @@ export default function MapFilter({ setQueryParams, setIsFilterOpen }) {
                 }`}
               />
             )}
-          />
+          /> */}
         </div>
       </fieldset>
 
       <div className="flex justify-end pb-5 gap-2">
         <button
           type="button"
-          onClick={() => reset()}
+          onClick={() =>
+            reset({
+              gender: null,
+              distanceStart: null,
+              distanceEnd: null,
+              paceMinStart: null,
+              paceMinEnd: null,
+              limitMemberCntStart: null,
+              limitMemberCntEnd: null,
+              startDate: null,
+              startTime: null,
+            })
+          }
           className="btn btn-secondary text-white rounded-full shadow-md shadow-slate-300"
         >
           초기화

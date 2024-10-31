@@ -66,7 +66,7 @@ export default function PhotoUploadForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="w-[380px] h-[284px] mx-auto border-primary rounded-xl mb-8 relative shadow-md shadow-slate-300">
+      <div className="w-[328px] h-[256px] mx-auto border-primary rounded-xl mb-8 relative shadow-md shadow-slate-300">
         {preview ? (
           <Image
             src={`${preview}`}

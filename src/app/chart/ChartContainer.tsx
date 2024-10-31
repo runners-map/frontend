@@ -10,32 +10,24 @@ import {
 import Chart from "@/app/chart/Chart";
 import ChartLoading from "./ChartLoading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Record } from "@/types/Record";
+
 import ChartCalendar from "./ChartCalendar";
 import axios from "axios";
 import ChartList from "./ChartList";
 import ChartStat from "./ChartStat";
 import { useUserInfo } from "@/types/UserInfo";
-import Cookies from "js-cookie";
 
-const fetchChartData = async (date: Date, userId: number) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
+const fetchChartData = async (date: Date) => {
+  const recordMonth = date.getMonth() + 1;
 
-  const accessToken = Cookies.get("accessToken");
-
-  const response = await axios.get("/api/posts/record", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`, // 액세스 토큰 추가
-    },
+  const response = await axios.get("/api/record", {
     params: {
-      userId,
-      year,
-      month,
+      recordMonth,
     },
   });
-  console.log(response.data);
-  return response.data;
+  const recordData = response.data;
+  console.log(recordData);
+  return recordData[0]; // 첫 번째 데이터 반환
 };
 
 export default function ChartContainer() {
@@ -47,18 +39,21 @@ export default function ChartContainer() {
   const queryClient = useQueryClient();
   const { user } = useUserInfo();
 
-  const { data: chartData, isLoading } = useQuery<[]>({
+  const { data: chartData, isLoading } = useQuery({
     queryKey: ["chartData", date.getFullYear(), date.getMonth() + 1],
     queryFn: () => fetchChartData(date, user?.userId),
     staleTime: 0,
   });
 
+  // recordData에 접근하여 type별로 데이터를 추출
+  const recordData = chartData?.recordData || [];
+
   const totalDistance =
-    chartData?.find((item) => item.type === "ALL")?.resultList || 0;
+    recordData.find((item) => item.type === "ALL")?.resultList || 0;
   const monthDistance =
-    chartData?.find((item) => item.type === "MONTH")?.resultList || 0;
+    recordData.find((item) => item.type === "MONTH")?.resultList || 0;
   const dayData =
-    chartData?.find((item) => item.type === "DAY")?.resultList || [];
+    recordData.find((item) => item.type === "DAY")?.resultList || [];
 
   const handlePreviousMonth = () => {
     setDate((prev) => {
@@ -107,7 +102,7 @@ export default function ChartContainer() {
 
   return (
     <div
-      className="flex flex-col gap-5 py-5 px-5"
+      className="flex flex-col gap-3 py-3 px-4"
       style={{ height: "calc(100vh - 124px)" }}
     >
       {isLoading ? (
@@ -122,7 +117,7 @@ export default function ChartContainer() {
             <div className="flex flex-none items-center justify-center space-x-3">
               <button
                 onClick={handlePreviousMonth}
-                className="btn btn-outline btn-primary border-0"
+                className="w-10 h-10 text-primary flex justify-center items-center"
               >
                 <HiMiniChevronLeft size={20} style={{ strokeWidth: 2 }} />
               </button>
@@ -131,11 +126,12 @@ export default function ChartContainer() {
               </span>
               <button
                 onClick={handleNextMonth}
-                className="btn btn-outline btn-primary border-0"
-                disabled={
+                className={`w-10 h-10 flex justify-center items-center ${
                   date.getFullYear() === currentDate.getFullYear() &&
                   date.getMonth() === currentDate.getMonth()
-                }
+                    ? "text-gray-400 bg-white"
+                    : "text-primary"
+                }`}
               >
                 <HiMiniChevronRight size={20} style={{ strokeWidth: 2 }} />
               </button>
@@ -162,8 +158,8 @@ export default function ChartContainer() {
                 />
               ) : (
                 <ChartCalendar
-                  chartData={chartData || []}
-                  date={dayData}
+                  chartData={dayData || []}
+                  date={date}
                   currentDate={currentDate}
                   selectedDay={selectedDay}
                   onDateClick={handleDateClick}

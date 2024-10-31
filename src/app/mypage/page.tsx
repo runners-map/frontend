@@ -1,12 +1,28 @@
 "use client";
 import MyPageButtons from "@/app/mypage/MypageButtons";
-import { useUserInfo } from "@/types/UserInfo";
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { TbGenderFemale, TbGenderMale } from "react-icons/tb";
+import { HiMiniUser } from "react-icons/hi2";
 
 export default function MyPagePage() {
-  const { user } = useUserInfo();
-  console.log(user);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/users", {
+          params: { userId: 2 },
+        });
+        setUser(response.data[0]);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <>
@@ -24,19 +40,19 @@ export default function MyPagePage() {
                 className="rounded-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
-                사진 없음
+              <div className="w-full h-full flex items-center justify-center bg-gray-400 text-gray-300 rounded-full">
+                <HiMiniUser className="w-5/6 h-5/6" />
               </div>
             )}
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center justify-center">
             <span className="text-center font-bold text-2xl">
               {user?.nickname}
             </span>
             {user?.gender === "M" ? (
-              <TbGenderMale size={20} />
+              <TbGenderMale size={25} />
             ) : (
-              <TbGenderFemale size={20} />
+              <TbGenderFemale size={25} />
             )}
           </div>
           <span className="text-center text-xl">{user?.email}</span>

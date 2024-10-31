@@ -36,8 +36,25 @@ export default function MapPostList({
                 alt={`marker-${index + 1}`}
                 className="w-8 h-8 mr-2"
               />
-              <span>{item.title}</span>
-              <span>{item.gender}</span>
+              <div>
+                <div>{item.title}</div>
+                <div className="text-xs">
+                  {item.gender === "M"
+                    ? "남성"
+                    : item.gender === "F"
+                    ? "여성"
+                    : "혼성"}{" "}
+                  / {item?.distance}km / {item.paceMin}'{item.paceSec}" /{" "}
+                  {item.limitMemberCnt}명 /{" "}
+                  {new Date(item.startDateTime).getMonth() + 1}월{" "}
+                  {new Date(item.startDateTime).getDate()}일 /{" "}
+                  {new Date(item.startDateTime).getHours()}:
+                  {String(new Date(item.startDateTime).getMinutes()).padStart(
+                    2,
+                    "0"
+                  )}
+                </div>
+              </div>
             </div>
           </li>
         ))}

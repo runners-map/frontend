@@ -11,17 +11,8 @@ import {
   ChartEvent,
   ActiveElement,
 } from "chart.js";
-import { Record } from "@/types/Record";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Legend);
-
-interface ChartProps {
-  chartData: [];
-  year: number;
-  month: number;
-  selectedDay: number | null;
-  onBarClick: (day: number) => void;
-}
 
 export default function Chart({
   chartData,
@@ -29,7 +20,7 @@ export default function Chart({
   month,
   selectedDay,
   onBarClick,
-}: ChartProps) {
+}) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}일`);
   const distances = Array(daysInMonth).fill(0);
@@ -37,16 +28,16 @@ export default function Chart({
   chartData.forEach((data) => {
     if (data.day && data.day <= daysInMonth) {
       const day = data.day;
-      distances[day - 1] = data.distance; // distance를 사용
+      distances[day - 1] = data.totalDistance; // totalDistance 사용
     }
   });
 
   const backgroundColors = distances.map((_, index) =>
-    selectedDay === index + 1 ? "rgba(74, 0, 255, 1)" : "rgba(209, 219, 255, 1)"
+    selectedDay === index + 1 ? "#0064FF" : "lightgray"
   );
 
   const borderColors = distances.map((_, index) =>
-    selectedDay === index + 1 ? "rgba(74, 0, 255, 1)" : "rgba(209, 219, 255, 1)"
+    selectedDay === index + 1 ? "#0064FF" : "lightgray"
   );
 
   const data = {
