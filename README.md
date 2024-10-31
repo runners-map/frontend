@@ -59,7 +59,7 @@
 11. `src/app/post-list/post/[id]/photo-upload`: 모집글 인증사진 업로드 페이지
 12. `src/app/post-list/post/[id]/post-info`: 모집글 상세정보 페이지
 13. `src/app/ranking`: 러닝 기록 랭킹 페이지
-14. `src/app/`: 홈 페이지(지도)
+14. `src/app`: 홈 페이지(지도)
 17. `src/lib/axios.ts`: axios 인터셉터 파일
 18. `src/types`: 모든 변수 타입 정의 파일(목데이터로 할때 + 서버연동할때)
 
@@ -214,7 +214,7 @@ export default function Navigation() {
 
 ## Information
 
-- [프로젝트 개발일지]([https://www.notion.so/Pre-06c5cfbb6859408b876927f4c6413a9e](https://lapis-shrimp-bc5.notion.site/Runner-s-Map-E-I-2-10b9afba92f980c6beafeaa910a01b4e))
+- [프로젝트 개발일지](https://lapis-shrimp-bc5.notion.site/Runner-s-Map-E-I-2-10b9afba92f980c6beafeaa910a01b4e)
 
 
 ## Author
