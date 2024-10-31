@@ -1,6 +1,6 @@
 # Project Name
 
-### [러닝 메이트 매칭 앱 프로젝트]([https://github.com/Chanjeong/ZerobaseProject.git](https://github.com/runners-map))
+### [러닝 메이트 매칭 앱 프로젝트](https://github.com/runners-map)
 
 `위치 기반 러닝 메이트 매칭 (Runner’s Map)`
 - 최근 러닝의 인기가 증가하면서, 함께 달리는 러닝 크루 활동이 활발해지고 있습니다.
@@ -65,29 +65,7 @@
 
 ### Configurations
 
-### `src/app/page.tsx`: 홈화면
-
-```tsx
-/* eslint-disable @next/next/no-sync-scripts */
-import MapContainer from '@/app/map-components/MapContainer';
-
-export const metadata = {
-  title: "Runner's Map"
-};
-
-export default function MapPage() {
-  return (
-    <>
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-      <script
-        src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=${process.env.NEXT_PUBLIC_TMAP_API_KEY}`}></script>
-      <MapContainer />
-    </>
-  );
-}
-```
-
-### `src/app/layout.tsx`: 모든 페이지 레이아웃 화면
+### `src/app/layout.tsx`: 모든 페이지 공통 레이아웃 화면(경로 설정과 경로 수정 페이지 제외)
 
 ```tsx
 'use client';
