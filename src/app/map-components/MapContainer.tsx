@@ -10,22 +10,20 @@ import MapPostDetails from "@/app/map-components/MapPostDetails";
 import { HiMiniChevronUp, HiMiniChevronDown } from "react-icons/hi2";
 import { LuPencilLine } from "react-icons/lu";
 import { useRouter } from "next/navigation";
-import { useUserInfo } from "@/types/UserInfo";
 
 export default function MapContainer() {
   const [queryParams, setQueryParams] = useState({
-    centerLat: 0,
-    centerLng: 0,
-    gender: "",
-    paceMinStart: "",
-    paceMinEnd: "",
-    distanceStart: "",
-    distanceEnd: "",
-    startDate: "",
-    startTime: "",
-    limitMemberCnt: 0,
-    page: "",
-    size: "",
+    centerLat: null,
+    centerLng: null,
+    gender: null,
+    paceMinStart: null,
+    paceMinEnd: null,
+    distanceStart: null,
+    distanceEnd: null,
+    startDate: null,
+    startTime: null,
+    limitMemberCntStart: null,
+    limitMemberCntEnd: null,
   });
 
   const [map, setMap] = useState<Tmapv2.Map | null>(null);
@@ -42,20 +40,13 @@ export default function MapContainer() {
 
   const [selectedPost, setSelectedPost] = useState(null);
 
-  const { user } = useUserInfo();
-
   useEffect(() => {
-    // const [lat, lng] = user?.lastPosition
-    //   .replace(/[()]/g, "")
-    //   .split(",")
-    //   .map((coord) => parseFloat(coord.trim()));
-
     if (window.Tmapv2) {
       const newMap = new Tmapv2.Map("map_div", {
-        center: new Tmapv2.LatLng(37.570028, 126.986072),
+        center: new Tmapv2.LatLng(37.513368311885515, 127.12366104126016),
         width: "100%",
         height: "100vh",
-        zoom: 15,
+        zoom: 14,
         httpsMode: true,
       });
 
@@ -87,29 +78,58 @@ export default function MapContainer() {
     }
 
     const params = {
-      lat_gte: queryParams.centerLat - 1 / 111,
-      lat_lte: queryParams.centerLat + 1 / 111,
-      lng_gte:
+      latStart: queryParams.centerLat - 1 / 105,
+      latEnd: queryParams.centerLat + 1 / 105,
+      lngStart:
         queryParams.centerLng -
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
-      lng_lte:
+        1 / (105 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+      lngEnd:
         queryParams.centerLng +
-        1 / (111 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
+        1 / (105 * Math.cos(queryParams.centerLat * (Math.PI / 180))),
       gender: queryParams.gender,
-      limitMemberCnt: queryParams.limitMemberCnt,
+      limitMemberCntStart: queryParams.limitMemberCntStart,
+      limitMemberCntEnd: queryParams.limitMemberCntEnd,
+      distanceStart: queryParams.distanceStart,
+      distanceEnd: queryParams.distanceEnd,
+      paceMinStart: queryParams.paceMinStart,
+      paceMinEnd: queryParams.paceMinEnd,
     };
 
     console.log("실제 요청 파라미터", params);
+    console.log("실제 요청 파라미터", queryParams);
 
     try {
       // 모든 데이터를 가져오기
-      const res = await axios.get("http://localhost:3001/Post");
-      const posts = res.data;
+      const res = await axios.get("/api/post");
+      const allPosts = res.data;
 
-      console.log("게시글 목록", posts);
+      const posts = allPosts.filter((post) => {
+        const { lat, lng, gender, limitMemberCnt, distance, paceMin } = post;
+
+        return (
+          lat >= params.latStart &&
+          lat <= params.latEnd &&
+          lng >= params.lngStart &&
+          lng <= params.lngEnd &&
+          (params.gender === null ||
+            params.gender === "" ||
+            params.gender === gender) &&
+          (params.limitMemberCntStart === null ||
+            params.limitMemberCntEnd === null ||
+            (limitMemberCnt >= params.limitMemberCntStart &&
+              limitMemberCnt <= params.limitMemberCntEnd)) &&
+          (params.distanceStart === null ||
+            params.distanceEnd === null ||
+            (distance >= params.distanceStart &&
+              distance <= params.distanceEnd)) &&
+          (params.paceMinStart === null ||
+            params.paceMinEnd === null ||
+            (paceMin >= params.paceMinStart && paceMin <= params.paceMinEnd))
+        );
+      });
+
       setPostData(posts);
-
-      console.log("게시글 목록", posts);
+      console.log("필터링된 게시글 목록", posts);
 
       if (posts.length > 0) {
         posts.forEach((markerData, index) => {
@@ -136,6 +156,43 @@ export default function MapContainer() {
             if (targetElement) {
               targetElement.scrollIntoView({ behavior: "smooth" });
             }
+
+            const postPath = markerData.path.map(
+              (point) => new Tmapv2.LatLng(point.lat, point.lng)
+            );
+
+            const bounds = new Tmapv2.LatLngBounds();
+            postPath.forEach((latLng) => bounds.extend(latLng));
+            map.fitBounds(bounds);
+
+            const currentZoom = map.getZoom();
+
+            const pathPolyline = new Tmapv2.Polyline({
+              path: postPath,
+              strokeColor: "#0064FF",
+              strokeWeight: 6,
+              map: map,
+            });
+
+            const pathStart = new Tmapv2.Marker({
+              position: new Tmapv2.LatLng(
+                markerData.path[0].lat,
+                markerData.path[0].lng
+              ),
+              icon: createMarkerIcon("S", "path"),
+              iconSize: new Tmapv2.Size(40, 40),
+              map: map,
+            });
+
+            const pathEnd = new Tmapv2.Marker({
+              position: new Tmapv2.LatLng(
+                markerData.path[markerData.path.length - 1].lat,
+                markerData.path[markerData.path.length - 1].lng
+              ),
+              icon: createMarkerIcon("E", "path"),
+              iconSize: new Tmapv2.Size(40, 40),
+              map: map,
+            });
           });
 
           setPostMarkerArr((prevArr) => [...prevArr, marker]);
@@ -161,6 +218,9 @@ export default function MapContainer() {
         break;
       case "review":
         color = "rgb(255 0 211)"; // Review 상태일 때 색상
+        break;
+      case "path":
+        color = "rgb(0, 100, 255)";
         break;
       default:
         color = "rgb(0, 0, 0)";
@@ -238,7 +298,7 @@ export default function MapContainer() {
         </div>
 
         <div
-          className={`carousel carousel-center w-full h-72 space-x-1 px-4 pb-6 pt-2 overflow-hidden transition-all duration-700 linear ${
+          className={`carousel carousel-center w-full h-72 space-x-1 px-4 pb-6 pt-2 overflow-x-auto transition-all duration-700 linear ${
             isListVisible ? "max-h-72" : "max-h-0"
           }`}
         >

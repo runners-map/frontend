@@ -18,7 +18,7 @@ export default function MapSearchPOI({
   createMarkerIcon,
   setIsListVisible,
 }) {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, reset } = useForm();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -100,6 +100,7 @@ export default function MapSearchPOI({
       console.log("마커 제거");
     });
     setPoiMarkerArr([]);
+    reset({ searchKeyword: "" });
   };
 
   return (

@@ -18,20 +18,17 @@ export default function ChartList({
     <ul className="timeline timeline-vertical">
       {chartData.map((data, index) => (
         <li
-          key={data.postId}
+          key={`${data.year}-${data.month}-${data.day}`}
           ref={(el) => {
             listRef.current[data.day] = el;
           }}
           onClick={() => onListClick(data.day)}
-          className={`cursor-pointer grid-cols-[3fr_1fr_3fr] ${
+          className={`cursor-pointer grid-cols-[1fr_1fr_3fr] ${
             selectedDay === data.day ? "text-primary" : ""
           }`}
         >
           {index !== 0 && <hr />}
-          <div className="timeline-start">
-            {new Date(data.actualStartTime).getFullYear()}년{" "}
-            {new Date(data.actualStartTime).getMonth() + 1}월 {data.day}일
-          </div>
+          <div className="timeline-start">{data.day}일</div>
           <div
             className={`${
               selectedDay === data.day
@@ -46,7 +43,7 @@ export default function ChartList({
               selectedDay === data.day ? "border-primary" : ""
             }`}
           >
-            {data.distance}km {data.runningTime}
+            {data.totalDistance}km {data.runningTime}
           </div>
           {index !== chartData.length - 1 && <hr />}
         </li>

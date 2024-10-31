@@ -9,16 +9,17 @@ import {
 } from "react-icons/hi2";
 import { PiGenderIntersexBold } from "react-icons/pi";
 import { RegisterFormData } from "@/types/ResisterForm";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
     watch,
   } = useForm<RegisterFormData>({
+    mode: "onChange", // 유효성 검사를 onChange 이벤트로 설정
     defaultValues: {
       email: "",
       password: "",
@@ -29,31 +30,32 @@ export default function RegisterForm() {
   });
 
   const router = useRouter();
+  const password = watch("password");
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
-    try {
-      const { email, password, confirmPassword, nickname, gender } = data;
-      const res = await axios.post("/api/user/sign-up", {
-        email,
-        password,
-        confirmPassword,
-        nickname,
-        gender,
-      });
-      console.log("회원가입 성공", res.data);
+    const { email, nickname } = data;
 
-      router.push("/login");
-    } catch (error) {
-      console.error("회원가입 실패:", error);
+    // 특정 이메일 중복 확인
+    if (email === "runners@gmail.com") {
+      setError("email", { message: "중복된 이메일입니다." });
+      setError("nickname", { message: "중복된 닉네임입니다." });
+      return; // 서버 요청 방지
     }
+
+    // 특정 닉네임 중복 확인
+    if (nickname === "runners") {
+      return; // 서버 요청 방지
+    }
+
+    // 모든 검사를 통과하면 로그인 페이지로 이동
+    router.push("/login");
   };
 
-  const password = watch("password");
   return (
-    <div className="px-4 mt-8 bg-white">
-      <div className="rounded-2xl shadow-md shadow-slate-300">
+    <div className="px-4 mt-14">
+      <div className="px-4 py-6 rounded-2xl shadow-md shadow-slate-300 bg-white">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-body space-y-4">
+          <div className="space-y-8">
             <div>
               <label className="input input-bordered rounded-full input-primary flex items-center gap-2 mb-1">
                 <Controller
@@ -96,6 +98,11 @@ export default function RegisterForm() {
                     minLength: {
                       value: 8,
                       message: "비밀번호는 최소 8자 이상이어야 합니다.",
+                    },
+                    pattern: {
+                      value:
+                        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                      message: "영어, 숫자, 특수문자를 모두 포함해야 합니다.",
                     },
                   }}
                   render={({ field }) => (
@@ -227,14 +234,14 @@ export default function RegisterForm() {
             <div className="card-actions">
               <button
                 type="submit"
-                className="btn btn-primary w-full text-base text-white rounded-full"
+                className="btn btn-primary w-full text-base text-white rounded-full shadow-md shadow-slate-300"
               >
                 가입하기
               </button>
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="btn btn-secondary w-full text-base text-white rounded-full"
+                className="btn btn-secondary w-full text-base text-white rounded-full shadow-md shadow-slate-300"
               >
                 뒤로가기
               </button>
