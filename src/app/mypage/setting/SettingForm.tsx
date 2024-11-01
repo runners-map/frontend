@@ -24,11 +24,8 @@ export default function SettingForm() {
     handleSubmit,
     watch,
     formState: { errors },
-    reset,
-    setError,
-    clearErrors,
   } = useForm<SettingFormData>({
-    mode: "onChange", // 전체 폼에 대해 onChange 모드로 설정
+    mode: "onChange",
     defaultValues: {
       nickname: "",
       password: "",
@@ -39,17 +36,7 @@ export default function SettingForm() {
 
   const password = watch("password");
 
-  // onSubmit 핸들러 내에서 중복 검사 실행
   const onSubmit: SubmitHandler<SettingFormData> = async (data) => {
-    // 닉네임 중복 검사를 onSubmit에서만 수행
-    // if (data.nickname === "제로러너") {
-    //   setError("nickname", {
-    //     type: "manual",
-    //     message: "중복된 닉네임입니다",
-    //   });
-    //   return;
-    // }
-
     router.push("/mypage");
   };
 
