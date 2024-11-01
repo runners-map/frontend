@@ -1,16 +1,17 @@
-'use client';
-import './globals.css';
-import Navigation from '@/components/Navigation';
-import { usePathname } from 'next/navigation';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+"use client";
+import "./globals.css";
+import Navigation from "@/components/Navigation";
+import { usePathname } from "next/navigation";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
