@@ -1,11 +1,10 @@
-"use client";
-
-import { Controller, useForm } from "react-hook-form";
-import { HiMagnifyingGlass, HiOutlineXCircle } from "react-icons/hi2";
-import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
-import MapFilter from "@/app/map-components/MapFilter";
-import axios from "axios";
-import { useState } from "react";
+'use client';
+import { Controller, useForm } from 'react-hook-form';
+import { HiMagnifyingGlass, HiOutlineXCircle } from 'react-icons/hi2';
+import { HiMiniAdjustmentsHorizontal } from 'react-icons/hi2';
+import MapFilter from '@/app/map-components/MapFilter';
+import axios from 'axios';
+import { useState } from 'react';
 
 export default function MapSearchPOI({
   setQueryParams,
@@ -16,7 +15,7 @@ export default function MapSearchPOI({
   isPoiSearched,
   setIsPoiSearched,
   createMarkerIcon,
-  setIsListVisible,
+  setIsListVisible
 }) {
   const { control, handleSubmit, reset } = useForm();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -25,31 +24,28 @@ export default function MapSearchPOI({
     setIsListVisible(false);
   };
 
-  const handleSearchPOI = async (searchKeyword) => {
+  const handleSearchPOI = async searchKeyword => {
     try {
-      const response = await axios.get(
-        "https://apis.openapi.sk.com/tmap/pois",
-        {
-          headers: {
-            appKey: process.env.NEXT_PUBLIC_TMAP_API_KEY,
-          },
-          params: {
-            version: 1,
-            format: "json",
-            searchKeyword: searchKeyword,
-            resCoordType: "WGS84GEO",
-            reqCoordType: "WGS84GEO",
-            count: 10,
-          },
+      const response = await axios.get('https://apis.openapi.sk.com/tmap/pois', {
+        headers: {
+          appKey: process.env.NEXT_PUBLIC_TMAP_API_KEY
+        },
+        params: {
+          version: 1,
+          format: 'json',
+          searchKeyword: searchKeyword,
+          resCoordType: 'WGS84GEO',
+          reqCoordType: 'WGS84GEO',
+          count: 10
         }
-      );
+      });
 
       const resultpoisData = response.data.searchPoiInfo.pois.poi;
       setPoiSearchData(resultpoisData);
 
       const positionBounds = new Tmapv2.LatLngBounds();
 
-      for (let k in resultpoisData) {
+      for (const k in resultpoisData) {
         const name = resultpoisData[k].name;
 
         const lat = Number(resultpoisData[k].noorLat);
@@ -59,13 +55,13 @@ export default function MapSearchPOI({
 
         const marker = new Tmapv2.Marker({
           position: markerPosition,
-          icon: createMarkerIcon(String(parseInt(k) + 1), "poi"),
+          icon: createMarkerIcon(String(parseInt(k) + 1), 'poi'),
           iconSize: new Tmapv2.Size(40, 40),
           title: name,
-          map: map,
+          map: map
         });
 
-        setPoiMarkerArr((prevArr) => [...prevArr, marker]);
+        setPoiMarkerArr(prevArr => [...prevArr, marker]);
         positionBounds.extend(markerPosition);
       }
 
@@ -73,34 +69,34 @@ export default function MapSearchPOI({
       map.zoomOut();
 
       const center = positionBounds.getCenter();
-      setQueryParams((prevParams) => ({
+      setQueryParams(prevParams => ({
         ...prevParams,
         centerLat: parseFloat(center._lat),
-        centerLng: parseFloat(center._lng),
+        centerLng: parseFloat(center._lng)
       }));
     } catch (error) {
-      console.error("Error:", error.response?.status, error.response?.data);
+      console.error('Error:', error.response?.status, error.response?.data);
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     await handleSearchPOI(data.searchKeyword);
     setIsPoiSearched(true);
-    const targetElement = document.getElementById("item1");
+    const targetElement = document.getElementById('item1');
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth" });
+      targetElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleSearchReset = () => {
-    console.log("리셋 눌림");
+    console.log('리셋 눌림');
     setIsPoiSearched(false);
-    poiMarkerArr.forEach((marker) => {
+    poiMarkerArr.forEach(marker => {
       marker.setMap(null);
-      console.log("마커 제거");
+      console.log('마커 제거');
     });
     setPoiMarkerArr([]);
-    reset({ searchKeyword: "" });
+    reset({ searchKeyword: '' });
   };
 
   return (
@@ -123,11 +119,7 @@ export default function MapSearchPOI({
                   <HiMagnifyingGlass size={20} style={{ strokeWidth: 1.5 }} />
                 </button>
                 {isPoiSearched && (
-                  <button
-                    type="button"
-                    onClick={handleSearchReset}
-                    className="text-gray-400"
-                  >
+                  <button type="button" onClick={handleSearchReset} className="text-gray-400">
                     <HiOutlineXCircle size={25} style={{ strokeWidth: 2 }} />
                   </button>
                 )}
@@ -138,21 +130,14 @@ export default function MapSearchPOI({
         <button
           onClick={toggleFilter}
           className={`list-none flex items-center justify-center w-10 h-10 rounded-2xl transition-all duration-700 linear ${
-            isFilterOpen ? "bg-primary text-white" : "bg-gray-100 text-gray-400"
-          }`}
-        >
+            isFilterOpen ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
+          }`}>
           <HiMiniAdjustmentsHorizontal size={23} />
         </button>
       </div>
       <div
-        className={`overflow-hidden transition-all duration-700 linear ${
-          isFilterOpen ? "max-h-screen" : "max-h-0"
-        }`}
-      >
-        <MapFilter
-          setQueryParams={setQueryParams}
-          setIsFilterOpen={setIsFilterOpen}
-        />
+        className={`overflow-hidden transition-all duration-700 linear ${isFilterOpen ? 'max-h-screen' : 'max-h-0'}`}>
+        <MapFilter setQueryParams={setQueryParams} setIsFilterOpen={setIsFilterOpen} />
       </div>
     </div>
   );

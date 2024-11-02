@@ -22,5 +22,6 @@
     "Tmapv",
     "toastify",
     "zustand"
-  ]
+  ],
+  "typescript.validate.enable": false
 }

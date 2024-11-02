@@ -1,7 +1,7 @@
-import RegisterForm from "./RegisterForm";
+import RegisterForm from './RegisterForm';
 
 export const metadata = {
-  title: "회원가입",
+  title: '회원가입'
 };
 
 export default function RegisterPage() {

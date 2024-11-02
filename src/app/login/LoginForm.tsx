@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { LoginFormData } from '@/types/LoginForm';
 import { UserInfoType, useUserInfo } from '@/types/UserInfo';
@@ -12,53 +12,41 @@ export default function LoginForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<LoginFormData>({
     defaultValues: {
-      email: "",
-      password: "",
-    },
+      email: '',
+      password: ''
+    }
   });
-
   const { saveUser, checkLogin, setUserId } = useUserInfo();
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormData> = async data => {
+    const { email, password } = data;
+
     try {
-      const response = await axios.post("/api/user/login", {
-        email: data.email,
-        password: data.password,
+      const response = await axios.post<UserInfoType>('api/user/login', {
+        email,
+        password
       });
 
-      const {
-        accessToken,
-        refreshToken,
-        userId,
-        gender,
-        lastPosition,
-        nickname,
-        email,
-        profileImageUrl,
-      } = response.data;
+      const { accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl } = response.data;
 
-      saveUser(
-        accessToken,
-        refreshToken,
-        userId,
-        gender,
-        lastPosition,
-        nickname,
-        email,
-        profileImageUrl
-      );
+      saveUser(accessToken, refreshToken, userId, gender, lastPosition, nickname, profileImageUrl, email);
+      setUserId(userId);
+      console.log(userId);
+      Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
+      Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
 
-      router.push("/");
+      checkLogin();
+      router.push('/');
     } catch (error) {
-      console.error("로그인 실패:", error);
+      console.log('로그인 실패', error);
     }
   };
   const handleResister = () => {
-    router.push("/register");
+    router.push('/register');
   };
 
   return (
@@ -71,11 +59,11 @@ export default function LoginForm() {
                 name="email"
                 control={control}
                 rules={{
-                  required: "이메일을 입력해 주세요.",
+                  required: '이메일을 입력해 주세요.',
                   pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                    message: "올바른 이메일 형식을 입력해 주세요.",
-                  },
+                    message: '올바른 이메일 형식을 입력해 주세요.'
+                  }
                 }}
                 render={({ field }) => (
                   <>
@@ -85,11 +73,7 @@ export default function LoginForm() {
                 )}
               />
             </label>
-            {errors.email && (
-              <span className="text-red-500 absolute">
-                {errors.email.message}
-              </span>
-            )}
+            {errors.email && <span className="text-red-500 absolute">{errors.email.message}</span>}
           </div>
           <div>
             <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
@@ -97,7 +81,7 @@ export default function LoginForm() {
                 name="password"
                 control={control}
                 rules={{
-                  required: "비밀번호를 입력해 주세요.",
+                  required: '비밀번호를 입력해 주세요.',
                   minLength: {
                     value: 8,
                     message: '비밀번호는 최소 8자 이상이어야 합니다.'
@@ -111,11 +95,7 @@ export default function LoginForm() {
                 )}
               />
             </label>
-            {errors.password && (
-              <span className="text-red-500 absolute">
-                {errors.password.message}
-              </span>
-            )}
+            {errors.password && <span className="text-red-500 absolute">{errors.password.message}</span>}
           </div>
           <div className="card-actions">
             <button type="submit" className="btn btn-primary w-full mb-2 text-base text-white">
