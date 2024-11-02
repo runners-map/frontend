@@ -4,9 +4,12 @@ import { BiCurrentLocation } from "react-icons/bi";
 
 export default function MapCurrentLocation({ setQueryParams, map }) {
   const getCurrentLocation = () => {
-    setTimeout(() => {
-      map.setCenter(new Tmapv2.LatLng(37.47868927, 127.12620451));
-    }, 2000);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        map.setCenter(new Tmapv2.LatLng(latitude, longitude));
+      });
+    }
   };
 
   return (

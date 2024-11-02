@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import Cookies from 'js-cookie';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import Cookies from "js-cookie";
 
 export interface UserInfoType {
   accessToken: string;
   refreshToken: string;
   userId: number;
   gender: string;
+  lastPosition: string | null;
   email: string;
   nickname: string;
-  lastPosition: string | null;
   profileImageUrl: string;
 }
 
@@ -28,33 +26,29 @@ interface AuthState {
     email: string,
     profileImageUrl: string
   ) => void;
-  updateUser: (newUserData: Partial<UserInfoType>) => void;
   isLogin: boolean;
   checkLogin: () => void;
   logout: () => void;
   setUserId: (userId: number) => void;
+  updateUser: (newUserData: Partial<UserInfoType>) => void;
 }
-
-const localStorageCustom = {
-  getItem: (name: string) => {
-    const item = localStorage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    localStorage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    localStorage.removeItem(name);
-  }
-};
 
 export const useUserInfo = create<AuthState>()(
   persist(
-    set => ({
+    (set) => ({
       user: null,
       userId: 0,
       isLogin: false,
-      saveUser: (accessToken, refreshToken, userId, gender, lastPosition, nickname, email, profileImageUrl) => {
+      saveUser: (
+        accessToken,
+        refreshToken,
+        userId,
+        gender,
+        lastPosition,
+        nickname,
+        email,
+        profileImageUrl
+      ) => {
         const user: UserInfoType = {
           accessToken,
           refreshToken,
@@ -63,21 +57,15 @@ export const useUserInfo = create<AuthState>()(
           lastPosition,
           email,
           nickname,
-          profileImageUrl
+          profileImageUrl,
         };
         set({ user, userId, isLogin: true });
-        Cookies.set('accessToken', accessToken, { sameSite: 'strict' });
-        Cookies.set('refreshToken', refreshToken, { sameSite: 'strict' });
-      },
-      updateUser: newUserData => {
-        set(state => ({
-          user: state.user ? { ...state.user, ...newUserData } : state.user
-        }));
+        Cookies.set("accessToken", accessToken, { sameSite: "strict" });
+        Cookies.set("refreshToken", refreshToken, { sameSite: "strict" });
       },
       checkLogin: () => {
-        const accessToken = Cookies.get('accessToken');
-        const refreshToken = Cookies.get('refreshToken');
-
+        const accessToken = Cookies.get("accessToken");
+        const refreshToken = Cookies.get("refreshToken");
         if (accessToken && refreshToken) {
           set({ isLogin: true });
         } else {
@@ -85,16 +73,24 @@ export const useUserInfo = create<AuthState>()(
         }
       },
       logout: () => {
-        Cookies.remove('accessToken');
-        Cookies.remove('refreshToken');
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
         set({ user: null, userId: 0, isLogin: false });
       },
-      setUserId: newUserId => set({ userId: newUserId })
+      setUserId: (newUserId) => set({ userId: newUserId }),
+      updateUser: (newUserData) => {
+        set((state) => ({
+          user: state.user ? { ...state.user, ...newUserData } : state.user,
+        }));
+      },
     }),
     {
-      name: 'user-info-storage',
-      storage: localStorageCustom,
-      partialize: state => ({ user: state.user, userId: state.userId, isLogin: state.isLogin })
+      name: "user-info-storage",
+      partialize: (state) => ({
+        user: state.user,
+        userId: state.userId,
+        isLogin: state.isLogin,
+      }),
     }
   )
 );

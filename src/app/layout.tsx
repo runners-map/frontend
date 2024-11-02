@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 const queryClient = new QueryClient();
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {

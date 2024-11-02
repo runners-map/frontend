@@ -1,28 +1,15 @@
-'use client';
-import MyPageButtons from '@/app/mypage/MypageButtons';
-import axios from 'axios';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { TbGenderFemale, TbGenderMale } from 'react-icons/tb';
-import { HiMiniUser } from 'react-icons/hi2';
+"use client";
+
+import MyPageButtons from "@/app/mypage/MypageButtons";
+import Image from "next/image";
+import { TbGenderFemale, TbGenderMale } from "react-icons/tb";
+import { HiMiniUser } from "react-icons/hi2";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function MyPagePage() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/users', {
-          params: { userId: 2 }
-        });
-        setUser(response.data[0]);
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const { user } = useUserInfo((state) => ({
+    user: state.user,
+  }));
 
   return (
     <>
@@ -41,8 +28,14 @@ export default function MyPagePage() {
             )}
           </div>
           <div className="flex items-center justify-center">
-            <span className="text-center font-bold text-2xl">{user?.nickname}</span>
-            {user?.gender === 'M' ? <TbGenderMale size={25} /> : <TbGenderFemale size={25} />}
+            <span className="text-center font-bold text-2xl">
+              {user?.nickname}
+            </span>
+            {user?.gender === "M" ? (
+              <TbGenderMale size={25} />
+            ) : user?.gender === "F" ? (
+              <TbGenderFemale size={25} />
+            ) : null}
           </div>
           <span className="text-center text-xl">{user?.email}</span>
         </div>

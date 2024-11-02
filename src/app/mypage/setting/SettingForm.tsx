@@ -12,46 +12,41 @@ import Image from "next/image";
 import { SettingFormData } from "@/types/SettingForm";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function SettingForm() {
-  const [user, setUser] = useState(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number | null>(null);
   const router = useRouter();
+
+  const { user, userUpdate } = useUserInfo((state) => ({
+    user: state.user,
+    userUpdate: state.updateUser,
+  }));
 
   const {
     control,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
-    reset,
-    setError,
-    clearErrors,
   } = useForm<SettingFormData>({
-    mode: "onChange", // 전체 폼에 대해 onChange 모드로 설정
+    mode: "onChange",
     defaultValues: {
-      nickname: "",
+      nickname: user?.nickname || "",
       password: "",
       confirmPassword: "",
       profileImage: "",
     },
   });
 
+  useEffect(() => {
+    if (user?.nickname) {
+      setValue("nickname", user.nickname);
+    }
+  }, [user, setValue]);
+
   const password = watch("password");
-
-  // onSubmit 핸들러 내에서 중복 검사 실행
-  const onSubmit: SubmitHandler<SettingFormData> = async (data) => {
-    // 닉네임 중복 검사를 onSubmit에서만 수행
-    // if (data.nickname === "제로러너") {
-    //   setError("nickname", {
-    //     type: "manual",
-    //     message: "중복된 닉네임입니다",
-    //   });
-    //   return;
-    // }
-
-    router.push("/mypage");
-  };
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -65,6 +60,73 @@ export default function SettingForm() {
         setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const onSubmit: SubmitHandler<SettingFormData> = async (data) => {
+    try {
+      const accessToken = Cookies.get("accessToken");
+
+      const updateNicknamePassword =
+        data.nickname ||
+        (data.password &&
+          data.confirmPassword &&
+          data.password === data.confirmPassword);
+
+      const updateProfilePicture = data.file && data.file.length > 0;
+
+      if (updateNicknamePassword) {
+        // 닉네임 및 비밀번호 업데이트 요청
+        const updateProfileResponse = await axios.put(
+          `/api/user/my-page`,
+          {
+            newNickname: data.nickname,
+            newPassword: data.password,
+            newConfirmPassword: data.confirmPassword,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("프로필 업데이트 성공:", updateProfileResponse.data);
+        if (data.nickname) {
+          userUpdate({ nickname: data.nickname });
+        }
+      }
+
+      if (updateProfilePicture) {
+        // 파일 업로드
+        const formData = new FormData();
+        formData.append("file", data.file[0]);
+
+        const fileUploadResponse = await axios.post(
+          `/api/user/profile-image`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("사진 업로드 성공:", fileUploadResponse.data);
+
+        if (fileUploadResponse.data?.profileImageUrl) {
+          userUpdate({
+            profileImageUrl: fileUploadResponse.data.profileImageUrl,
+          });
+        }
+      }
+
+      if (updateNicknamePassword || updateProfilePicture) {
+        router.push("/mypage");
+      } else {
+        console.warn("업데이트할 항목이 없습니다.");
+      }
+    } catch (error) {
+      console.error("업데이트 실패:", error.response?.data || error);
     }
   };
 
@@ -112,7 +174,6 @@ export default function SettingForm() {
                 name="nickname"
                 control={control}
                 rules={{
-                  required: "닉네임을 입력해 주세요.",
                   maxLength: {
                     value: 10,
                     message: "닉네임은 최대 10자까지 가능합니다.",
