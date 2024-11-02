@@ -4,6 +4,8 @@ import { LoginFormData } from "@/types/LoginForm";
 import { useRouter } from "next/navigation";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { HiMiniEnvelope, HiLockClosed } from "react-icons/hi2";
+import axios from "axios";
+import { useUserInfo } from "@/types/UserInfo";
 
 export default function LoginForm() {
   const {
@@ -11,7 +13,7 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    mode: "onChange", // onChange 이벤트로 유효성 검사 설정
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
@@ -19,9 +21,43 @@ export default function LoginForm() {
   });
 
   const router = useRouter();
+  const { saveUser } = useUserInfo((state) => ({
+    saveUser: state.saveUser,
+  }));
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    router.push("/");
+    try {
+      const response = await axios.post("/api/user/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      const {
+        accessToken,
+        refreshToken,
+        userId,
+        gender,
+        lastPosition,
+        nickname,
+        email,
+        profileImageUrl,
+      } = response.data;
+
+      saveUser(
+        accessToken,
+        refreshToken,
+        userId,
+        gender,
+        lastPosition,
+        nickname,
+        email,
+        profileImageUrl
+      );
+
+      router.push("/");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+    }
   };
 
   const handleResister = () => {

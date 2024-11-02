@@ -10,16 +10,16 @@ import {
 import { PiGenderIntersexBold } from "react-icons/pi";
 import { RegisterFormData } from "@/types/ResisterForm";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function RegisterForm() {
   const {
     control,
     handleSubmit,
-    setError,
     formState: { errors },
     watch,
   } = useForm<RegisterFormData>({
-    mode: "onChange", // 유효성 검사를 onChange 이벤트로 설정
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
@@ -33,22 +33,22 @@ export default function RegisterForm() {
   const password = watch("password");
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
-    const { email, nickname } = data;
+    const { email, password, confirmPassword, nickname, gender } = data;
 
-    // 특정 이메일 중복 확인
-    if (email === "runners@gmail.com") {
-      setError("email", { message: "중복된 이메일입니다." });
-      setError("nickname", { message: "중복된 닉네임입니다." });
-      return; // 서버 요청 방지
+    try {
+      const response = await axios.post("/api/user/sign-up", {
+        email,
+        password,
+        confirmPassword,
+        nickname,
+        gender,
+      });
+
+      console.log("회원가입 성공:", response.data);
+      router.push("/login");
+    } catch (error) {
+      console.error("회원가입 실패:", error);
     }
-
-    // 특정 닉네임 중복 확인
-    if (nickname === "runners") {
-      return; // 서버 요청 방지
-    }
-
-    // 모든 검사를 통과하면 로그인 페이지로 이동
-    router.push("/login");
   };
 
   return (

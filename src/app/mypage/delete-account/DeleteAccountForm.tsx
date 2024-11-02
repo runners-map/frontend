@@ -1,14 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
-import { useState } from "react";
-import {
-  HiMiniUser,
-  HiLockClosed,
-  HiCheckCircle,
-  HiOutlineCog6Tooth,
-  HiOutlineUserMinus,
-} from "react-icons/hi2";
+import { HiLockClosed, HiOutlineUserMinus } from "react-icons/hi2";
+import Cookies from "js-cookie";
+import axios from "axios";
+
 interface DeleteAccountFormData {
   password: string;
 }
@@ -19,20 +15,29 @@ export default function DeleteAccountForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<DeleteAccountFormData>({
-    mode: "onChange", // onChange로 유효성 검사 트리거 설정
+    mode: "onChange",
   });
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const router = useRouter();
 
   const handleDeleteAccount = async (data: DeleteAccountFormData) => {
-    setPasswordError(null); // 이전 오류 메시지 초기화
+    try {
+      const accessToken = Cookies.get("accessToken");
 
-    // 특정 비밀번호 확인 - 여기서만 검사
-    if (data.password !== "qwer1234!") {
-      setPasswordError("비밀번호가 틀렸습니다."); // 오류 메시지 설정
-      return; // 서버 요청 방지
-    } else {
+      const response = await axios.delete("/api/user/my-page", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: {
+          password: data.password,
+        },
+      });
+
+      console.log("Account deletion successful:", response.data);
+      // 성공 시 로그아웃이나 리다이렉트 로직 추가
       router.push("/login");
+    } catch (error) {
+      console.error("Account deletion failed:", error);
     }
   };
 
@@ -77,9 +82,6 @@ export default function DeleteAccountForm() {
               {errors.password.message}
             </span>
           )}
-          {passwordError && (
-            <span className="text-red-500 absolute">{passwordError}</span>
-          )}
         </div>
 
         <button
@@ -90,7 +92,8 @@ export default function DeleteAccountForm() {
           회원 탈퇴
         </button>
         <button
-          type="submit"
+          type="button"
+          onClick={() => router.back()}
           className="btn btn-primary text-base text-white w-full rounded-full mt-3 shadow-md shadow-slate-300"
         >
           뒤로 가기
