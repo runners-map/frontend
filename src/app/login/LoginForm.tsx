@@ -1,11 +1,12 @@
 "use client";
 
-import { LoginFormData } from "@/types/LoginForm";
-import { useRouter } from "next/navigation";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { HiMiniEnvelope, HiLockClosed } from "react-icons/hi2";
-import axios from "axios";
-import { useUserInfo } from "@/types/UserInfo";
+import { LoginFormData } from '@/types/LoginForm';
+import { UserInfoType, useUserInfo } from '@/types/UserInfo';
+import { useRouter } from 'next/navigation';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { HiMiniEnvelope, HiLockClosed } from 'react-icons/hi2';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function LoginForm() {
   const {
@@ -13,17 +14,14 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
+  const { saveUser, checkLogin, setUserId } = useUserInfo();
   const router = useRouter();
-  const { saveUser } = useUserInfo((state) => ({
-    saveUser: state.saveUser,
-  }));
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
@@ -59,20 +57,16 @@ export default function LoginForm() {
       console.error("로그인 실패:", error);
     }
   };
-
   const handleResister = () => {
     router.push("/register");
   };
 
   return (
-    <div className="shadow-md shadow-slate-300 rounded-2xl px-4 py-20 bg-white">
-      <h2 className="text-3xl font-bold mb-8 text-center text-primary">
-        Runner&apos;s Map
-      </h2>
+    <div className="card border-2 border-primary">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-8">
+        <div className="card-body space-y-6">
           <div>
-            <label className="input input-bordered input-primary flex items-center gap-2 mb-1 rounded-full">
+            <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
               <Controller
                 name="email"
                 control={control}
@@ -86,13 +80,7 @@ export default function LoginForm() {
                 render={({ field }) => (
                   <>
                     <HiMiniEnvelope className="opacity-70" size={20} />
-                    <input
-                      type="email"
-                      autoComplete="off"
-                      className="grow"
-                      placeholder="이메일"
-                      {...field}
-                    />
+                    <input type="email" className="grow" placeholder="이메일" {...field} />
                   </>
                 )}
               />
@@ -104,7 +92,7 @@ export default function LoginForm() {
             )}
           </div>
           <div>
-            <label className="input input-bordered input-primary flex items-center gap-2 mb-1 rounded-full">
+            <label className="input input-bordered input-primary flex items-center gap-2 mb-1">
               <Controller
                 name="password"
                 control={control}
@@ -112,24 +100,13 @@ export default function LoginForm() {
                   required: "비밀번호를 입력해 주세요.",
                   minLength: {
                     value: 8,
-                    message: "비밀번호는 최소 8자 이상이어야 합니다.",
-                  },
-                  pattern: {
-                    value:
-                      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-                    message: "영어, 숫자, 특수문자를 모두 포함해야 합니다.",
-                  },
+                    message: '비밀번호는 최소 8자 이상이어야 합니다.'
+                  }
                 }}
                 render={({ field }) => (
                   <>
                     <HiLockClosed className="opacity-70" size={20} />
-                    <input
-                      type="password"
-                      autoComplete="off"
-                      className="grow"
-                      placeholder="비밀번호"
-                      {...field}
-                    />
+                    <input type="password" className="grow" placeholder="비밀번호" {...field} />
                   </>
                 )}
               />
@@ -140,18 +117,11 @@ export default function LoginForm() {
               </span>
             )}
           </div>
-          <div className="card-actions pt-8">
-            <button
-              type="submit"
-              className="btn btn-primary w-full mb-2 text-base text-white rounded-full shadow-md shadow-slate-300"
-            >
+          <div className="card-actions">
+            <button type="submit" className="btn btn-primary w-full mb-2 text-base text-white">
               로그인
             </button>
-            <button
-              type="button"
-              onClick={handleResister}
-              className="btn btn-primary w-full text-base text-white rounded-full  shadow-md shadow-slate-300"
-            >
+            <button type="button" onClick={handleResister} className="btn btn-primary w-full text-base text-white">
               회원가입
             </button>
           </div>

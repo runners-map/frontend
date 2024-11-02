@@ -1,4 +1,4 @@
-import Result from "./Result";
+import Result from './Result';
 
 export const metadata = {
   title: "러닝 결과",
